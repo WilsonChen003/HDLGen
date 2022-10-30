@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ipxact:component xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014">
+    <ipxact:vendor>MY_CORP.com</ipxact:vendor>
+    <ipxact:library>MY_CORP_lib</ipxact:library>
+    <ipxact:name>APB</ipxact:name>
+    <ipxact:version>1.0_mm</ipxact:version>
+	<ipxact:busInterfaces>
+		<ipxact:busInterface>
+			<ipxact:name>pENABL</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pAT</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pSELx</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pRDATA</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pADDR</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pREADY</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+		<ipxact:busInterface>
+			<ipxact:name>pSLVERR</ipxact:name>
+			<ipxact:busType ipxact:vendor="XXX.com" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:abstractionType ipxact:vendor="XXX.org" ipxact:library="" ipxact:name="" ipxact:version="1.0"/>
+			<ipxact:mirroredMaster/>
+			<ipxact:connectionRequired>false</ipxact:connectionRequired>
+  			<ipxact:portMaps>
+  			</ipxact:portMaps>
+			<ipxact:bitsInLau>8</ipxact:bitsInLau>
+			<ipxact:endianness>little</ipxact:endianness>
+  	</ipxact:busInterfaces>
+</ipxact:component>

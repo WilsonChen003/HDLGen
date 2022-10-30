@@ -1,0 +1,8 @@
+{ 
+   "MyIntf" : {
+       "intf_sig0" : "reg:1" ,
+       "intf_sig1" : "wire:1" ,
+       "intf_sig2" : "reg:32" 
+   }
+}
+

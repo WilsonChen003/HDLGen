@@ -1,0 +1,417 @@
+// ================================================================
+// NVDLA Open Source Project
+// 
+// Copyright(c) 2016 - 2017 NVIDIA Corporation.  Licensed under the
+// NVDLA Open Hardware License; Check "LICENSE" which comes with 
+// this distribution for more information.
+// ================================================================
+
+// File Name: NV_NVDLA_CMAC_CORE_mac.v
+
+module NV_NVDLA_CMAC_CORE_mac (
+   nvdla_core_clk     //|< i
+  ,nvdla_wg_clk       //|< i
+  ,nvdla_core_rstn    //|< i
+  ,cfg_is_fp16        //|< i
+  ,cfg_is_int16       //|< i
+  ,cfg_is_int8        //|< i
+  ,cfg_is_wg          //|< i
+  ,cfg_reg_en         //|< i
+  ,dat_actv_data      //|< i
+  ,dat_actv_nan       //|< i
+  ,dat_actv_nz        //|< i
+  ,dat_actv_pvld      //|< i
+  ,dat_pre_exp        //|< i
+  ,dat_pre_mask       //|< /
+  ,dat_pre_pvld       //|< i
+  ,dat_pre_stripe_end //|< i
+  ,dat_pre_stripe_st  //|< i
+  ,wt_actv_data       //|< i
+  ,wt_actv_nan        //|< i
+  ,wt_actv_nz         //|< i
+  ,wt_actv_pvld       //|< i
+  ,wt_sd_exp          //|< i
+  ,wt_sd_mask         //|< i
+  ,wt_sd_pvld         //|< i
+  ,mac_out_data       //|> o
+  ,mac_out_nan        //|> o
+  ,mac_out_pvld       //|> o
+  );
+
+input           nvdla_core_clk;
+input           nvdla_wg_clk;
+input           nvdla_core_rstn;
+input           cfg_is_fp16;
+input           cfg_is_int16;
+input           cfg_is_int8;
+input           cfg_is_wg;
+input           cfg_reg_en;
+input  [1023:0] dat_actv_data;
+input    [63:0] dat_actv_nan;
+input   [127:0] dat_actv_nz;
+input   [103:0] dat_actv_pvld;
+input   [191:0] dat_pre_exp;
+input    [63:0] dat_pre_mask;
+input           dat_pre_pvld;
+input           dat_pre_stripe_end;
+input           dat_pre_stripe_st;
+input  [1023:0] wt_actv_data;
+input    [63:0] wt_actv_nan;
+input   [127:0] wt_actv_nz;
+input   [103:0] wt_actv_pvld;
+input   [191:0] wt_sd_exp;
+input    [63:0] wt_sd_mask;
+input           wt_sd_pvld;
+output  [175:0] mac_out_data;
+output          mac_out_nan;
+output          mac_out_pvld;
+
+// ****** these 2 Auto function must be before all wire or reg define ! ******
+// ========================================================================================
+//:AutoDef;
+//:AutoInstWire
+// ========================================================================================
+
+wire     [65:0] dbg_sign;
+wire      [3:0] exp_max;
+wire            exp_pvld;
+
+//: SRC ./incr
+//: &SRC ./cfg
+
+// wire      [3:0] exp_sft_00;
+// ..
+//: for my $i (0..63) {
+//:   print("wire [7:0] exp_test_$i;\n");;
+//: }
+// wire      [3:0] exp_sft_63;
+//
+
+// ...
+//:Begin
+    for my $i (0..3) {
+       print("wire [15:0] test_data$i;\n");
+       print "wire [15:0] test_DATA$i;";
+    }
+//:End
+
+
+//reg      [15:0] test_data$;
+//reg      [15:0] test_data$;
+
+//:Begin
+  for my $i (0..5) {
+      for my $i (0..9) {
+          print("reg      [35:0] pp_in_l0_a_${i}${j};\n");
+          print("reg      [35:0] pp_in_l0_b_${i}${j};\n");
+	  }
+  }
+//:End
+
+//:&DTIWire("top2dp", 512);
+
+
+wire [63:0] res_tag_b0;
+wire [63:0] res_tag_b1;
+wire [63:0] res_tag_b2;
+wire [63:0] res_tag_b3;
+wire [63:0] res_tag_b4;
+wire [63:0] res_tag_b5;
+wire [63:0] res_tag_b6;
+wire [63:0] res_tag_b7;
+
+
+
+// ========================================================================================
+// ============= for Python Script ==============
+//#Begin
+    for i in [0,1,2,3,4,5,6,7]:
+       print("wire [63:0] test_data%d;" % i )
+//#End 
+// ========================================================================================
+
+
+    
+//==============================================================================
+// MAC support Winograd post addition (POA).
+// It's a 2-level matrix muliplication implemented by adders.
+// Fomular of POA are:
+//
+//                    | pp_out_00, pp_out_01, pp_out_02, pp_out_03 |  | 1   0 |
+// | 1,  1,  1,  0 |  | pp_out_04, pp_out_05, pp_out_06, pp_out_07 |  | 1,  1 |
+// | 0,  1, -1, -1 |  | pp_out_08, pp_out_09, pp_out_10, pp_out_11 |  | 1, -1 |
+//                    | pp_out_12, pp_out_13, pp_out_14, pp_out_15 |  | 0, -1 |
+//
+//==============================================================================
+
+
+//==========================================================
+// Sub unit to handle fp16 NaN 
+//==========================================================
+&Instance NV_NVDLA_CMAC_CORE_MAC_nan u_nan;
+
+
+//==========================================================
+// Fp16 exponent pre-calculaiton instant
+//==========================================================
+&Instance NV_NVDLA_CMAC_CORE_MAC_exp u_exp;
+
+
+//==========================================================
+// Single multiplication instances
+//==========================================================
+
+
+always @(
+  wt_actv_data
+  ) begin
+    {wt_actv_data63, wt_actv_data62, wt_actv_data61, wt_actv_data60, wt_actv_data59, wt_actv_data58, wt_actv_data57, wt_actv_data56, wt_actv_data55, wt_actv_data54, wt_actv_data53, wt_actv_data52, wt_actv_data51, wt_actv_data50, wt_actv_data49, wt_actv_data48, wt_actv_data47, wt_actv_data46, wt_actv_data45, wt_actv_data44, wt_actv_data43, wt_actv_data42, wt_actv_data41, wt_actv_data40, wt_actv_data39, wt_actv_data38, wt_actv_data37, wt_actv_data36, wt_actv_data35, wt_actv_data34, wt_actv_data33, wt_actv_data32, wt_actv_data31, wt_actv_data30, wt_actv_data29, wt_actv_data28, wt_actv_data27, wt_actv_data26, wt_actv_data25, wt_actv_data24, wt_actv_data23, wt_actv_data22, wt_actv_data21, wt_actv_data20, wt_actv_data19, wt_actv_data18, wt_actv_data17, wt_actv_data16, wt_actv_data15, wt_actv_data14, wt_actv_data13, wt_actv_data12, wt_actv_data11, wt_actv_data10, wt_actv_data9, wt_actv_data8, wt_actv_data7, wt_actv_data6, wt_actv_data5, wt_actv_data4, wt_actv_data3, wt_actv_data2, wt_actv_data1, wt_actv_data0} = wt_actv_data;
+end
+
+//:Begin
+    for my $i (0..63) {
+		my $ii = sprintf("%02d",$i);
+	    print STDOUT " ---\$ii == $ii ---\n";
+	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
+          &Connect exp_sft      exp_sft_$ii;
+           Connect op_a_dat     wt_actv_data${i};
+           Connect op_a_nz      wt_actv_nz${ii};
+           Connect op_a_pvld     wt_actv_pvld[${i}];
+          &Connect op_b_dat     dat_actv_data${i};
+          &Connect op_b_nz      dat_actv_nz${i};
+          &Connect op_b_pvld     dat_actv_pvld[${i}];
+           Connect /(res_.*)/    \${1}_$ii;
+           Connect -final (res_tag)    \${1}_$i; ### override above line
+
+	}
+//:End
+
+
+//==========================================================
+// MAC cell CSA tree level 0
+// 64(128) -> 16(32)
+//==========================================================
+
+///////////////////////////////////////////////////////////////////
+//////////////// input select for CSA tree level 0 ////////////////
+///////////////////////////////////////////////////////////////////
+
+always @(
+  cfg_is_int8_d0
+  or res_a_00
+  or res_b_00
+  ) begin
+    pp_in_l0_a_00 = cfg_is_int8_d0[0] ? {2'b0, res_a_00[31:16], 2'b0, res_a_00[15:0]} :
+                    {4'b0, res_a_00[31:0]};
+    pp_in_l0_b_00 = cfg_is_int8_d0[0] ? {2'b0, res_b_00[31:16], 2'b0, res_b_00[15:0]} :
+                    {4'b0, res_b_00[31:0]};
+end
+
+
+//////////////////////////////////////////////////////////
+//////////////// CSA tree level 0: 64->16 ////////////////
+//////////////////////////////////////////////////////////
+
+//:Begin
+    for my $i (0..9) {
+		### for bulk print
+		print <<EOF;
+`ifdef DESIGNWARE_NOEXIST 
+NV_DW02_tree #(8, 36) u_tree_l0n0$i (
+   .INPUT              (pp_in_l0n0${i}[287:0])    //|< r
+  ,.OUT0               (pp_out_l0n0${i}_0[35:0])  //|> w
+  ,.OUT1               (pp_out_l0n0${i}_1[35:0])  //|> w
+  );
+`else 
+DW02_tree #(8, 36) u_tree_l0n00 (
+   .INPUT              (pp_in_l0n0${i}[287:0])    //|< r
+  ,.OUT0               (pp_out_l0n0${i}_0[35:0])  //|> w
+  ,.OUT1               (pp_out_l0n0${i}_1[35:0])  //|> w
+  );
+`endif 
+EOF
+     }
+//:End
+
+
+///////////////////////////////////////////////////////////////////////
+//////////////// assemble output from CSA tree level 0 ////////////////
+///////////////////////////////////////////////////////////////////////
+
+always @(
+  pp_out_l0n00_0
+  or pp_out_l0n00_1
+  ) begin
+    pp_out_l0n00_0_d1_w[35:0] = pp_out_l0n00_0;
+    pp_out_l0n00_1_d1_w[35:0] = pp_out_l0n00_1;
+end
+
+//==========================================================
+// Gather FP16 sign tag
+//==========================================================
+
+assign res_tag_b0 = {res_tag_63[0], res_tag_62[0], res_tag_61[0], res_tag_60[0], res_tag_59[0], res_tag_58[0], res_tag_57[0], res_tag_56[0], res_tag_55[0], res_tag_54[0], res_tag_53[0], res_tag_52[0], res_tag_51[0], res_tag_50[0], res_tag_49[0], res_tag_48[0], res_tag_47[0], res_tag_46[0], res_tag_45[0], res_tag_44[0], res_tag_43[0], res_tag_42[0], res_tag_41[0], res_tag_40[0], res_tag_39[0], res_tag_38[0], res_tag_37[0], res_tag_36[0], res_tag_35[0], res_tag_34[0], res_tag_33[0], res_tag_32[0], res_tag_31[0], res_tag_30[0], res_tag_29[0], res_tag_28[0], res_tag_27[0], res_tag_26[0], res_tag_25[0], res_tag_24[0], res_tag_23[0], res_tag_22[0], res_tag_21[0], res_tag_20[0], res_tag_19[0], res_tag_18[0], res_tag_17[0], res_tag_16[0], res_tag_15[0], res_tag_14[0], res_tag_13[0], res_tag_12[0], res_tag_11[0], res_tag_10[0], res_tag_9[0], res_tag_8[0], res_tag_7[0], res_tag_6[0], res_tag_5[0], res_tag_4[0], res_tag_3[0], res_tag_2[0], res_tag_1[0], res_tag_0[0]};
+assign res_tag_b1 = {res_tag_63[1], res_tag_62[1], res_tag_61[1], res_tag_60[1], res_tag_59[1], res_tag_58[1], res_tag_57[1], res_tag_56[1], res_tag_55[1], res_tag_54[1], res_tag_53[1], res_tag_52[1], res_tag_51[1], res_tag_50[1], res_tag_49[1], res_tag_48[1], res_tag_47[1], res_tag_46[1], res_tag_45[1], res_tag_44[1], res_tag_43[1], res_tag_42[1], res_tag_41[1], res_tag_40[1], res_tag_39[1], res_tag_38[1], res_tag_37[1], res_tag_36[1], res_tag_35[1], res_tag_34[1], res_tag_33[1], res_tag_32[1], res_tag_31[1], res_tag_30[1], res_tag_29[1], res_tag_28[1], res_tag_27[1], res_tag_26[1], res_tag_25[1], res_tag_24[1], res_tag_23[1], res_tag_22[1], res_tag_21[1], res_tag_20[1], res_tag_19[1], res_tag_18[1], res_tag_17[1], res_tag_16[1], res_tag_15[1], res_tag_14[1], res_tag_13[1], res_tag_12[1], res_tag_11[1], res_tag_10[1], res_tag_9[1], res_tag_8[1], res_tag_7[1], res_tag_6[1], res_tag_5[1], res_tag_4[1], res_tag_3[1], res_tag_2[1], res_tag_1[1], res_tag_0[1]};
+assign res_tag_b2 = {res_tag_63[2], res_tag_62[2], res_tag_61[2], res_tag_60[2], res_tag_59[2], res_tag_58[2], res_tag_57[2], res_tag_56[2], res_tag_55[2], res_tag_54[2], res_tag_53[2], res_tag_52[2], res_tag_51[2], res_tag_50[2], res_tag_49[2], res_tag_48[2], res_tag_47[2], res_tag_46[2], res_tag_45[2], res_tag_44[2], res_tag_43[2], res_tag_42[2], res_tag_41[2], res_tag_40[2], res_tag_39[2], res_tag_38[2], res_tag_37[2], res_tag_36[2], res_tag_35[2], res_tag_34[2], res_tag_33[2], res_tag_32[2], res_tag_31[2], res_tag_30[2], res_tag_29[2], res_tag_28[2], res_tag_27[2], res_tag_26[2], res_tag_25[2], res_tag_24[2], res_tag_23[2], res_tag_22[2], res_tag_21[2], res_tag_20[2], res_tag_19[2], res_tag_18[2], res_tag_17[2], res_tag_16[2], res_tag_15[2], res_tag_14[2], res_tag_13[2], res_tag_12[2], res_tag_11[2], res_tag_10[2], res_tag_9[2], res_tag_8[2], res_tag_7[2], res_tag_6[2], res_tag_5[2], res_tag_4[2], res_tag_3[2], res_tag_2[2], res_tag_1[2], res_tag_0[2]};
+assign res_tag_b3 = {res_tag_63[3], res_tag_62[3], res_tag_61[3], res_tag_60[3], res_tag_59[3], res_tag_58[3], res_tag_57[3], res_tag_56[3], res_tag_55[3], res_tag_54[3], res_tag_53[3], res_tag_52[3], res_tag_51[3], res_tag_50[3], res_tag_49[3], res_tag_48[3], res_tag_47[3], res_tag_46[3], res_tag_45[3], res_tag_44[3], res_tag_43[3], res_tag_42[3], res_tag_41[3], res_tag_40[3], res_tag_39[3], res_tag_38[3], res_tag_37[3], res_tag_36[3], res_tag_35[3], res_tag_34[3], res_tag_33[3], res_tag_32[3], res_tag_31[3], res_tag_30[3], res_tag_29[3], res_tag_28[3], res_tag_27[3], res_tag_26[3], res_tag_25[3], res_tag_24[3], res_tag_23[3], res_tag_22[3], res_tag_21[3], res_tag_20[3], res_tag_19[3], res_tag_18[3], res_tag_17[3], res_tag_16[3], res_tag_15[3], res_tag_14[3], res_tag_13[3], res_tag_12[3], res_tag_11[3], res_tag_10[3], res_tag_9[3], res_tag_8[3], res_tag_7[3], res_tag_6[3], res_tag_5[3], res_tag_4[3], res_tag_3[3], res_tag_2[3], res_tag_1[3], res_tag_0[3]};
+assign res_tag_b4 = {res_tag_63[4], res_tag_62[4], res_tag_61[4], res_tag_60[4], res_tag_59[4], res_tag_58[4], res_tag_57[4], res_tag_56[4], res_tag_55[4], res_tag_54[4], res_tag_53[4], res_tag_52[4], res_tag_51[4], res_tag_50[4], res_tag_49[4], res_tag_48[4], res_tag_47[4], res_tag_46[4], res_tag_45[4], res_tag_44[4], res_tag_43[4], res_tag_42[4], res_tag_41[4], res_tag_40[4], res_tag_39[4], res_tag_38[4], res_tag_37[4], res_tag_36[4], res_tag_35[4], res_tag_34[4], res_tag_33[4], res_tag_32[4], res_tag_31[4], res_tag_30[4], res_tag_29[4], res_tag_28[4], res_tag_27[4], res_tag_26[4], res_tag_25[4], res_tag_24[4], res_tag_23[4], res_tag_22[4], res_tag_21[4], res_tag_20[4], res_tag_19[4], res_tag_18[4], res_tag_17[4], res_tag_16[4], res_tag_15[4], res_tag_14[4], res_tag_13[4], res_tag_12[4], res_tag_11[4], res_tag_10[4], res_tag_9[4], res_tag_8[4], res_tag_7[4], res_tag_6[4], res_tag_5[4], res_tag_4[4], res_tag_3[4], res_tag_2[4], res_tag_1[4], res_tag_0[4]};
+assign res_tag_b5 = {res_tag_63[5], res_tag_62[5], res_tag_61[5], res_tag_60[5], res_tag_59[5], res_tag_58[5], res_tag_57[5], res_tag_56[5], res_tag_55[5], res_tag_54[5], res_tag_53[5], res_tag_52[5], res_tag_51[5], res_tag_50[5], res_tag_49[5], res_tag_48[5], res_tag_47[5], res_tag_46[5], res_tag_45[5], res_tag_44[5], res_tag_43[5], res_tag_42[5], res_tag_41[5], res_tag_40[5], res_tag_39[5], res_tag_38[5], res_tag_37[5], res_tag_36[5], res_tag_35[5], res_tag_34[5], res_tag_33[5], res_tag_32[5], res_tag_31[5], res_tag_30[5], res_tag_29[5], res_tag_28[5], res_tag_27[5], res_tag_26[5], res_tag_25[5], res_tag_24[5], res_tag_23[5], res_tag_22[5], res_tag_21[5], res_tag_20[5], res_tag_19[5], res_tag_18[5], res_tag_17[5], res_tag_16[5], res_tag_15[5], res_tag_14[5], res_tag_13[5], res_tag_12[5], res_tag_11[5], res_tag_10[5], res_tag_9[5], res_tag_8[5], res_tag_7[5], res_tag_6[5], res_tag_5[5], res_tag_4[5], res_tag_3[5], res_tag_2[5], res_tag_1[5], res_tag_0[5]};
+assign res_tag_b6 = {res_tag_63[6], res_tag_62[6], res_tag_61[6], res_tag_60[6], res_tag_59[6], res_tag_58[6], res_tag_57[6], res_tag_56[6], res_tag_55[6], res_tag_54[6], res_tag_53[6], res_tag_52[6], res_tag_51[6], res_tag_50[6], res_tag_49[6], res_tag_48[6], res_tag_47[6], res_tag_46[6], res_tag_45[6], res_tag_44[6], res_tag_43[6], res_tag_42[6], res_tag_41[6], res_tag_40[6], res_tag_39[6], res_tag_38[6], res_tag_37[6], res_tag_36[6], res_tag_35[6], res_tag_34[6], res_tag_33[6], res_tag_32[6], res_tag_31[6], res_tag_30[6], res_tag_29[6], res_tag_28[6], res_tag_27[6], res_tag_26[6], res_tag_25[6], res_tag_24[6], res_tag_23[6], res_tag_22[6], res_tag_21[6], res_tag_20[6], res_tag_19[6], res_tag_18[6], res_tag_17[6], res_tag_16[6], res_tag_15[6], res_tag_14[6], res_tag_13[6], res_tag_12[6], res_tag_11[6], res_tag_10[6], res_tag_9[6], res_tag_8[6], res_tag_7[6], res_tag_6[6], res_tag_5[6], res_tag_4[6], res_tag_3[6], res_tag_2[6], res_tag_1[6], res_tag_0[6]};
+assign res_tag_b7 = {res_tag_63[7], res_tag_62[7], res_tag_61[7], res_tag_60[7], res_tag_59[7], res_tag_58[7], res_tag_57[7], res_tag_56[7], res_tag_55[7], res_tag_54[7], res_tag_53[7], res_tag_52[7], res_tag_51[7], res_tag_50[7], res_tag_49[7], res_tag_48[7], res_tag_47[7], res_tag_46[7], res_tag_45[7], res_tag_44[7], res_tag_43[7], res_tag_42[7], res_tag_41[7], res_tag_40[7], res_tag_39[7], res_tag_38[7], res_tag_37[7], res_tag_36[7], res_tag_35[7], res_tag_34[7], res_tag_33[7], res_tag_32[7], res_tag_31[7], res_tag_30[7], res_tag_29[7], res_tag_28[7], res_tag_27[7], res_tag_26[7], res_tag_25[7], res_tag_24[7], res_tag_23[7], res_tag_22[7], res_tag_21[7], res_tag_20[7], res_tag_19[7], res_tag_18[7], res_tag_17[7], res_tag_16[7], res_tag_15[7], res_tag_14[7], res_tag_13[7], res_tag_12[7], res_tag_11[7], res_tag_10[7], res_tag_9[7], res_tag_8[7], res_tag_7[7], res_tag_6[7], res_tag_5[7], res_tag_4[7], res_tag_3[7], res_tag_2[7], res_tag_1[7], res_tag_0[7]};
+
+
+
+// =========================================================================================================================================
+// =============== Below for more testing ==============
+// =========================================================================================================================================
+
+
+
+//==========================================================
+// Config logic
+//==========================================================
+
+always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
+  if (!nvdla_core_rstn) begin
+    cfg_reg_en_d0 <= 1'b0;
+  end else begin
+  cfg_reg_en_d0 <= cfg_reg_en;
+  end
+end
+always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
+  if (!nvdla_core_rstn) begin
+    cfg_is_int8_d0 <= {65{1'b0}};
+  end else begin
+  if ((cfg_reg_en) == 1'b1) begin
+    cfg_is_int8_d0 <= {65{cfg_is_int8}};
+  // VCS coverage off
+  end else if ((cfg_reg_en) == 1'b0) begin
+  end else begin
+    cfg_is_int8_d0 <= 'bx;  // spyglass disable STARC-2.10.1.6 W443 NoWidthInBasedNum-ML -- (Constant containing x or z used, Based number `bx contains an X, Width specification missing for based number)
+  // VCS coverage on
+  end
+  end
+end
+
+
+//:Begin
+ &Instance simple_spi.xml my_spi;
+  Connect -final -interface spi  -up \${1}_IPX ;
+  Connect /(clk.*)/ IPX_\${1};
+  Connect /(rst.*)/ IPX_\${1};
+//:End
+
+//:	&ShowIntf("spi");
+
+//:Begin
+ &Instance simple_spi.xml
+     #( .parm0(0),
+		 .param1(1),
+		 .param2(2)
+	 )
+	 my_spi;
+  Connect -final -interface spi  -up \${1}_IPX ;
+  Connect /(clk.*)/ IPX_\${1};
+  Connect /(rst.*)/ IPX_\${1};
+//:End
+
+//==========================================================
+// Final register for MAC output
+//==========================================================
+
+always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
+  if (!nvdla_core_rstn) begin
+    mac_out_pvld <= 1'b0;
+  end else begin
+  mac_out_pvld <= pp_pvld_d3[0];
+  end
+end
+
+
+//: &AddIntfByIPX("./cfg/simple_spi.xml");
+//: &AddIntfByJson("./cfg/MyIntf.json");
+//: &PrintIntfPort("-intf spi");
+
+
+//: &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
+
+//:Begin
+  my %test_hash = (
+       'sys_ctrl'=> "&",
+       'sys_en'  => "&",
+       'sys_off'  => "|",       
+       'sys_on' => ""
+  );
+  for my $i (0..3) {
+      my $sig = "test_input$i & ( ";
+      foreach my $test_sig (sort(keys(%test_hash))) {
+	    $sig .= " $test_sig"." $test_hash{$test_sig} ";
+	  }
+      print "assign test_wire$i = $sig );\n";
+  }
+//:End
+
+
+
+
+&Instance test_sys_ctrl_apb_regs;
+  Connect -final -interface APB3  -up \${1}_suffix ;
+
+
+//:Begin
+  my %APB3 = (
+       'pSELx' => "input: 1",
+       'pADDR' => "input: 32",
+       'pENABL' => "input: 1",
+       'pRDATA' => "output: 32",
+       'pREADY' => "output: 1",
+       'pSLVERR' => "output: 1",
+       'pDAT' => "input: 32"
+  );
+  &AddIntfByHash(\%APB3,"test_APB3");
+  &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
+//:End
+
+//: our $reset= " or negedge clk";
+
+//:Begin
+  my $sv = "
+  interface test_if(input clk);
+    logic rst_n,
+    wire  [1:0] port_a_0 ;
+    logic [12:0] port_a_1 ;
+    wire port_b_0 ;
+    logic port_b_1 ;
+   endinterface	
+";
+	&AddIntfBySV($sv);
+
+	&ShowIntf("test_if");
+
+    &PrintIntfPort("-intf test_if -up"); 
+
+//:End
+
+
+assign test_wires = test_input[3:0];
+
+always @(posedge clk ${reset})
+begin
+    q <= d;
+	$display("%t:%m: this is a test string\n");
+end
+
+
+
+//: &eFunc::ClkGen("-clk clk_m");
+//: &eFunc::RstGen("-clk clk_m");
+//: &eFunc::FuseGen("-clk clk_m");
+//: &eFunc::PmuGen("-clk clk_m");
+//: &eFunc::MemGen("-clk clk_m");
+//: &eFunc::FifoGen("-clk clk_m");
+//: &eFunc::AsyncGen("-clk clk_m");
+
+
+//: GenIPX("my_design.xml");
+
+endmodule // NV_NVDLA_CMAC_CORE_mac
