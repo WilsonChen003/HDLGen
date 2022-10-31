@@ -85,19 +85,21 @@ Function generation
 
 
 ### ***Why need this tool?***<br>
-    For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we¡¯re not writing code, we¡¯re indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.<br>
-    So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they¡¯re DSL, they¡¯re not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
-    Is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
-    Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
-    The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as ¡°HDLGen¡±.
-    The way you're going to work is writing Verilog or VHDL code, the tool helps you on most boring tasks: signal define for wire a/o reg, instance modules by connections with auto wire signals defined and easy name change, connect signals with regular expression, instance JSON and IPXACT xml file as simple as HDL code natively. If any task/logic/design which is not friendly written in HDL, then you can use high level script language like Perl or Python for any code or task you want£¬wherever and whenever in the HDL source file, as long as you know Perl or Python script, or even shell script.<br>
-    This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. <br>
-    If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
+  For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we¡¯re not writing code, we¡¯re indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.<br>
+   So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they¡¯re DSL, they¡¯re not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
+   Is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
+   Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
+   The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as ¡°HDLGen¡±.
+   The way you're going to work is writing Verilog or VHDL code, the tool helps you on most boring tasks: signal define for wire a/o reg, instance modules by connections with auto wire signals defined and easy name change, connect signals with regular expression, instance JSON and IPXACT xml file as simple as HDL code natively. If any task/logic/design which is not friendly written in HDL, then you can use high level script language like Perl or Python for any code or task you want£¬wherever and whenever in the HDL source file, as long as you know Perl or Python script, or even shell script.<br>
+   This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. <br>
+   If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
 
-           ***DSL is really cool***<br>
-           ***But Verilog is still the King***<br>
-           ***Connection is really you need***<br>
-           ***And Fexibility is reall helpful***<br>
+
+
+           ***DSL is really cool***
+           ***But Verilog is still the King***
+           ***Connection is really you need***
+           ***And Fexibility is reall helpful***
 
 
 ## Thanks
