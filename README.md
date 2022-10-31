@@ -1,30 +1,68 @@
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
-###                         Copyright 2022 Wilson Chen                                                     ###
-###            Licensed under the Apache License, Version 2.0 (the "License");                             ###
-###            You may not use this file except in compliance with the License.                            ###
-###            You may obtain a copy of the License at                                                     ###
-###                    http://www.apache.org/licenses/LICENSE-2.0                                          ###
-###            Unless required by applicable law or agreed to in writing, software                         ###
-###            distributed under the License is distributed on an "AS IS" BASIS,                           ###
-###            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                    ###
-###            See the License for the specific language governing permissions and                         ###
-###            limitations under the License.                                                              ###
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
+# HDLGen from Wilson Chen 2022
 
-*************************************************************************************************************************************************************
-*** HDLGen.pm is source code in Perl
-*** HDLGen.bin is excutible binary if you don't have Perl
-*** test is test source file
-    *** just run ../HDLGen.pm -i NV_NVDLA_CMAC_CORE_mac.src
-*** test/incr is design in verilog
-*** test/cfg is some config file in JSON or xml
-*** doc has a simple usage introduction in PDF
-*************************************************************************************************************************************************************
-    NOTE: 
+## Overview
+  HDLGen is a tool for HDL(mainly for Verilog) generation£¬it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
+  It supports all syntax and data structure of Perl or Python£¬and has a few predefined functions for signal define, module instance, port connection etc.  
+  This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
+  HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
+
+
+## License 
+                         Copyright 2022 Wilson Chen                                                     
+            Licensed under the Apache License, Version 2.0 (the "License");                            
+            You may not use this file except in compliance with the License.                          
+            You may obtain a copy of the License at                                                  
+                    http://www.apache.org/licenses/LICENSE-2.0                                      
+            Unless required by applicable law or agreed to in writing, software                    
+            distributed under the License is distributed on an "AS IS" BASIS,                     
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.             
+            See the License for the specific language governing permissions and                 
+            limitations under the License.                                                     
+
+## What you can do with HDLGen 
+HDL stitch
+   * Instance module from RTL or IPXACT file as what Verilog does
+   * Connect  module's port to wires with native regular express
+   * Automatically generate instance's wires definitions
+   * Automatically generate reg or wire definictions(not perfect yet) 
+   * Use embedded native Perl or Python to generate(print) whatever code you want
+
+Interface manipulate
+   * Add interface from IPXACT, JSON, RTL, SV code, or hash array
+   * Add port to interface by name
+   * Remove port from interface name
+
+IPXACT manipulate
+   * Read in IPXACT
+   * Export interface by name to IPXACT ( in development )
+   * Export port by name to IPXACT ( in development )
+   * Export standard IPXACT for current module
+
+Function generation
+   * Use embedded functions to generate differnt module or loigc you want
+     * Clk, Reset, Fuse, Pmu, Fifo, Async-interface, Memories etc ( in development )
+   * Extent your own module/logic by standard config ( in development )
+	 * config can be in Verilog, JSON, YAML, EXCEL etc.
+
+	 Based on above functions, this tool can generate a SOC in a easy and flexible way
+
+## What you cannot do with HDLGen 
+   * Detail logic design: you still need to write RTL to implement your ideas 
+   * Synthesis or simulation or verification: you need to use other EDA tools to handle
+
+## Directory Structure   
+    |-- HDLGen.bin                # Tool binary for easy adopt
+    |-- HDLGen.pm                 # Tool source code in Perl module
+    |-- plugins                   # Tool plugin funcitons in Perl module
+    |-- test                      # Source design code for testing
+	    |-- cfg                     # JSON and XML for config
+	    |-- incr                    # necessary design files
+
+## Usage
+   It's simple as: cd test; ../HDLGen.pm -i NV_NVDLA_CMAC_CORE_mac.src
+   for help message you can run HDLGen.pm -usage
+
+### NOTE: 
 	* this tool only test on Ubuntu 18.04.05, but should work on any system have Perl installed
 	* several Perl Modules are required, can refer to the package head in source code, here listed:
                         Getopt;
@@ -35,7 +73,8 @@
                         XML::SAX::Expat; ### this is strange as not used at all, but pp need it! 
                         Dumper;
                         Term::ANSIColor
-      suggestion: you can first run HDLGen.pm, then install any package according to the error message
+      Suggestion: 
+	              You can first run HDLGen.pm, then install any package according to the error message
 	              or just run HDLGen.bin for results
 	         
 
@@ -44,7 +83,6 @@
          ****************************************************************************************
 
 
-*************************************************************************************************************************************************************
 *** Why need this tool£¿
     For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we¡¯re not writing code, we¡¯re indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.
     So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they¡¯re DSL, they¡¯re not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.
@@ -55,10 +93,10 @@
     This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. 
     If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. 
 
-    DSL is really cool,
-	But Verilog is the still the King!
-	Connection is all you need,
-	And Fexibility is reall helpful.
+***    DSL is really cool,
+***    But Verilog is still the King!
+***    Connection is really you need,
+***    And Fexibility is reall helpful.
 
 
     *****************************************************************************************************
@@ -70,8 +108,8 @@
 
 	Note: this tool was developed from scratch during the special spring time in Shanghai in 2022;
           The things related to NVIDIA are:
-              *** several function names are identical;
-              *** several HDL files of open sourced NVDLA are used to be test source
+              * several function names are identical;
+              * several HDL files of open sourced NVDLA are used to be test source
 	
           ***************************************************************
           *** Please kindly let me know if there is any license issue ***
