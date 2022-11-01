@@ -64,6 +64,7 @@ Function generation
     ├── test                      # Source design code for testing
 	    ├── cfg                     # JSON and XML for config
 	    ├── incr                    # necessary design files
+    ├── doc                       # usage introduction 
 
 ## Usage
    It's simple as: <br>
