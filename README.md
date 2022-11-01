@@ -62,8 +62,8 @@ Function generation
     ├── HDLGen.pm                 # Tool source code in Perl module
     ├── plugins                   # Tool plugin funcitons in Perl module
     ├── test                      # Source design code for testing
-	├── cfg                     # JSON and XML for config
-	├── incr                    # necessary design files
+	    ├── cfg                     # JSON and XML for config
+	    ├── incr                    # necessary design files
 
 ## Usage
    It's simple as: <br>
@@ -74,7 +74,7 @@ Function generation
 
 ### NOTE: 
 * this tool only test on Ubuntu 18.04.05, but should work on any system have Perl installed
-* several Perl Modules are required, can refer to the package head in source code, here listed:
+* several Perl Modules are required, can refer to the package head in source code, here listed:<br>
                         Getopt<br>
                         JSON<br>
                         File::Basename<br>
@@ -82,6 +82,7 @@ Function generation
                         XML::Simple<br>
                         XML::SAX::Expat; *#this is strange as not used at all, but pp need it*<br>
                         Dumper<br>
+			Text::ParseWords<br>
                         Term::ANSIColor<br>
 			
 **Suggestion:**<br>
@@ -114,13 +115,13 @@ __*** And Fexibility is reall helpful ***__<br>
 ***Thanks NVIDIA's VIVA to let me know how Perl makes Verilog intersting and amazing.***<br>
 ***Thanks NVIDIA's open sourced NVDLA as a test source.***<br>
                                           
-***Note:***
-  this tool was developed from scratch during the special spring time in Shanghai in 2022<br>
-          The things related to NVIDIA are:<br>
-              * several function names are identical;<br>
-              * several HDL files of open sourced NVDLA are used to be test source<br>
+###***Note:***
+This tool was developed from scratch during the special spring time in Shanghai in 2022
+The things related to NVIDIA are:<br>
+  * several function names are identical;<br>
+  * several HDL files of open sourced NVDLA are used to be test source<br>
 	
-          ***************************************************************
-          *** Please kindly let me know if there is any license issue ***
-          ***************************************************************
+ ***************************************************************
+ ***Please kindly let me know if there is any license issue***
+ ***************************************************************
 
