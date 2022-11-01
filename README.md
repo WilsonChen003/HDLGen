@@ -1,7 +1,7 @@
 # HDLGen from Wilson Chen 2022
 
 ## Overview
-  HDLGen is a tool for HDL(mainly for Verilog) generation£, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
+  HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
   It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.  
   This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
   HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
@@ -51,7 +51,7 @@ Function generation
 	 * config can be in Verilog, JSON, YAML, EXCEL etc.
 	 * then generate these logic with parameters by just a simple function call
 
-**Based on above functions, this tool can generate a SOC in a easy and flexible way**
+**Based on above functions, this tool can generate a SOC in an easy and flexible way**
 
 ## What you cannot do with HDLGen 
    * Detail logic design: you still need to write RTL to implement your ideas 
@@ -95,7 +95,7 @@ Function generation
 
 ### ***Why need this tool?***<br>
   For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we're not writing code, we're indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.<br>
-   So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they're DSL, they¡¯re not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
+   So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they're DSL, they're not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
    Is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
    Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
    The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as "HDLGen".
@@ -118,7 +118,7 @@ __*** And Fexibility is reall helpful ***__<br>
 ### ***Note:***
 This tool was developed from scratch during the special spring time in Shanghai in 2022<br>
 The things related to NVIDIA are:<br>
-  * several function names are identical;<br>
+  * several functions' name are identical;<br>
   * several HDL files of open sourced NVDLA are used to be test source<br>
 	
  ***************************************************************
