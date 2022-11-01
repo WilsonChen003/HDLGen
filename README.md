@@ -115,8 +115,8 @@ __*** And Fexibility is reall helpful ***__<br>
 ***Thanks NVIDIA's VIVA to let me know how Perl makes Verilog intersting and amazing.***<br>
 ***Thanks NVIDIA's open sourced NVDLA as a test source.***<br>
                                           
-###***Note:***
-This tool was developed from scratch during the special spring time in Shanghai in 2022
+### ***Note:***
+This tool was developed from scratch during the special spring time in Shanghai in 2022<br>
 The things related to NVIDIA are:<br>
   * several function names are identical;<br>
   * several HDL files of open sourced NVDLA are used to be test source<br>
