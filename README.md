@@ -105,10 +105,10 @@ Function generation
    If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
 
 
-__*** DSL is really cool ***__<br>
-__*** But Verilog is still the King ***__<br>
-__*** Connection is what you need ***__<br>
-__*** And Fexibility is reall helpful ***__<br>
+__***DSL is really cool***__<br>
+__***But Verilog is still the King***__<br>
+__***Connection is what you need***__<br>
+__***And Fexibility is reall helpful***__<br>
 
 
 ## Thanks
