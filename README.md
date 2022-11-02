@@ -70,7 +70,7 @@ Function generation
    It's simple as: <br>
    `cd test` <br>
    `../HDLGen.pl -i NV_NVDLA_CMAC_CORE_mac.src` or `../HDLGen.bin -i NV_NVDLA_CMAC_CORE_mac.src` <br>
-   or `../HDLGen.pl -f ./src.list`
+   or `../HDLGen.pl -f ./src.list`<br>
    for help message you can run: <br>
    	`HDLGen.pl -usage`
 
