@@ -59,7 +59,7 @@ Function generation
 
 ## Directory Structure   
     ├── HDLGen.bin                # Tool binary for easy adopt
-    ├── HDLGen.pm                 # Tool source code in Perl module
+    ├── HDLGen.pl                 # Tool source code
     ├── plugins                   # Tool plugin funcitons in Perl module
     ├── test                      # Source design code for testing
 	    ├── cfg                     # JSON and XML for config
@@ -69,9 +69,10 @@ Function generation
 ## Usage
    It's simple as: <br>
    `cd test` <br>
-   `../HDLGen.pm -i NV_NVDLA_CMAC_CORE_mac.src` or `../HDLGen.pm -i NV_NVDLA_CMAC_CORE_mac.src` <br>
+   `../HDLGen.pl -i NV_NVDLA_CMAC_CORE_mac.src` or `../HDLGen.bin -i NV_NVDLA_CMAC_CORE_mac.src` <br>
+   or `../HDLGen.pl -f ./src.list`
    for help message you can run: <br>
-   	`HDLGen.pm -usage`
+   	`HDLGen.pl -usage`
 
 ### NOTE: 
 * this tool only test on Ubuntu 18.04.05, but should work on any system have Perl installed
