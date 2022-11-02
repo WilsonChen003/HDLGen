@@ -101,7 +101,7 @@ wire            exp_pvld;
 
 //:Begin
   for my $i (0..5) {
-      for my $i (0..9) {
+      for my $j (0..9) {
           print("reg      [35:0] pp_in_l0_a_${i}${j};\n");
           print("reg      [35:0] pp_in_l0_b_${i}${j};\n");
 	  }
@@ -372,7 +372,7 @@ end
   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
 //:End
 
-//: our $reset= " or negedge clk";
+//: our $reset= " or negedge resetn";
 
 //:Begin
   my $sv = "
