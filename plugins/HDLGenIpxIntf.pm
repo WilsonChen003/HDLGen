@@ -524,19 +524,17 @@ sub ChangeSigName {
 ###------------------------------------------------------------------------------------------
 sub ReadIPX {
   my($SubName)="ReadIpXact";
-  my($ipx_in) = $_[0];
+  my($IPX_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($ipx_in);
+  my($temp_xml)=basename($IPX_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if ( -e $ipx_in ) {
-     open(IPX_IN,"<$ipx_in");
-     open(XML_TMP,">$temp_xml");
-  } else {
-	  &HDLGenErr("ReadIPX"," IPXACT file $ipx_in doesn't exist");
-	  exit(1); 
+  if ( !(-e $IPX_in) ) {
+      $IPX_in = &HDLGen::FindFile($IPX_in);
   }
+  open(IPX_IN,"<$IPX_in");
+  open(XML_TMP,">$temp_xml");
 
   while (<IPX_IN>) {
       if ($_ =~ /^\s*<(\w+:)component /) {
@@ -551,7 +549,7 @@ sub ReadIPX {
   system("rm -rf ./$temp_xml");
 
   if ($main::debug) {
-      open(XXML,">.$ipx_in.hash");
+      open(XXML,">.$temp_xml.hash");
       print XXML Dumper($IP_XACT);
       close(XXML);
   }
@@ -582,19 +580,17 @@ sub ReadIPX {
 ###------------------------------------------------------------------------------------------
 sub ReadXML {
   my($SubName)="ReadXML";
-  my($ipx_in) = $_[0];
+  my($IPX_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($ipx_in);
+  my($temp_xml)=basename($IPX_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if (-e $ipx_in) {
-	  open(IPX_IN,"<$ipx_in");
-      open(XML_TMP,">$temp_xml");
-  } else {
-	  &HDLGenErr("ReadXML"," IPXACT file $ipx_in doesn't exist");
-	  exit(1);
+  if ( !(-e $IPX_in) ) {
+      $IPX_in = &HDLGen::FindFile($IPX_in);
   }
+  open(IPX_IN,"<$IPX_in");
+  open(XML_TMP,">$temp_xml");
 
   while (<IPX_IN>) {
       if ($_ =~ /^\s*<(\w+:)component /) {
@@ -609,7 +605,7 @@ sub ReadXML {
   system("rm -rf ./$temp_xml");
 
   if ($main::debug) {
-      open(XXML,">.$ipx_in.hash");
+      open(XXML,">.$temp_xml.hash");
       print XXML Dumper($IP_XACT);
       close(XXML);
   }
@@ -693,18 +689,17 @@ sub AddInterface {
 ###------------------------------------------------------------------------------------------
 sub AddIntfByIPX {
   my($SubName)="AddIntfByIPX";
-  my($ipx_in) = $_[0];
+  my($IPX_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($ipx_in);
+  my($temp_xml)=basename($IPX_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if (-e $ipx_in) {
-      $IP_XACT = &ReadXML($ipx_in);
-  } else {
-	  &HDLGenErr("AddIntfByIPX"," IPXACT file $ipx_in doesn't exist");
-	  exit(1);
+  if ( !(-e $IPX_in) ) {
+      $IPX_in = &HDLGen::FindFile($IPX_in);
   }
+  open(IPX_IN,"<$IPX_in");
+  open(XML_TMP,">$temp_xml");
 
   my($I) = $IP_XACT->{"busInterfaces"}->{"busInterface"};
   my($P) = $IP_XACT->{"model"}->{"ports"}->{"port"};
@@ -732,24 +727,23 @@ sub AddIntfByIPX {
 ###------------------------------------------------------------------------------------------
 # &AddIntfByJson("IntfName", , <intf_ovr>);
 sub AddIntfByJson {
-  my $json_file = shift; 
+  my $JSON_in = shift; 
   my $json_text = ();
   my $intf_name = "";
   my $intf_hash = "";
   my $SubName = "AddIntfByJson";
 
-  if ( -e $json_file ) {
-      open(JSON, "<$json_file") or die "!!! Error: can't find input JSON file of ($json_file) \n\n";
-      $json_text = do { local $/; <JSON> };
-      close(JSON);
-      $intf_hash = decode_json($json_text);
-      
-      foreach $intf_name (keys(%$intf_hash)) {
-          &AddInterface($intf_name, $intf_hash->{$intf_name},1);
-      }
-  } else {
-	  &HDLGenErr("AddIntfByJson"," JSON file $json_file doesn't exist");
-	  exit(1); 
+  if ( !(-e $JSON_in) ) {
+      $JSON_in = &HDLGen::FindFile($JSON_in);
+  }
+
+  open(JSON, "<$JSON_in") or die "!!! Error: can't find input JSON file of ($JSON_in) \n\n";
+  $json_text = do { local $/; <JSON> };
+  close(JSON);
+  $intf_hash = decode_json($json_text);
+  
+  foreach $intf_name (keys(%$intf_hash)) {
+      &AddInterface($intf_name, $intf_hash->{$intf_name},1);
   }
 }
 
@@ -1018,12 +1012,18 @@ sub ParseSVIntfLine {
 ###------------------------------------------------------------------------------------------
 # &ShowIPX("IPX_design.xml"); 
 sub ShowIPX {
-  my $IPX_file = shift;
+  my $IPX_in = shift;
+  my $ipx_file = $IPX_in;
 
-  print STDOUT BOLD YELLOW " --- Show all interfaces in IPXACT($IPX_file) ---\n";
-  open(IP_F,">$IPX_file.intf");
-  print IP_F "###--- Below are all interfaces defined in $IPX_file ---###\n";
-  my $IP_XACT = &ReadXML($IPX_file);
+  if ( !(-e $IPX_in) ) {
+      $IPX_in = &HDLGen::FindFile($IPX_in);
+  }
+  $ipx_file = basename($IPX_in);
+  print STDOUT BOLD YELLOW " --- Show all interfaces in IPXACT($IPX_in) ---\n";
+
+  open(IP_F,">$ipx_file.intf");
+  print IP_F "###--- Below are all interfaces defined in $IPX_in ---###\n";
+  my $IP_XACT = &ReadXML($IPX_in);
 
   my($I) = $IP_XACT->{"busInterfaces"}->{"busInterface"};
   foreach my $intf (keys(%$I)) {

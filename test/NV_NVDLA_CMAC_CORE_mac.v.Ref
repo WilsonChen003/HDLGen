@@ -2638,7 +2638,8 @@ simple_spi  my_spi (
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| &ShowIntf("spi");
+//| &ReadIPX("simple_spi.xml");
+//| 	&ShowIPX("simple_spi.xml");
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -2694,25 +2695,25 @@ end
 //|  &AddIntfByJson("./cfg/MyIntf.json");
 //|  &PrintIntfPort("-intf spi");
 input                     miso_i          ;
-output                    sck_o           ;
-output                    mosi_o          ;
 output                    ss_o            ;
+output                    mosi_o          ;
+output                    sck_o           ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
-reg      [31:0]           TEST_PRDATA     ;
-reg                       TEST_PRESETN    ;
-reg                       TEST_PWRITE     ;
-reg                       TEST_PENABLE    ;
-reg                       TEST_PCLK       ;
-reg      [31:0]           TEST_PWDATA     ;
-reg                       TEST_PSEL       ;
-reg                       TEST_PREADY     ;
 reg                       TEST_PSLVERR    ;
 reg      [17:0]           TEST_PADDR      ;
+reg                       TEST_PSEL       ;
+reg                       TEST_PREADY     ;
+reg      [31:0]           TEST_PWDATA     ;
+reg      [31:0]           TEST_PRDATA     ;
+reg                       TEST_PCLK       ;
+reg                       TEST_PWRITE     ;
+reg                       TEST_PENABLE    ;
+reg                       TEST_PRESETN    ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -2778,18 +2779,22 @@ test_sys_ctrl_apb_regs  u_test_sys_ctrl_apb_regs (
 //|   );
 //|   &AddIntfByHash(\%APB3,"test_APB3");
 //|   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
-output                    my_pREADY       ;
-input                     my_pENABL       ;
-output                    my_pSLVERR      ;
-input    [11:0]           my_pADDR        ;
 input    [31:0]           my_pDAT         ;
 output   [31:0]           my_pRDATA       ;
 input                     my_pSELx        ;
+output                    my_pREADY       ;
+output                    my_pSLVERR      ;
+input    [11:0]           my_pADDR        ;
+input                     my_pENABL       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| our $reset= " or negedge resetn";
+//|   &AddIntfByJson("MyIntf.json");
+//|   &PrintIntfPort("-intf MyIntf");
+wire                      intf_sig1       ;
+reg      [31:0]           intf_sig2       ;
+reg                       intf_sig0       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -2804,18 +2809,19 @@ input                     my_pSELx        ;
 //|    endinterface	
 //| ";
 //| 	&AddIntfBySV($sv);
-//| 
 //| 	&ShowIntf("test_if");
-//| 
 //|     &PrintIntfPort("-intf test_if -up"); 
-//| 
-wire                      PORT_B_0        ;
 wire     [1:0]            PORT_A_0        ;
+logic                     PORT_B_1        ;
+wire                      PORT_B_0        ;
 logic    [12:0]           PORT_A_1        ;
 logic                     RST_N           ;
-logic                     PORT_B_1        ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
+
+//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
+//| our $reset= " or negedge resetn";
+//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 assign test_wires = test_input[3:0];
@@ -2879,7 +2885,6 @@ end
 //| =========================================================
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
-
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
