@@ -109,7 +109,7 @@ Function generation
 __*** DSL is really cool ***__<br>
 __*** But Verilog is still the King ***__<br>
 __*** Connection is what you need ***__<br>
-__*** And Fexibility is reall helpful ***__<br>
+__*** And Fexibility is really helpful ***__<br>
 
 
 ## Thanks
