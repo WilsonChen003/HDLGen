@@ -301,7 +301,8 @@ end
   Connect /(rst.*)/ IPX_\${1};
 //:End
 
-//:	&ShowIntf("spi");
+//:	&ReadIPX("simple_spi.xml");
+//:	&ShowIPX("simple_spi.xml");
 
 //:Begin
  &Instance simple_spi.xml
@@ -372,7 +373,10 @@ end
   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
 //:End
 
-//: our $reset= " or negedge resetn";
+//:Begin
+  &AddIntfByJson("MyIntf.json");
+  &PrintIntfPort("-intf MyIntf");
+//:End  
 
 //:Begin
   my $sv = "
@@ -385,13 +389,11 @@ end
    endinterface	
 ";
 	&AddIntfBySV($sv);
-
 	&ShowIntf("test_if");
-
     &PrintIntfPort("-intf test_if -up"); 
-
 //:End
 
+//: our $reset= " or negedge resetn";
 
 assign test_wires = test_input[3:0];
 
@@ -410,7 +412,6 @@ end
 //: &eFunc::MemGen("-clk clk_m");
 //: &eFunc::FifoGen("-clk clk_m");
 //: &eFunc::AsyncGen("-clk clk_m");
-
 
 //: GenIPX("my_design.xml");
 

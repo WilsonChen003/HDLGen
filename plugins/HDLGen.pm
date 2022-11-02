@@ -844,8 +844,8 @@ sub Instance {
 #============================================================================================================#
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
-sub WantVlg {
-    my($VlgName)=$_[0];
+sub FindVlg {
+    my($VlgName)=shift;
     my $return_file="";
     File::Find::find( { wanted => sub {
 			  my $vlg_file = $File::Find::name;
@@ -857,7 +857,7 @@ sub WantVlg {
     if ($return_file ne "") {
         return($return_file);
     } else {
-       &HDLGenErr("WantVlg"," --- can NOT find src file of ($VlgName.v/sv) in all src paths!\n");
+       &HDLGenErr("FindVlg"," --- can NOT find src file of ($VlgName.v/sv) in all src paths!\n");
 	   exit(1);
     }
 }
@@ -865,20 +865,20 @@ sub WantVlg {
 #============================================================================================================#
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
-sub WantFile {
-    my($FName)=$_[0];
+sub FindFile {
+    my($FName)=shift;
     my $return_file="";
     File::Find::find( { wanted => sub {
 			  my $file = $File::Find::name;
-                          if ( $file  =~ /$FName$/ ) {
-			                 $return_file=$file; 
-                             return;
-                          }
-                          }} , @SRC_PATH);
-    if ($return_file ne "") {
+			  if ( $file  =~ /$FName$/ ) {
+				  $return_file=$file; 
+				  return;
+			  }
+		  }} , @SRC_PATH);
+  if ($return_file ne "") {
        return($return_file);
     } else {
-       &HDLGenErr("WantFile"," --- can NOT find src file of ($FName) in all src paths!\n");
+       &HDLGenErr("FindFile"," --- can NOT find src file of ($FName) in all src paths!\n");
 	   exit(1);
     }
 }
@@ -898,7 +898,7 @@ sub ParseInstVlg{
     $HDLGen_Top->{"$mod_inst"}->{"parameter"}="$mod_parm";
 
     my($in_vlg)="";
-    $in_vlg = &WantVlg($mod_name); 
+    $in_vlg = &FindVlg($mod_name); 
     if ( $in_vlg eq "" ) {
 	   die;
     }
@@ -959,7 +959,7 @@ sub ParseInstIPX{
 	&HDLGenInfo($SubName, " --- mod_inst=$mod_inst, mod_parm=$mod_parm, ipx_file=$ipx_file\n") if ($main::HDLGEN_DEBUG_MODE);
 
 
-	$ipx_file = &WantFile($ipx_file);
+	$ipx_file = &FindFile($ipx_file);
     my $IP_XACT = &ReadXML($ipx_file);
 	$mod_name = $IP_XACT->{"name"};
 
