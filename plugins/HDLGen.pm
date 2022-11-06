@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+		
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
@@ -17,6 +17,7 @@
 ##############################################################################################################
 ##############################################################################################################
 
+
 package HDLGen;
 
 #============================================================================================================#
@@ -26,7 +27,7 @@ package HDLGen;
 #============================================================================================================#
 #============================================================================================================#
 #============================================================================================================#
-#use strict; 
+#use strict;
 use Getopt::Long qw(GetOptions);
 use File::Basename;
 use File::Find;
@@ -40,37 +41,32 @@ $Term::ANSIColor::AUTORESET = 1;
 #========================================= End of Public Packages ===========================================#
 #============================================================================================================#
 
-### Add Script Dir as include paths, most for all PlugIn APIs ###
 use lib abs_path(dirname(__FILE__)) . '/plugins';
 
 
 #============================================================================================================#
 #========================= Inhouse Packages for internal developed functions ================================#
 #============================================================================================================#
-### all functions are included in "eFunc" package
 use eFunc;
 
 use HDLGenIpxIntf;
 
 
-### all viriables defines
 our(@SRC_PATH)= ("./"); 
 
 #============================================================================================================#
-our $HDLGen_Top=();
-our $CurInst =""; 
-our @VOUT=(); 
-#============================================================================================================#
-our $AUTO_DEF = "";
-our $AUTO_INST = "";
-
-our $AutoWires ; 
+our $CurMod_Top=();
+our $CurInst ="";
+our @VOUT=();
+our $AutoWires ;
 our $AutoRegs  ;
 our $AutoInstWires ;
-our $vout_autowirereg = 0;
+our $vout_autowirereg  = 0;
 our $vout_autoinstwire = 0;
 
-our $inc_updated = "0";
+our $AUTO_DEF  = "";
+our $AUTO_INST = "";
+
 
 my($escript_n)   = 0;
 my($epython_num) = 0;
@@ -89,9 +85,9 @@ my($PythonBegin) = 0;
 #============================================================================================================#
 #------ Update Inc Env ------#
 #============================================================================================================#
-sub SRC{		
+sub SRC{
   my $src_path = shift;
-  push @INC, $src_path;
+  push @SRC_PATH, $src_path;
 }
 
 #============================================================================================================#
@@ -115,11 +111,44 @@ sub HDLGenErr {
 
 
 #============================================================================================================#
-#=========================================== Sub Function ==================================================#
+#=========================================== Sub Functions ==================================================#
+#============================================================================================================#
+
+#============================================================================================================#
+#------ initlize all global vars ------#
+#============================================================================================================#
+sub Initial {
+
+    $CurMod_Top =();
+    $CurInst ="";
+    @VOUT=();
+    $AutoWires ;
+    $AutoRegs  ;
+    $AutoInstWires ;
+    $vout_autowirereg = 0;
+    $vout_autoinstwire = 0;
+
+    $AUTO_DEF = "";
+    $AUTO_INST = "";
+
+    $escript_n = 0;
+    $epython_num = 0;
+    $epython_f = "";
+    $PerlBegin = 0;
+    $PythonBegin = 0;
+
+    @SRC_PATH= ("./"); 
+}
+
+#============================================================================================================#
+#------ Process 1 file ------#
 #============================================================================================================#
 sub ProcessOneFile {
 	my $hdl_in = shift;
 	my $hdl_out= shift;
+
+	&Initial();
+
     open(V_IN, "<$hdl_in") or die "!!! Error: can't find input soruce file of ($hdl_in) \n\n";
     
     $hdl_in =~ /(\w+)\.(\w+)$/;
@@ -133,18 +162,22 @@ sub ProcessOneFile {
     }
     
     #============================================================================================================#
-    #===================================== Loop to handle 1 input file =====================================#
     #============================================================================================================#
+    #===================================== Main Loop to handle 1 input file =====================================#
+    #============================================================================================================#
+    #============================================================================================================#
+	my $port_psr_done = 0;
     while (<V_IN>) {
       if ($_ =~ /&?AutoDef/) {
     	  $AUTO_DEF = "AutoDef";
       	  push @VOUT, "//|: &AutoDef;\n";
     	  $vout_autowirereg = 1;
-         
+		  $port_psr_done = 1;
       } elsif ($_ =~ /&?AutoInstWire/) {
     	  $AUTO_INST = "AutoInstWire";
       	  push @VOUT, "//|: &AutoInstWire;\n";
     	  $vout_autoinstwire = 1;
+		  $port_psr_done = 1;
       } elsif ( ($PerlBegin eq "1") or ($PythonBegin eq "1") ) {
           &PerlGen($_,$escript_n);
       } elsif ($_ =~ /^\s*(\/\/)/ ) {
@@ -170,13 +203,24 @@ sub ProcessOneFile {
       } elsif ($_ =~ /^\s*&?Instance \s*(.*)\s*/) {
          &PerlGen($_,$escript_n);
       } else {
+		  my ($port,$name,$width) = ("","","0");
+		  if ($port_psr_done eq "0") {
+			  if ($_ =~ /^\s*(input|output|inout)/) {
+				  $port = $1;
+                  ($name,$width)=&ParsePorts("$_");
+				  $CurMod_Top->{"ports"}->{"$port"}->{"$name"} = $width;
+			  } elsif ($_ =~ /^\s*(wire|reg)/) {
+				  $port_psr_done = 1;
+			  }
+		  }
+
     	  if ( ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstWire") ) ) {
                 &ParseWireReg($_);
     	  }
     	  &RplcLine($_); 
           print VXP_OUT "###$_" if ($main::debug ne "");
       }
-    } ### end of while
+    }
     close(V_IN);
     close(VXP_OUT) if ($main::debug ne "");
     
@@ -186,6 +230,8 @@ sub ProcessOneFile {
     
     print STDOUT BOLD GREEN " ------<<<<<< $hdl_out generated >>>>>>------ \n\n";
 }
+#============================================================================================================#
+#============================================================================================================#
 #============================================================================================================#
 
 
@@ -226,14 +272,14 @@ sub PerlGen {
                  &HDLGenInfo($SubName, "--- current ep_done=$ep_done; current eline = $eline;  --- current array = @eperl_array") if ($main::HDLGEN_DEBUG_MODE);
                  push @eperl, @eperl_array;  
                  $eperl_script .= "$eline";
-				 $eline = ""; 
+				 $eline = "";
 		         last if ($ep_done eq "1");
 	          } else {
 		        $eline = "$_";
              }
              $eperl_script .= "$eline";
              push @eperl, "$_";  
-         } ### end of while
+         }
          &HDLGenInfo($SubName, "---current eperl_script = $eperl_script") if ($main::HDLGEN_DEBUG_MODE);
    } elsif ($eperl =~ /^\s*&?Instance \s*(.*)\s*/) {
 	   my ($eline,@eperl_array, $ep_done);
@@ -275,17 +321,17 @@ sub PerlGen {
        print VXP_OUT "###============= End of script_$eperl_num ==============\n\n";
      }
      
-     push @VOUT, "//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---\n";
+     push @VOUT, "//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---\n" ;
      foreach $eperl (@eperl) {
          push @VOUT, "//| $eperl";
      }
      my @ePerl_out= &EvalEperl($eperl_script);
-     push @VOUT, "//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---\n\n";
+     push @VOUT, "//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---\n\n" ;
 	 &RplcLine($exa_line);
 }
-#============================================================================================================#
+#================================================================================#
 #------ Perl Script Handler End ------#
-#============================================================================================================#
+#================================================================================#
 
 #================================================================================#
 #------ eval Perl Script and return an array ------#
@@ -372,9 +418,9 @@ sub CallCmd {
   }
 }
 
-#============================================================================================================#
-#------ eval Python Script and return an array ------#
-#============================================================================================================#
+#================================================================================#
+#------ eval Perl Script and return an array ------#
+#================================================================================#
 sub EvalEpython {
   my ($ePython) = shift;
   my ($CmrErr);
@@ -387,7 +433,7 @@ sub EvalEpython {
   close(EPYTHON);
 
   open(PTMP,">.epython.out") or die "!!! Error: can't open ./.epython.out !!!\n";
-  open(STDOUT, ">&PTMP"); 
+  open(STDOUT, ">&PTMP");
   my $CMdErr= system("python $epython_f");
   print STDOUT " !!!ePython Error when run script:\n $ePython\n CmdErr:\n  $@\n" if ($@);
   close(STD_OUT);
@@ -460,32 +506,30 @@ sub PythonGen {
      print VXP_OUT "###============= End of script_$epython_num ==============\n\n";
    }
 
-   push @VOUT, "///: ePython generated code Begin (DO NOT EDIT BELOW!)\n";
+   push @VOUT, "///: ePython generated code Begin (DO NOT EDIT BELOW!)\n" ;
    foreach $epython (@epython) {
        push @VOUT, "//#$epython";
    }
    my $ePython_out= &EvalEpython($epython_script);
    push @VOUT, $ePython_out;
-   push @VOUT, "///# ePython generated code End (DO NOT EDIT ABOVE!)\n\n";
+   push @VOUT, "///# ePython generated code End (DO NOT EDIT ABOVE!)\n\n" ;
    push @VOUT, "$exa_line";
 }
-#============================================================================================================#
-#        Python Script Handler end
-#============================================================================================================#
+#================================================================================#
+#================================================================================#
 	
 #============================================================================================================#
 #------ Parse Verilog Wire/Reg define ------#
-#------ FIXME: unmature or unperfect yet, has bugs so far by 2022/Nov  ------#
 #============================================================================================================#
 sub ParseWireReg {
    my($SubName)="ParseWireReg";
    my($vlg_line) = shift;
 
    if ($vlg_line =~ /^\s*reg/ ) {
-      if ($vlg_line !~ /\[/) { 
+      if ($vlg_line !~ /\[/) {
 		 if ( $vlg_line =~ /reg\s*(\w*)/) {
 	         my $reg_sig = $1;
-			 $AutoRegs->{"$reg_sig"}->{"exists"} = "1";
+			 $CurMod_Top->{"regs"}->{"$reg_sig"} = "1";
 		 } else {
            &HDLGenErr($SubName," reg signal define($vlg_line) has no signal name! ") if ($main::HDLGEN_DEBUG_MODE);
 		 }
@@ -493,7 +537,7 @@ sub ParseWireReg {
 		 if ( $vlg_line =~ /reg\s*\[(.*)\]\s*(\w*)/) {
 	         my $reg_wd = $1;
 	         my $reg_sig = $2;
-			 $AutoRegs->{"$reg_sig"}->{"exists"} = "1";
+			 $CurMod_Top->{"regs"}->{"$reg_sig"} = "$reg_wd";
 		 } else {
            &HDLGenErr($SubName," reg signal define($vlg_line) has no signal name! ") if ($main::HDLGEN_DEBUG_MODE);
 	     }
@@ -504,14 +548,14 @@ sub ParseWireReg {
       if ($vlg_line !~ /\[/) {
 		 if ( $vlg_line =~ /wire\s*(\w*)/) {
 	         my $reg_sig = $1;
-			 $AutoWires->{"$reg_sig"}->{"exists"} = "1";
+			 $CurMod_Top->{"wires"}->{"$reg_sig"} = "1";
 		 } else {
            &HDLGenErr($SubName," wire signal define($vlg_line) has no signal name! ") if ($main::HDLGEN_DEBUG_MODE);
 		 }
-	  } else { 
+	  } else {
 		 if ( $vlg_line =~ /wire\s*\[(.*)\]\s*(\w*)/) {
 	         my $reg_sig = $2;
-			 $AutoWires->{"$reg_sig"}->{"exists"} = "1";
+			 $CurMod_Top->{"wires"}->{"$reg_sig"} = "$reg_wd";
 		 } else {
            &HDLGenErr($SubName," wire signal define($vlg_line) has no signal name! ") if ($main::HDLGEN_DEBUG_MODE);
 	     }
@@ -523,7 +567,7 @@ sub ParseWireReg {
       if ( ($vlg_line =~ /(\w*)\s*<=\s*(\d+)\'/) or ($vlg_line =~ /(\w*)\s*<=\s*\{?(\d+)\{/) ) {
  	    my $reg_sig = $1;
  	    my $reg_wd = $2 - 1;
- 	    return if (exists($AutoRegs->{"$reg_sig"}->{"exists"}));
+ 	    return if (exists($CurMod_Top->{"regs"}->{"$reg_sig"}));
  	    return if (exists($AutoRegs->{"$reg_sig"}->{"done"}));
  	    if ( $reg_wd eq "0" ) {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "1";
@@ -536,13 +580,13 @@ sub ParseWireReg {
  	    my $reg_right = $2;
  	    my $reg_wd = 0;
  	    $reg_wd = ":" if ($reg_sig =~ /\[.*\]/);
- 	    return if (exists($AutoRegs->{"$reg_sig"}->{"exists"}));
+ 	    return if (exists($CurMod_Top->{"regs"}->{"$reg_sig"}));
  	    return if (exists($AutoRegs->{"$reg_sig"}->{"done"}));
  	    return if ( $reg_right =~ /\{/);
  	    if ( ($reg_sig =~ /(\w+)\[(.*)\]/) or ($reg_right =~ /(\w+)\[(.*)\]/) ) {
  	        $reg_sig = $1 if ($reg_wd ne "0");
  	  	    $reg_wd = $2;
- 	        return if (exists($AutoRegs->{"$reg_sig"}->{"exists"}));
+ 	        return if (exists($CurMod_Top->{"regs"}->{"$reg_sig"}));
  	        if ( !exists($AutoRegs->{"$reg_sig"}) ) {
  	  		    $AutoRegs->{"$reg_sig"}->{"width"} = "$reg_wd";
  	  	    } else {
@@ -569,14 +613,14 @@ sub ParseWireReg {
  	      $AutoRegs->{"$reg_sig"}->{"width"} = "1";
  	    }
 	    return;
-      } 
+      }
 
       if ($vlg_line =~ /assign\s*(\S*)\s*=\s*(\S*)/ ) {
          my $reg_sig = $1;
          my $reg_right = $2;
          my $reg_wd = 0;
          $reg_wd = ":" if ($reg_sig =~ /\[.*\]/);
-         return if (exists($AutoWires->{"$reg_sig"}->{"exists"}));
+ 	     return if (exists($CurMod_Top->{"wires"}->{"$reg_sig"}));
  	     return if ( $reg_right =~ /\{/);
          if ( ($reg_sig =~ /(\w*)\[(.*)\]/) or ($reg_right =~ /(\w*)\[(.*)\]/) ) {
              $reg_sig = $1 if ($reg_wd ne "0");
@@ -606,17 +650,17 @@ sub ParseWireReg {
         return;
      }
 
-  } 
+  }
 
 }
 
 #============================================================================================================#
 #------ Print auto wire & reg defines ------#
+#------ FIXME: unmature or unperfect yet, has bugs so far by 2022/09 ! ------#
 #============================================================================================================#
 sub  PrintAutoSigs {
    my($SubName)="PrintAutoSigs";
    my $sig_length = 0;
-   ### Wires
    for my $sig_name (sort(keys(%$AutoWires))) {
        $sig_length = length($sig_name) if (length($sig_name) > $sig_length);
    }
@@ -670,7 +714,7 @@ sub  PrintAutoInstWires {
    $sig_length +=3;
 
    for my $inst (sort(keys(%$auto_inst))) {
-     print  "// ------ wires of Instance: $inst ------\n";
+     print  "// ------ wires of Instance: $inst ------\n" ;
      my $cur_inst = $auto_inst->{$inst};
      for my $sig_name (sort(keys(%$cur_inst))) {
          next if ($sig_name eq "");
@@ -699,11 +743,6 @@ sub  PrintAutoInstWires {
 #============================================================================================================#
 #------ Instance args Handler ------#
 #============================================================================================================#
-#--- &Instance module_name 
-#---     #( .parameter_name(para_value), 
-#---        .parameter_name(para_value)
-#---        ) 
-#---      inst_name;
 sub InstanceParser {
   my $SubName = "InstanceParser";
   my($eline) = shift;
@@ -722,13 +761,13 @@ sub InstanceParser {
       while (<V_IN>) {
 		  $inst_arg .= $_;
           push @eperl_array, "$_";  
-		  last if ( $_ =~ /^\s*\)\s*$/ ); 
+		  last if ( $_ =~ /^\s*\)\s*$/ );
 	  }
 	  my $next_line = <V_IN>;
-	  $next_line =~ s/\s//g; 
+	  $next_line =~ s/\s//g;
       push @eperl_array, "//| $next_line";  
-	  $next_line =~ s/;//; 
-	  $inst_arg .= $next_line; 
+	  $next_line =~ s/;//;
+	  $inst_arg .= $next_line;
   }
   $eline = "&Instance(\"$inst_arg\");\n";
   $eperl_script .= "$eline";
@@ -781,13 +820,6 @@ sub InstanceParser {
 #============================================================================================================#
 #------ Module Instance Handler ------#
 #============================================================================================================#
-#--- &Instance module_name u_mod_int;
-#--- &Instance module_name #( .parameter_name(para_value), .parameter_name(para_value)) inst_name (port map);
-#--- &Instance module_name 
-#---     #( .parameter_name(para_value), 
-#---        .parameter_name(para_value)
-#---        ) 
-#---      inst_name;
 sub Instance {
   my($inst_line) = shift;
   my $mod_name = "";
@@ -804,6 +836,7 @@ sub Instance {
 	  chomp($mod_inst);
 	  $mod_parm  = join("\n",@line_array);
   } elsif ( $inst_line =~ /\S+\s*$/ ) {
+      ###$inst_line =~ /(\S+)\s+(#\(.+\))?\s+(\S+)/;
       if ($inst_line =~ /#\(.+\)/) {
           $inst_line =~ /(\S+)\s+(#\(.+\))\s+(\S+)/;
           $mod_name = $1;
@@ -835,7 +868,7 @@ sub Instance {
   } else {
      &ParseInstVlg($mod_inst,$mod_parm,$mod_name);
   }
-  $HDLGen_Top->{"$CurInst"}->{"connect_list"}=0; 
+  $CurMod_Top->{"$CurInst"}->{"connect_list"}=0;
   push @VOUT, "$mod_name $mod_parm $mod_inst (\n";
 
 }
@@ -845,10 +878,10 @@ sub Instance {
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindVlg {
-    my($VlgName)=shift;
+    my($VlgName)=$_[0];
     my $return_file="";
     File::Find::find( { wanted => sub {
-			  my $vlg_file = $File::Find::name;
+			              my $vlg_file = $File::Find::name;
                           if ( $vlg_file  =~ /$VlgName(.v|.sv)$/ ) {
 			                 $return_file=$vlg_file; 
                              return;
@@ -857,7 +890,7 @@ sub FindVlg {
     if ($return_file ne "") {
         return($return_file);
     } else {
-       &HDLGenErr("FindVlg"," --- can NOT find src file of ($VlgName.v/sv) in all src paths!\n");
+       &HDLGenErr("FindVlg"," --- can NOT find src file of ($VlgName) in all src paths!\n");
 	   exit(1);
     }
 }
@@ -866,16 +899,16 @@ sub FindVlg {
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindFile {
-    my($FName)=shift;
+    my($FName)=$_[0];
     my $return_file="";
     File::Find::find( { wanted => sub {
-			  my $file = $File::Find::name;
-			  if ( $file  =~ /$FName$/ ) {
-				  $return_file=$file; 
-				  return;
-			  }
-		  }} , @SRC_PATH);
-  if ($return_file ne "") {
+			              my $file = $File::Find::name;
+                          if ( $file  =~ /$FName$/ ) {
+			                 $return_file=$file; 
+                             return;
+                          }
+                          }} , @SRC_PATH);
+    if ($return_file ne "") {
        return($return_file);
     } else {
        &HDLGenErr("FindFile"," --- can NOT find src file of ($FName) in all src paths!\n");
@@ -887,20 +920,20 @@ sub FindFile {
 #============================================================================================================#
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
-###&ParseInstVlg($mod_inst,$mod_parm,$mod_name);
 sub ParseInstVlg{
     my($SubName)="ParseInstVlg";
     my($mod_inst)=shift;
     my($mod_parm)=shift;
     my($mod_name)=shift;
 
-    $HDLGen_Top->{"$mod_inst"}->{"module"}="$mod_name";
-    $HDLGen_Top->{"$mod_inst"}->{"parameter"}="$mod_parm";
+    $CurMod_Top->{"$mod_inst"}->{"module"}="$mod_name";
+    $CurMod_Top->{"$mod_inst"}->{"parameter"}="$mod_parm";
 
     my($in_vlg)="";
     $in_vlg = &FindVlg($mod_name); 
     if ( $in_vlg eq "" ) {
 	   die;
+    } else {
     }
     open(VLG_IN, "<$in_vlg") or die " !!! (&ParseInstVlg): Verilog/SV source file ($in_vlg.v/sv) cannot be open !!! \n";
     
@@ -916,7 +949,7 @@ sub ParseInstVlg{
 	    } elsif ( ($_ =~/\);/) && ($module_start eq "1") ) {
 	        $module_end = "1";
 	        &HDLGenInfo($SubName, " --- found ); on cur line:$_") if ($main::HDLGEN_DEBUG_MODE);
-	        last if (exists $HDLGen_Top->{"$mod_inst"}->{"input"});
+	        last if (exists $CurMod_Top->{"$mod_inst"}->{"input"});
         } elsif ( ($_ =~ /^\s*always/) or ($_ =~ /^s*assign/) ) {
 	        last; 
 	    } elsif ($_ =~ /endmodule/ ) {
@@ -930,17 +963,17 @@ sub ParseInstVlg{
 		   if ($i_sig =~ /,/) {
 	              my @p_array = split(",",$i_sig);
 	              foreach my $pp (@p_array) {
-	                  $HDLGen_Top->{"$mod_inst"}->{"input"}->{"$pp"}->{"width"}="$p_width";
+	                  $CurMod_Top->{"$mod_inst"}->{"input"}->{"$pp"}->{"width"}="$p_width";
 	              }
                } else {
-	              $HDLGen_Top->{"$mod_inst"}->{"input"}->{"$i_sig"}->{"width"}="$p_width";
+	              $CurMod_Top->{"$mod_inst"}->{"input"}->{"$i_sig"}->{"width"}="$p_width";
                }
         } elsif ($_ =~ /^\s*,?output/) {
 	       &HDLGenInfo($SubName, " --- find output line as: $_") if ($main::HDLGEN_DEBUG_MODE);
 	       my($o_sig,$p_width)=&ParsePorts("$_");
-	       $HDLGen_Top->{"$mod_inst"}->{"output"}->{"$o_sig"}->{"width"}="$p_width";
+	       $CurMod_Top->{"$mod_inst"}->{"output"}->{"$o_sig"}->{"width"}="$p_width";
 	    }
-     } 
+     }
      close(VLG_IN);
 }
 #============================================================================================================#
@@ -948,7 +981,6 @@ sub ParseInstVlg{
 #============================================================================================================#
 #------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
-###&ParseInstIPX($mod_inst,$mod_parm,$mod_name);
 sub ParseInstIPX{
     my($SubName)="ParseInstIPX";
     my($mod_inst)=shift;
@@ -1010,14 +1042,14 @@ sub ParseInstIPX{
 		   $p_width = "1";
 	   }
 		if ($port_hash->{"direction"} =~ /in/) {
-	       $HDLGen_Top->{"$mod_inst"}->{"input"}->{"$port"}->{"width"}="$p_width";
+	       $CurMod_Top->{"$mod_inst"}->{"input"}->{"$port"}->{"width"}="$p_width";
 	   } elsif ($port_hash->{"direction"} =~ /out/) {
-	       $HDLGen_Top->{"$mod_inst"}->{"output"}->{"$port"}->{"width"}="$p_width";
+	       $CurMod_Top->{"$mod_inst"}->{"output"}->{"$port"}->{"width"}="$p_width";
 	   }
 	}
 
-    $HDLGen_Top->{"$mod_inst"}->{"module"}="$mod_name";
-    $HDLGen_Top->{"$mod_inst"}->{"parameter"}="$mod_parm";
+    $CurMod_Top->{"$mod_inst"}->{"module"}="$mod_name";
+    $CurMod_Top->{"$mod_inst"}->{"parameter"}="$mod_parm";
 	return($mod_name);
 }
 #============================================================================================================#
@@ -1025,8 +1057,6 @@ sub ParseInstIPX{
 #============================================================================================================#
 #------ Module Instance Handler ------#
 #============================================================================================================#
-#--- &Connect  -final -up <-interface|input|output> AHB3  ${1}_suffix; --- final==conn can't be overrided
-#--- &ConnectDone --- unneccesary 
 sub Connect {
   my($SubName)="Connect";
   my ($call) = join (" ", @_);
@@ -1038,7 +1068,7 @@ sub Connect {
   my ($rule) = "";
   my ($intf) = "";
   my ($final) = "0";
-  my ($up) = "0"; 
+  my ($up) = "0";
   if ($call =~ s/-final//) {
      $final = 1;
   }
@@ -1063,8 +1093,8 @@ sub Connect {
       &HDLGenErr($SubName," --- syntax is wrong @: &Connect $call\n");
   }
 
-  if ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) { 
-    $rule = "mapping";
+  if ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) {
+    $rule = "exact";
   } elsif ($srch =~ /^\//) {
     $rule = "s".$srch.$rplc."/";
   } else {
@@ -1072,15 +1102,17 @@ sub Connect {
     $rule = "s/${conn_new}/${rplc}/";
   }
 
-  my $conn_item = $HDLGen_Top->{"$CurInst"}->{"connect_list"} + 1;
-  $HDLGen_Top->{"$CurInst"}->{"connect_list"}=$conn_item;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{srch} = $srch;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{rplc} = $rplc;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{type} = $type;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{intf} = $intf;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{rule} = $rule;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{final} = $final;
-  $HDLGen_Top->{"$CurInst"}->{connect}->{$conn_item}->{up} = $up;
+  my $conn_item = $CurMod_Top->{"$CurInst"}->{"connect_list"} + 1;
+  $CurMod_Top->{"$CurInst"}->{"connect_list"}=$conn_item;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item} = {};
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{srch} = $srch;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{rplc} = $rplc;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{type} = $type;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{intf} = $intf;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{rule} = $rule;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{used} = 0;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{final} = $final;
+  $CurMod_Top->{"$CurInst"}->{connect}->{$conn_item}->{up} = $up;
 
 }
 #============================================================================================================#
@@ -1091,16 +1123,16 @@ sub Connect {
 sub ConnectDone {
   my($SubName)="ConnectDone";
   my(@AllPorts)=();
-  my($CI)=$HDLGen_Top->{"$CurInst"};
+  my($CI)=$CurMod_Top->{"$CurInst"};
   my($type)="";
  
-  foreach my $in_p (keys %{$HDLGen_Top->{"$CurInst"}->{"input"}}) {
+  foreach my $in_p (keys %{$CurMod_Top->{"$CurInst"}->{"input"}}) {
 	push @AllPorts, $in_p;
   }
-  foreach my $out_p (keys %{$HDLGen_Top->{"$CurInst"}->{"output"}}) {
+  foreach my $out_p (keys %{$CurMod_Top->{"$CurInst"}->{"output"}}) {
 	push @AllPorts, $out_p;
   }
-  foreach my $inout (keys %{$HDLGen_Top->{"$CurInst"}->{"inout"}}) {
+  foreach my $inout (keys %{$CurMod_Top->{"$CurInst"}->{"inout"}}) {
 	push @AllPorts, $inout;
   }
 
@@ -1122,10 +1154,9 @@ sub ConnectDone {
                 &HDLGenInfo($SubName, " --- current connect_item == $conn\n") if ($main::HDLGEN_DEBUG_MODE);
                 my $IC = $CI->{"connect"}->{$conn};
                 next if ( ($IC->{type} ne "port") && ($IC->{type} ne "interface") && ($IC->{type} ne "$type") );
-                # rule
                 my $used = 0;
                 if (exists $IC->{rule}) {
-                  if ($IC->{rule} eq "mapping") {
+                  if ($IC->{rule} eq "exact") {
                     if ($IC->{srch} eq $port) {
                       $conn_new = $IC->{rplc}; 
                       $used = 1;
@@ -1167,7 +1198,6 @@ sub ConnectDone {
 
 }
 #============================================================================================================#
-#*************************************************************************************#
 
 
 #============================================================================================================#
@@ -1175,12 +1205,12 @@ sub ConnectDone {
 #============================================================================================================#
 sub PrintConnect {
   my($SubName)="PrintConnect";
-  my($CI)=$HDLGen_Top->{"$CurInst"};
+  my($CI)=$CurMod_Top->{"$CurInst"};
   my($type)="";
   my @wire_array = ();
   my $first_line = 1;
 
-  if ( $AUTO_INST eq "" ) { 
+  if ( $AUTO_INST eq "" ) {
      my($inst_w_file)=".$CurInst.wires";
      open(INST_WIRE, ">$inst_w_file") or die " !!! (PrintConnect: file ($inst_w_file) cannot be created!!! \n";
   }
@@ -1342,7 +1372,7 @@ sub PrintRTLHdr {
 #============================================================================================================#
 sub PrintVOUT {
 	select(V_OUT);
-	&PrintRTLHdr();
+	&PrintRTLHdr() ;
 	foreach my $line (@VOUT) {
 		if ($vout_autowirereg eq "1" ) {
 			if ($line eq  "//|: &AutoDef;\n") {
@@ -1360,12 +1390,11 @@ sub PrintVOUT {
 		       print("$line");
 		   }
 	    } elsif ($vout_autoinstwire eq "1") {
-			if ($line eq  "//|: &AutoInstWire;\n") { ### Question: should "eq" quick than "=~"?
+			if ($line eq  "//|: &AutoInstWire;\n") {
 			   $vout_autoinstwire = 0;
 		       print("$line");
   	           print "//| ====================================================================================\n";
   	           print "//| ======== Below Wires are for all &Instance modules by &AutoInstWire  ===============\n";
-  	           print "//| ============ these definitions may be not correct(for reg signals)   ===============\n";
   	           print "//| ============ you may need to manually update/correct                 ===============\n";
                &PrintAutoInstWires();
   	           print "//| ========================= End of Instance Wires/Regs ===============================\n";
@@ -1380,7 +1409,6 @@ sub PrintVOUT {
 }
 
 #============================================================================================================#
-### End of Package ####
 #============================================================================================================#
 1;
 
