@@ -6,7 +6,6 @@
   This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
   HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
 
-
 ## License 
                          Copyright 2022 Wilson Chen                                                     
             Licensed under the Apache License, Version 2.0 (the "License");                            
@@ -75,6 +74,10 @@ Function generation
    	`HDLGen.pl -usage`
 
 ### NOTE: 
+* Verilog-mode for EMACS or VIM is powerful to do AUTO Port,Reg/Wire, and Instance, but it has some limitations or inconvenient things:<br>
+           - mostly used in GUI mode but no batch mode<br>
+	   - Instance port/wire name change is manual hard mapping but no Regular Express<br>
+	   - No Interface a/o IPXACT support<br>
 * this tool only test on Ubuntu 18.04.05, but should work on any system have Perl installed
 * several Perl Modules are required, can refer to the package head in source code, here listed:<br>
                         Getopt<br>
