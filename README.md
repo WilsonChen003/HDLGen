@@ -66,7 +66,7 @@ Function generation
     ├── doc                       # usage introduction 
 
 ## Usage
-   It's simple as: <br>
+   It's as simple as: <br>
    `cd test` <br>
    `../HDLGen.pl -i NV_NVDLA_CMAC_CORE_mac.src` or `../HDLGen.bin -i NV_NVDLA_CMAC_CORE_mac.src` <br>
    or `../HDLGen.pl -f ./src.list`<br>
@@ -75,7 +75,7 @@ Function generation
 
 ### NOTE: 
 * Verilog-mode for EMACS or VIM is very powerful to do AUTO Port,Reg/Wire, and Instance, but it has some limitations or inconvenient things:<br>
-             --- mostly used in GUI mode but no batch mode -- ***seems NOT TURE true*** <br>
+             --- mostly used in GUI mode but no batch mode -- ***seems NOT TURE*** <br>
 	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted***<br>
 	     --- No Interface a/o IPXACT support --- ***TRUE*** <br>
 	     --- no function generation for inhouse/customer design
