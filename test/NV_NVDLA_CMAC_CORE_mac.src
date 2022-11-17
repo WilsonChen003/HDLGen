@@ -29,7 +29,7 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_data       //|< i
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
-  ,wt_actv_pvld       //|< i
+  //,wt_actv_pvld       //|< i --- test for width-learning
   ,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
@@ -58,7 +58,7 @@ input           dat_pre_stripe_st;
 input  [1023:0] wt_actv_data;
 input    [63:0] wt_actv_nan;
 input   [127:0] wt_actv_nz;
-input   [103:0] wt_actv_pvld;
+//input   [103:0] wt_actv_pvld; //--- test for width-learning
 input   [191:0] wt_sd_exp;
 input    [63:0] wt_sd_mask;
 input           wt_sd_pvld;
@@ -69,7 +69,7 @@ output          mac_out_pvld;
 // ****** these 2 Auto function must be before all wire or reg define ! ******
 // ========================================================================================
 //:AutoDef;
-//:AutoInstWire
+//:AutoInstSig;
 // ========================================================================================
 
 wire     [65:0] dbg_sign;
@@ -171,7 +171,7 @@ end
 //:Begin
     for my $i (0..63) {
 		my $ii = sprintf("%02d",$i);
-	    print STDOUT " ---\$ii == $ii ---\n";
+	    #print STDOUT " ---\$ii == $ii ---\n";
 	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
           &Connect exp_sft      exp_sft_$ii;
            Connect op_a_dat     wt_actv_data${i};
