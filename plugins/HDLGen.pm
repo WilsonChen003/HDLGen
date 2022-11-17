@@ -424,20 +424,19 @@ sub CallCmd {
 sub EvalEpython {
   my ($ePython) = shift;
   my ($CmrErr);
-  my $epython_f = ".epython.py";
+  my $epython_f = "./epython.py";
   open(EPYTHON,">$epython_f") or die "!!! Error: temp file of $epython_f can\'t create!\n";
-  print EPYTHON "\n###=========== Begin script_$epython_num ==============\n";
   print EPYTHON "$ePython";
-  print EPYTHON "###============= End of script_$epython_num ==============\n\n";
   system("chmod +x $epython_f");
   close(EPYTHON);
 
-  open(PTMP,">.epython.out") or die "!!! Error: can't open ./.epython.out !!!\n";
-  open(STDOUT, ">&PTMP");
-  my $CMdErr= system("python $epython_f");
-  print STDOUT " !!!ePython Error when run script:\n $ePython\n CmdErr:\n  $@\n" if ($@);
-  close(STD_OUT);
-  open(STDOUT,">>/dev/tty");
+  ### FIXME: here si ugly so far, need to use Inline::Python
+  #open(PTMP,">.epython.out") or die "!!! Error: can't open ./.epython.out !!!\n";
+  #open(STDOUT, ">&PTMP");
+  my $CMdErr= system("$epython_f > .epython.out");
+  print STDOUT " !!!ePython Error when run script:\n $ePython\n CmdErr:\n  $CmdErr\n" if ($CmdErr);
+  #close(STD_OUT);
+  #open(STDOUT,">>/dev/tty");
   open(PTMP,"<.epython.out");
   my $epython_out = do { local $/; <PTMP> };
   close(PTMP);
@@ -460,7 +459,7 @@ sub PythonGen {
    my($py_pre)="";
 
    $epython =~ s/\s*\/\/#//;
-   $epython_script .= "#!/usr/bin/env python\n";
+   $epython_script .= "#!/usr/bin/env python3\n";### FIXME: python is difficult as there 2 and 3 on different OS or version
    $epython_script .= "import os\n";
    $epython_script .= "import sys\n";
    $epython_script .= "import math\n";
