@@ -28,6 +28,7 @@ RTL stitch
    * Connect  module's port to wires with native regular express
    * Automatically generate instance's wires definitions
    * Automatically generate reg or wire definictions(not perfect yet) 
+   * Warning out any Instance signals which has no connection
    * Use embedded native Perl or Python to generate(print) whatever code you want
 
 Interface manipulate
@@ -77,10 +78,11 @@ Function generation
 * Verilog-mode for EMACS or VIM is very powerful to do AUTO Port,Reg/Wire, and Instance, but it has some limitations or inconvenient things:<br>
              --- mostly used in GUI mode but no batch mode -- ***seems NOT TURE*** <br>
 	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted***<br>
+	     --- No Warning for unconnected instance signals<br>
 	     --- No Interface a/o IPXACT support<br>
 	     --- No embedded Perl/Python support<br>
 	     --- no function generation for inhouse/customer design
-* this tool only test on Ubuntu 18.04.05, but should work on any system have Perl installed
+* this tool only test on Ubuntu 18.04.05 & 20.04.5 with Perl-5.34, but should work on any system have Perl5 installed
 * several Perl Modules are required, can refer to the package head in source code, here listed:<br>
                         Getopt<br>
                         JSON<br>
@@ -93,7 +95,7 @@ Function generation
                         Term::ANSIColor<br>
 			
 **Suggestion:**<br>
- You can first run HDLGen.pm, then install any package according to the error message,<br>
+ You can first run HDLGen.pl, then install any package according to the error message,<br>
  or just run HDLGen.bin for results
 	         
 
