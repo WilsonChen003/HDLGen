@@ -83,6 +83,7 @@ Function generation
 	     --- No embedded Perl/Python support<br>
 	     --- no function generation for inhouse/customer design
 * this tool only test on Ubuntu 18.04.05 & 20.04.5 with Perl-5.34, but should work on any system have Perl5 installed
+* Python script only support python3 but no python2.x (one more reason for why not Python ;-)  )            
 * several Perl Modules are required, can refer to the package head in source code, here listed:<br>
                         Getopt<br>
                         JSON<br>
