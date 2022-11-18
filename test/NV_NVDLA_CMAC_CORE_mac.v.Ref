@@ -37,7 +37,7 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_data       //|< i
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
-  ,wt_actv_pvld       //|< i
+  //,wt_actv_pvld       //|< i --- test for width-learning
   ,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
@@ -66,7 +66,7 @@ input           dat_pre_stripe_st;
 input  [1023:0] wt_actv_data;
 input    [63:0] wt_actv_nan;
 input   [127:0] wt_actv_nz;
-input   [103:0] wt_actv_pvld;
+//input   [103:0] wt_actv_pvld; //--- test for width-learning
 input   [191:0] wt_sd_exp;
 input    [63:0] wt_sd_mask;
 input           wt_sd_pvld;
@@ -82,7 +82,12 @@ output          mac_out_pvld;
 //| ============ these definitions may be not perfect or correct   =================
 //| ============ you may need to manually update/correct           =================
 //| ================================================================================
-wire [3:0]        test_wires   ;
+wire [3:0]        test_input   ;
+wire              test_wire0   ;
+wire              test_wire1   ;
+wire              test_wire2   ;
+wire              test_wire3   ;
+wire              test_wires   ;
 reg  [64:0]       cfg_is_int8_d0   ;
 reg               cfg_reg_en_d0    ;
 reg               mac_out_pvld     ;
@@ -90,10 +95,9 @@ reg               q                ;
 //| ============================= End of Auto Wires/Regs ===========================
 //| ================================================================================
 
-//|: &AutoInstWire;
+//|: &AutoInstSig;
 //| ====================================================================================
-//| ======== Below Wires are for all &Instance modules by &AutoInstWire  ===============
-//| ============ these definitions may be not correct(for reg signals)   ===============
+//| ======== Below Wires are for all &Instance modules by &AutoInstSig  ===============
 //| ============ you may need to manually update/correct                 ===============
 // ------ wires of Instance: my_spi & my_spi ------
 wire              IPX_clk_i                    ;
@@ -257,8 +261,8 @@ wire [15:0]       wt_actv_data0                ;
 wire [1:0]        wt_actv_nz00                 ;
 // ------ wires of Instance: u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ------
 wire              cfg_is_int8                  ;
-wire              dat_actv_pvld                ;
-wire              wt_actv_pvld                 ;
+wire [63:0]       dat_actv_pvld                ;
+wire [63:0]       wt_actv_pvld                 ;
 // ------ wires of Instance: u_mul_1 ------
 wire [15:0]       dat_actv_data1               ;
 wire [1:0]        dat_actv_nz1                 ;
@@ -796,6 +800,585 @@ wire [1:0]        test_reg_test_filed1         ;
 //| ========================= End of Instance Wires/Regs ===============================
 //| ====================================================================================
 
+// ======================================================================
+// !!!!!!!!!!!!!!!!!!!!!! Warning! Warining! Warning ! !!!!!!!!!!!!!!!!!!
+// !!!!!!!!! below signals are Instance's ports no connection ! !!!!!!!!!
+// !!!!!!!!! please carefully check if they're correct or need fix !!!!!!
+// ======================================================================
+// ---------------- instance : my_spi & my_spi ---------------
+//-:   input        [1]                stb_i
+//-:   input        [1]                 we_i
+//-:   input        [1]            IPX_rst_i
+//-:   input        [1]           MISO_I_IPX
+//-:  output        [1]           MOSI_O_IPX
+//-:   input        [1]                cyc_i
+//-:  output        [1]                ack_o
+//-:   input        [1]            IPX_clk_i
+//-:  output        [1]             SS_O_IPX
+//-:   input      [7:0]                dat_i
+//-:  output        [1]               inta_o
+//-:  output        [1]            SCK_O_IPX
+//-:   input      [2:0]                adr_i
+//-:  output      [7:0]                dat_o
+// ---------------- instance : u_exp ---------------
+//-:   input        [1]         dat_pre_pvld
+//-:   input        [1]    dat_pre_stripe_st
+//-:   input        [1]           wt_sd_pvld
+//-:   input    [191:0]          dat_pre_exp
+//-:   input    [191:0]            wt_sd_exp
+//-:   input        [1]   dat_pre_stripe_end
+//-:   input     [63:0]         dat_pre_mask
+//-:   input     [63:0]           wt_sd_mask
+// ---------------- instance : u_mul_0 ---------------
+//-:   input     [15:0]        wt_actv_data0
+//-:  output     [31:0]             res_a_00
+//-:   input      [1:0]         dat_actv_nz0
+//-:  output      [7:0]            res_tag_0
+//-:   input     [15:0]       dat_actv_data0
+//-:  output     [31:0]             res_b_00
+//-:   input      [1:0]         wt_actv_nz00
+// ---------------- instance : u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ---------------
+//-:   input     [63:0]        dat_actv_pvld
+//-:   input     [63:0]         wt_actv_pvld
+//-:   input        [1]          cfg_is_int8
+// ---------------- instance : u_mul_1 ---------------
+//-:   input      [1:0]         wt_actv_nz01
+//-:  output      [7:0]            res_tag_1
+//-:  output     [31:0]             res_b_01
+//-:   input     [15:0]       dat_actv_data1
+//-:   input     [15:0]        wt_actv_data1
+//-:   input      [1:0]         dat_actv_nz1
+//-:  output     [31:0]             res_a_01
+// ---------------- instance : u_mul_10 ---------------
+//-:   input      [1:0]         wt_actv_nz10
+//-:   input      [1:0]        dat_actv_nz10
+//-:   input     [15:0]       wt_actv_data10
+//-:  output     [31:0]             res_b_10
+//-:   input     [15:0]      dat_actv_data10
+//-:  output     [31:0]             res_a_10
+//-:  output      [7:0]           res_tag_10
+// ---------------- instance : u_mul_11 ---------------
+//-:  output     [31:0]             res_a_11
+//-:   input     [15:0]      dat_actv_data11
+//-:   input     [15:0]       wt_actv_data11
+//-:   input      [1:0]        dat_actv_nz11
+//-:  output      [7:0]           res_tag_11
+//-:   input      [1:0]         wt_actv_nz11
+//-:  output     [31:0]             res_b_11
+// ---------------- instance : u_mul_12 ---------------
+//-:   input     [15:0]       wt_actv_data12
+//-:  output      [7:0]           res_tag_12
+//-:  output     [31:0]             res_a_12
+//-:   input      [1:0]         wt_actv_nz12
+//-:   input      [1:0]        dat_actv_nz12
+//-:  output     [31:0]             res_b_12
+//-:   input     [15:0]      dat_actv_data12
+// ---------------- instance : u_mul_13 ---------------
+//-:  output     [31:0]             res_b_13
+//-:   input     [15:0]      dat_actv_data13
+//-:  output      [7:0]           res_tag_13
+//-:   input      [1:0]        dat_actv_nz13
+//-:  output     [31:0]             res_a_13
+//-:   input      [1:0]         wt_actv_nz13
+//-:   input     [15:0]       wt_actv_data13
+// ---------------- instance : u_mul_14 ---------------
+//-:  output     [31:0]             res_a_14
+//-:   input      [1:0]        dat_actv_nz14
+//-:   input      [1:0]         wt_actv_nz14
+//-:   input     [15:0]      dat_actv_data14
+//-:   input     [15:0]       wt_actv_data14
+//-:  output     [31:0]             res_b_14
+//-:  output      [7:0]           res_tag_14
+// ---------------- instance : u_mul_15 ---------------
+//-:   input      [1:0]        dat_actv_nz15
+//-:  output     [31:0]             res_a_15
+//-:  output      [7:0]           res_tag_15
+//-:   input     [15:0]      dat_actv_data15
+//-:   input     [15:0]       wt_actv_data15
+//-:  output     [31:0]             res_b_15
+//-:   input      [1:0]         wt_actv_nz15
+// ---------------- instance : u_mul_16 ---------------
+//-:   input      [1:0]         wt_actv_nz16
+//-:  output     [31:0]             res_b_16
+//-:   input     [15:0]       wt_actv_data16
+//-:  output      [7:0]           res_tag_16
+//-:   input     [15:0]      dat_actv_data16
+//-:  output     [31:0]             res_a_16
+//-:   input      [1:0]        dat_actv_nz16
+// ---------------- instance : u_mul_17 ---------------
+//-:   input      [1:0]         wt_actv_nz17
+//-:   input     [15:0]      dat_actv_data17
+//-:  output     [31:0]             res_a_17
+//-:  output     [31:0]             res_b_17
+//-:  output      [7:0]           res_tag_17
+//-:   input     [15:0]       wt_actv_data17
+//-:   input      [1:0]        dat_actv_nz17
+// ---------------- instance : u_mul_18 ---------------
+//-:  output     [31:0]             res_b_18
+//-:   input     [15:0]       wt_actv_data18
+//-:   input      [1:0]        dat_actv_nz18
+//-:  output      [7:0]           res_tag_18
+//-:   input      [1:0]         wt_actv_nz18
+//-:   input     [15:0]      dat_actv_data18
+//-:  output     [31:0]             res_a_18
+// ---------------- instance : u_mul_19 ---------------
+//-:   input     [15:0]      dat_actv_data19
+//-:  output     [31:0]             res_b_19
+//-:   input     [15:0]       wt_actv_data19
+//-:   input      [1:0]        dat_actv_nz19
+//-:  output     [31:0]             res_a_19
+//-:   input      [1:0]         wt_actv_nz19
+//-:  output      [7:0]           res_tag_19
+// ---------------- instance : u_mul_2 ---------------
+//-:  output     [31:0]             res_a_02
+//-:   input     [15:0]       dat_actv_data2
+//-:   input      [1:0]         dat_actv_nz2
+//-:   input     [15:0]        wt_actv_data2
+//-:   input      [1:0]         wt_actv_nz02
+//-:  output      [7:0]            res_tag_2
+//-:  output     [31:0]             res_b_02
+// ---------------- instance : u_mul_20 ---------------
+//-:  output     [31:0]             res_a_20
+//-:   input      [1:0]         wt_actv_nz20
+//-:  output      [7:0]           res_tag_20
+//-:   input      [1:0]        dat_actv_nz20
+//-:   input     [15:0]      dat_actv_data20
+//-:   input     [15:0]       wt_actv_data20
+//-:  output     [31:0]             res_b_20
+// ---------------- instance : u_mul_21 ---------------
+//-:  output     [31:0]             res_a_21
+//-:   input     [15:0]       wt_actv_data21
+//-:   input      [1:0]         wt_actv_nz21
+//-:   input      [1:0]        dat_actv_nz21
+//-:  output      [7:0]           res_tag_21
+//-:   input     [15:0]      dat_actv_data21
+//-:  output     [31:0]             res_b_21
+// ---------------- instance : u_mul_22 ---------------
+//-:   input     [15:0]       wt_actv_data22
+//-:  output     [31:0]             res_b_22
+//-:   input     [15:0]      dat_actv_data22
+//-:  output     [31:0]             res_a_22
+//-:  output      [7:0]           res_tag_22
+//-:   input      [1:0]         wt_actv_nz22
+//-:   input      [1:0]        dat_actv_nz22
+// ---------------- instance : u_mul_23 ---------------
+//-:   input      [1:0]         wt_actv_nz23
+//-:  output     [31:0]             res_b_23
+//-:  output     [31:0]             res_a_23
+//-:  output      [7:0]           res_tag_23
+//-:   input     [15:0]      dat_actv_data23
+//-:   input      [1:0]        dat_actv_nz23
+//-:   input     [15:0]       wt_actv_data23
+// ---------------- instance : u_mul_24 ---------------
+//-:   input      [1:0]        dat_actv_nz24
+//-:   input      [1:0]         wt_actv_nz24
+//-:  output     [31:0]             res_b_24
+//-:   input     [15:0]       wt_actv_data24
+//-:  output     [31:0]             res_a_24
+//-:  output      [7:0]           res_tag_24
+//-:   input     [15:0]      dat_actv_data24
+// ---------------- instance : u_mul_25 ---------------
+//-:   input      [1:0]         wt_actv_nz25
+//-:   input     [15:0]      dat_actv_data25
+//-:   input      [1:0]        dat_actv_nz25
+//-:  output     [31:0]             res_a_25
+//-:  output      [7:0]           res_tag_25
+//-:  output     [31:0]             res_b_25
+//-:   input     [15:0]       wt_actv_data25
+// ---------------- instance : u_mul_26 ---------------
+//-:  output     [31:0]             res_a_26
+//-:   input      [1:0]        dat_actv_nz26
+//-:   input      [1:0]         wt_actv_nz26
+//-:   input     [15:0]       wt_actv_data26
+//-:  output     [31:0]             res_b_26
+//-:   input     [15:0]      dat_actv_data26
+//-:  output      [7:0]           res_tag_26
+// ---------------- instance : u_mul_27 ---------------
+//-:  output     [31:0]             res_a_27
+//-:   input     [15:0]      dat_actv_data27
+//-:  output      [7:0]           res_tag_27
+//-:   input      [1:0]        dat_actv_nz27
+//-:   input     [15:0]       wt_actv_data27
+//-:  output     [31:0]             res_b_27
+//-:   input      [1:0]         wt_actv_nz27
+// ---------------- instance : u_mul_28 ---------------
+//-:  output     [31:0]             res_a_28
+//-:  output      [7:0]           res_tag_28
+//-:   input     [15:0]       wt_actv_data28
+//-:  output     [31:0]             res_b_28
+//-:   input      [1:0]         wt_actv_nz28
+//-:   input     [15:0]      dat_actv_data28
+//-:   input      [1:0]        dat_actv_nz28
+// ---------------- instance : u_mul_29 ---------------
+//-:  output      [7:0]           res_tag_29
+//-:   input      [1:0]        dat_actv_nz29
+//-:  output     [31:0]             res_b_29
+//-:  output     [31:0]             res_a_29
+//-:   input     [15:0]      dat_actv_data29
+//-:   input     [15:0]       wt_actv_data29
+//-:   input      [1:0]         wt_actv_nz29
+// ---------------- instance : u_mul_3 ---------------
+//-:   input     [15:0]        wt_actv_data3
+//-:   input     [15:0]       dat_actv_data3
+//-:   input      [1:0]         dat_actv_nz3
+//-:  output     [31:0]             res_b_03
+//-:  output      [7:0]            res_tag_3
+//-:  output     [31:0]             res_a_03
+//-:   input      [1:0]         wt_actv_nz03
+// ---------------- instance : u_mul_30 ---------------
+//-:   input     [15:0]       wt_actv_data30
+//-:  output     [31:0]             res_b_30
+//-:  output      [7:0]           res_tag_30
+//-:   input      [1:0]         wt_actv_nz30
+//-:   input      [1:0]        dat_actv_nz30
+//-:  output     [31:0]             res_a_30
+//-:   input     [15:0]      dat_actv_data30
+// ---------------- instance : u_mul_31 ---------------
+//-:   input      [1:0]         wt_actv_nz31
+//-:   input     [15:0]      dat_actv_data31
+//-:  output     [31:0]             res_b_31
+//-:  output      [7:0]           res_tag_31
+//-:   input      [1:0]        dat_actv_nz31
+//-:  output     [31:0]             res_a_31
+//-:   input     [15:0]       wt_actv_data31
+// ---------------- instance : u_mul_32 ---------------
+//-:  output     [31:0]             res_b_32
+//-:   input     [15:0]      dat_actv_data32
+//-:  output      [7:0]           res_tag_32
+//-:   input      [1:0]         wt_actv_nz32
+//-:   input     [15:0]       wt_actv_data32
+//-:  output     [31:0]             res_a_32
+//-:   input      [1:0]        dat_actv_nz32
+// ---------------- instance : u_mul_33 ---------------
+//-:   input     [15:0]      dat_actv_data33
+//-:   input      [1:0]        dat_actv_nz33
+//-:  output     [31:0]             res_a_33
+//-:   input      [1:0]         wt_actv_nz33
+//-:  output      [7:0]           res_tag_33
+//-:  output     [31:0]             res_b_33
+//-:   input     [15:0]       wt_actv_data33
+// ---------------- instance : u_mul_34 ---------------
+//-:   input      [1:0]         wt_actv_nz34
+//-:   input      [1:0]        dat_actv_nz34
+//-:  output     [31:0]             res_b_34
+//-:   input     [15:0]      dat_actv_data34
+//-:  output     [31:0]             res_a_34
+//-:  output      [7:0]           res_tag_34
+//-:   input     [15:0]       wt_actv_data34
+// ---------------- instance : u_mul_35 ---------------
+//-:   input      [1:0]         wt_actv_nz35
+//-:  output      [7:0]           res_tag_35
+//-:  output     [31:0]             res_b_35
+//-:   input     [15:0]      dat_actv_data35
+//-:  output     [31:0]             res_a_35
+//-:   input     [15:0]       wt_actv_data35
+//-:   input      [1:0]        dat_actv_nz35
+// ---------------- instance : u_mul_36 ---------------
+//-:   input     [15:0]       wt_actv_data36
+//-:   input      [1:0]         wt_actv_nz36
+//-:  output     [31:0]             res_a_36
+//-:  output      [7:0]           res_tag_36
+//-:  output     [31:0]             res_b_36
+//-:   input     [15:0]      dat_actv_data36
+//-:   input      [1:0]        dat_actv_nz36
+// ---------------- instance : u_mul_37 ---------------
+//-:  output     [31:0]             res_b_37
+//-:   input      [1:0]        dat_actv_nz37
+//-:   input     [15:0]      dat_actv_data37
+//-:  output      [7:0]           res_tag_37
+//-:   input      [1:0]         wt_actv_nz37
+//-:  output     [31:0]             res_a_37
+//-:   input     [15:0]       wt_actv_data37
+// ---------------- instance : u_mul_38 ---------------
+//-:  output     [31:0]             res_a_38
+//-:  output      [7:0]           res_tag_38
+//-:   input     [15:0]      dat_actv_data38
+//-:   input      [1:0]        dat_actv_nz38
+//-:   input      [1:0]         wt_actv_nz38
+//-:   input     [15:0]       wt_actv_data38
+//-:  output     [31:0]             res_b_38
+// ---------------- instance : u_mul_39 ---------------
+//-:  output     [31:0]             res_b_39
+//-:   input      [1:0]         wt_actv_nz39
+//-:  output      [7:0]           res_tag_39
+//-:   input     [15:0]       wt_actv_data39
+//-:   input     [15:0]      dat_actv_data39
+//-:   input      [1:0]        dat_actv_nz39
+//-:  output     [31:0]             res_a_39
+// ---------------- instance : u_mul_4 ---------------
+//-:  output     [31:0]             res_b_04
+//-:   input     [15:0]       dat_actv_data4
+//-:   input      [1:0]         dat_actv_nz4
+//-:  output      [7:0]            res_tag_4
+//-:   input      [1:0]         wt_actv_nz04
+//-:   input     [15:0]        wt_actv_data4
+//-:  output     [31:0]             res_a_04
+// ---------------- instance : u_mul_40 ---------------
+//-:  output      [7:0]           res_tag_40
+//-:   input     [15:0]       wt_actv_data40
+//-:   input     [15:0]      dat_actv_data40
+//-:  output     [31:0]             res_b_40
+//-:   input      [1:0]        dat_actv_nz40
+//-:  output     [31:0]             res_a_40
+//-:   input      [1:0]         wt_actv_nz40
+// ---------------- instance : u_mul_41 ---------------
+//-:   input     [15:0]      dat_actv_data41
+//-:  output     [31:0]             res_b_41
+//-:  output      [7:0]           res_tag_41
+//-:   input      [1:0]        dat_actv_nz41
+//-:   input      [1:0]         wt_actv_nz41
+//-:  output     [31:0]             res_a_41
+//-:   input     [15:0]       wt_actv_data41
+// ---------------- instance : u_mul_42 ---------------
+//-:   input     [15:0]      dat_actv_data42
+//-:  output      [7:0]           res_tag_42
+//-:   input     [15:0]       wt_actv_data42
+//-:  output     [31:0]             res_b_42
+//-:  output     [31:0]             res_a_42
+//-:   input      [1:0]        dat_actv_nz42
+//-:   input      [1:0]         wt_actv_nz42
+// ---------------- instance : u_mul_43 ---------------
+//-:   input     [15:0]      dat_actv_data43
+//-:  output     [31:0]             res_b_43
+//-:  output      [7:0]           res_tag_43
+//-:   input      [1:0]         wt_actv_nz43
+//-:  output     [31:0]             res_a_43
+//-:   input     [15:0]       wt_actv_data43
+//-:   input      [1:0]        dat_actv_nz43
+// ---------------- instance : u_mul_44 ---------------
+//-:  output     [31:0]             res_b_44
+//-:   input     [15:0]      dat_actv_data44
+//-:  output      [7:0]           res_tag_44
+//-:   input      [1:0]        dat_actv_nz44
+//-:   input     [15:0]       wt_actv_data44
+//-:  output     [31:0]             res_a_44
+//-:   input      [1:0]         wt_actv_nz44
+// ---------------- instance : u_mul_45 ---------------
+//-:  output     [31:0]             res_a_45
+//-:   input     [15:0]      dat_actv_data45
+//-:   input      [1:0]        dat_actv_nz45
+//-:   input      [1:0]         wt_actv_nz45
+//-:   input     [15:0]       wt_actv_data45
+//-:  output      [7:0]           res_tag_45
+//-:  output     [31:0]             res_b_45
+// ---------------- instance : u_mul_46 ---------------
+//-:  output     [31:0]             res_b_46
+//-:   input     [15:0]       wt_actv_data46
+//-:   input      [1:0]        dat_actv_nz46
+//-:   input      [1:0]         wt_actv_nz46
+//-:   input     [15:0]      dat_actv_data46
+//-:  output     [31:0]             res_a_46
+//-:  output      [7:0]           res_tag_46
+// ---------------- instance : u_mul_47 ---------------
+//-:   input      [1:0]         wt_actv_nz47
+//-:   input     [15:0]      dat_actv_data47
+//-:   input      [1:0]        dat_actv_nz47
+//-:   input     [15:0]       wt_actv_data47
+//-:  output     [31:0]             res_b_47
+//-:  output      [7:0]           res_tag_47
+//-:  output     [31:0]             res_a_47
+// ---------------- instance : u_mul_48 ---------------
+//-:   input     [15:0]       wt_actv_data48
+//-:  output     [31:0]             res_a_48
+//-:   input      [1:0]         wt_actv_nz48
+//-:  output      [7:0]           res_tag_48
+//-:   input     [15:0]      dat_actv_data48
+//-:   input      [1:0]        dat_actv_nz48
+//-:  output     [31:0]             res_b_48
+// ---------------- instance : u_mul_49 ---------------
+//-:   input      [1:0]        dat_actv_nz49
+//-:  output     [31:0]             res_a_49
+//-:   input      [1:0]         wt_actv_nz49
+//-:  output      [7:0]           res_tag_49
+//-:   input     [15:0]      dat_actv_data49
+//-:   input     [15:0]       wt_actv_data49
+//-:  output     [31:0]             res_b_49
+// ---------------- instance : u_mul_5 ---------------
+//-:   input      [1:0]         dat_actv_nz5
+//-:   input     [15:0]       dat_actv_data5
+//-:  output     [31:0]             res_a_05
+//-:  output      [7:0]            res_tag_5
+//-:  output     [31:0]             res_b_05
+//-:   input     [15:0]        wt_actv_data5
+//-:   input      [1:0]         wt_actv_nz05
+// ---------------- instance : u_mul_50 ---------------
+//-:   input     [15:0]       wt_actv_data50
+//-:   input     [15:0]      dat_actv_data50
+//-:   input      [1:0]         wt_actv_nz50
+//-:   input      [1:0]        dat_actv_nz50
+//-:  output     [31:0]             res_a_50
+//-:  output     [31:0]             res_b_50
+//-:  output      [7:0]           res_tag_50
+// ---------------- instance : u_mul_51 ---------------
+//-:  output     [31:0]             res_b_51
+//-:   input     [15:0]       wt_actv_data51
+//-:   input      [1:0]        dat_actv_nz51
+//-:   input      [1:0]         wt_actv_nz51
+//-:  output     [31:0]             res_a_51
+//-:   input     [15:0]      dat_actv_data51
+//-:  output      [7:0]           res_tag_51
+// ---------------- instance : u_mul_52 ---------------
+//-:   input     [15:0]      dat_actv_data52
+//-:   input      [1:0]         wt_actv_nz52
+//-:   input     [15:0]       wt_actv_data52
+//-:  output     [31:0]             res_a_52
+//-:  output     [31:0]             res_b_52
+//-:   input      [1:0]        dat_actv_nz52
+//-:  output      [7:0]           res_tag_52
+// ---------------- instance : u_mul_53 ---------------
+//-:  output     [31:0]             res_a_53
+//-:   input      [1:0]        dat_actv_nz53
+//-:  output     [31:0]             res_b_53
+//-:   input      [1:0]         wt_actv_nz53
+//-:   input     [15:0]       wt_actv_data53
+//-:   input     [15:0]      dat_actv_data53
+//-:  output      [7:0]           res_tag_53
+// ---------------- instance : u_mul_54 ---------------
+//-:   input     [15:0]      dat_actv_data54
+//-:  output      [7:0]           res_tag_54
+//-:   input      [1:0]         wt_actv_nz54
+//-:  output     [31:0]             res_b_54
+//-:   input     [15:0]       wt_actv_data54
+//-:   input      [1:0]        dat_actv_nz54
+//-:  output     [31:0]             res_a_54
+// ---------------- instance : u_mul_55 ---------------
+//-:   input     [15:0]      dat_actv_data55
+//-:  output      [7:0]           res_tag_55
+//-:   input      [1:0]        dat_actv_nz55
+//-:  output     [31:0]             res_b_55
+//-:  output     [31:0]             res_a_55
+//-:   input     [15:0]       wt_actv_data55
+//-:   input      [1:0]         wt_actv_nz55
+// ---------------- instance : u_mul_56 ---------------
+//-:   input      [1:0]        dat_actv_nz56
+//-:  output     [31:0]             res_b_56
+//-:  output     [31:0]             res_a_56
+//-:   input      [1:0]         wt_actv_nz56
+//-:  output      [7:0]           res_tag_56
+//-:   input     [15:0]       wt_actv_data56
+//-:   input     [15:0]      dat_actv_data56
+// ---------------- instance : u_mul_57 ---------------
+//-:   input      [1:0]         wt_actv_nz57
+//-:  output     [31:0]             res_b_57
+//-:   input     [15:0]       wt_actv_data57
+//-:   input      [1:0]        dat_actv_nz57
+//-:  output     [31:0]             res_a_57
+//-:  output      [7:0]           res_tag_57
+//-:   input     [15:0]      dat_actv_data57
+// ---------------- instance : u_mul_58 ---------------
+//-:  output     [31:0]             res_b_58
+//-:   input      [1:0]         wt_actv_nz58
+//-:  output      [7:0]           res_tag_58
+//-:   input     [15:0]      dat_actv_data58
+//-:  output     [31:0]             res_a_58
+//-:   input      [1:0]        dat_actv_nz58
+//-:   input     [15:0]       wt_actv_data58
+// ---------------- instance : u_mul_59 ---------------
+//-:   input     [15:0]      dat_actv_data59
+//-:   input      [1:0]         wt_actv_nz59
+//-:  output     [31:0]             res_b_59
+//-:  output      [7:0]           res_tag_59
+//-:  output     [31:0]             res_a_59
+//-:   input      [1:0]        dat_actv_nz59
+//-:   input     [15:0]       wt_actv_data59
+// ---------------- instance : u_mul_6 ---------------
+//-:   input      [1:0]         dat_actv_nz6
+//-:  output      [7:0]            res_tag_6
+//-:   input     [15:0]       dat_actv_data6
+//-:  output     [31:0]             res_a_06
+//-:   input     [15:0]        wt_actv_data6
+//-:  output     [31:0]             res_b_06
+//-:   input      [1:0]         wt_actv_nz06
+// ---------------- instance : u_mul_60 ---------------
+//-:   input     [15:0]      dat_actv_data60
+//-:  output      [7:0]           res_tag_60
+//-:   input     [15:0]       wt_actv_data60
+//-:  output     [31:0]             res_b_60
+//-:   input      [1:0]        dat_actv_nz60
+//-:  output     [31:0]             res_a_60
+//-:   input      [1:0]         wt_actv_nz60
+// ---------------- instance : u_mul_61 ---------------
+//-:  output     [31:0]             res_b_61
+//-:   input      [1:0]         wt_actv_nz61
+//-:   input     [15:0]      dat_actv_data61
+//-:   input      [1:0]        dat_actv_nz61
+//-:   input     [15:0]       wt_actv_data61
+//-:  output      [7:0]           res_tag_61
+//-:  output     [31:0]             res_a_61
+// ---------------- instance : u_mul_62 ---------------
+//-:   input      [1:0]        dat_actv_nz62
+//-:  output     [31:0]             res_a_62
+//-:   input      [1:0]         wt_actv_nz62
+//-:   input     [15:0]       wt_actv_data62
+//-:  output     [31:0]             res_b_62
+//-:   input     [15:0]      dat_actv_data62
+//-:  output      [7:0]           res_tag_62
+// ---------------- instance : u_mul_63 ---------------
+//-:   input     [15:0]      dat_actv_data63
+//-:  output     [31:0]             res_a_63
+//-:   input      [1:0]        dat_actv_nz63
+//-:  output      [7:0]           res_tag_63
+//-:   input      [1:0]         wt_actv_nz63
+//-:  output     [31:0]             res_b_63
+//-:   input     [15:0]       wt_actv_data63
+// ---------------- instance : u_mul_7 ---------------
+//-:  output     [31:0]             res_a_07
+//-:   input      [1:0]         wt_actv_nz07
+//-:  output      [7:0]            res_tag_7
+//-:   input     [15:0]       dat_actv_data7
+//-:   input     [15:0]        wt_actv_data7
+//-:  output     [31:0]             res_b_07
+//-:   input      [1:0]         dat_actv_nz7
+// ---------------- instance : u_mul_8 ---------------
+//-:  output     [31:0]             res_a_08
+//-:   input     [15:0]       dat_actv_data8
+//-:   input      [1:0]         wt_actv_nz08
+//-:   input     [15:0]        wt_actv_data8
+//-:   input      [1:0]         dat_actv_nz8
+//-:  output      [7:0]            res_tag_8
+//-:  output     [31:0]             res_b_08
+// ---------------- instance : u_mul_9 ---------------
+//-:   input      [1:0]         wt_actv_nz09
+//-:   input     [15:0]       dat_actv_data9
+//-:  output     [31:0]             res_a_09
+//-:   input     [15:0]        wt_actv_data9
+//-:  output     [31:0]             res_b_09
+//-:  output      [7:0]            res_tag_9
+//-:   input      [1:0]         dat_actv_nz9
+// ---------------- instance : u_nan ---------------
+//-:   input     [63:0]          wt_actv_nan
+//-:   input   [1023:0]         wt_actv_data
+//-:  output     [10:0]          out_nan_mts
+//-:   input   [1023:0]        dat_actv_data
+//-:   input     [63:0]         dat_actv_nan
+//-:  output        [1]         out_nan_pvld
+// ---------------- instance : u_nan & u_exp & u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ---------------
+//-:   input        [1]      nvdla_core_rstn
+//-:   input        [1]          cfg_is_fp16
+//-:   input        [1]       nvdla_core_clk
+//-:   input        [1]           cfg_reg_en
+// ---------------- instance : u_test_sys_ctrl_apb_regs ---------------
+//-:  output      [3:0] test_reg_test_field0
+//-:  output     [31:0]        PRDATA_SUFFIX
+//-:  output      [1:0] test_reg_test_filed1
+//-:  output      [0:0] sys_ctrl0_pdc_use_arm_ctrl
+//-:   input        [1]        PWRITE_SUFFIX
+//-:   input     [31:0]        PWDATA_SUFFIX
+//-:   input        [1]       PENABLE_SUFFIX
+//-:   input     [31:0]         PADDR_SUFFIX
+//-:   input        [1]          PSEL_SUFFIX
+//-:  output      [6:0] sys_ctrl0_mem_repair_done
+//-:   input        [1]       PRESETN_SUFFIX
+//-:  output        [1]        PREADY_SUFFIX
+//-:  output      [0:0] sys_ctrl0_mem_repair_en
+//-:  output      [2:0] sys_ctrl0_l2c_strip_mode
+//-:  output        [1]       PSLVERR_SUFFIX
+//-:   input        [1]          PCLK_SUFFIX
+//-:  output      [4:0] sys_ctrl0_smmu_mmusid
+// ======================================================================
+// ==================== End of Unconnected Ports ========================
+// ======================================================================
+
 // ========================================================================================
 
 wire     [65:0] dbg_sign;
@@ -1051,7 +1634,7 @@ wire [63:0] res_tag_b7;
 
 // ========================================================================================
 // ============= for Python Script ==============
-///: ePython generated code Begin (DO NOT EDIT BELOW!)
+//|# ePython generated code Begin (DO NOT EDIT BELOW!)
 //#for i in [0,1,2,3,4,5,6,7]:
 //#       print("wire [63:0] test_data%d;" % i )
 wire [63:0] test_data0;
@@ -1062,7 +1645,7 @@ wire [63:0] test_data4;
 wire [63:0] test_data5;
 wire [63:0] test_data6;
 wire [63:0] test_data7;
-///# ePython generated code End (DO NOT EDIT ABOVE!)
+//|# ePython generated code End (DO NOT EDIT ABOVE!)
 
 // ========================================================================================
 
@@ -1087,16 +1670,16 @@ wire [63:0] test_data7;
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &Instance NV_NVDLA_CMAC_CORE_MAC_nan u_nan;
 NV_NVDLA_CMAC_CORE_MAC_nan  u_nan (
-    .nvdla_core_clk  (nvdla_core_clk)        //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)       //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)           //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)            //|<-i
-   ,.dat_actv_data   (dat_actv_data[1023:0]) //|<-i
-   ,.dat_actv_nan    (dat_actv_nan[63:0])    //|<-i
-   ,.wt_actv_data    (wt_actv_data[1023:0])  //|<-i
-   ,.wt_actv_nan     (wt_actv_nan[63:0])     //|<-i
-   ,.out_nan_mts     (out_nan_mts[10:0])     //|>-o
-   ,.out_nan_pvld    (out_nan_pvld)          //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)       , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)      , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)          , //|<-i
+    .cfg_reg_en      (cfg_reg_en)           , //|<-i
+    .dat_actv_data   (dat_actv_data[1023:0]), //|<-i
+    .dat_actv_nan    (dat_actv_nan[63:0])   , //|<-i
+    .wt_actv_data    (wt_actv_data[1023:0]) , //|<-i
+    .wt_actv_nan     (wt_actv_nan[63:0])    , //|<-i
+    .out_nan_mts     (out_nan_mts[10:0])    , //|>-o
+    .out_nan_pvld    (out_nan_pvld)           //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -1108,84 +1691,84 @@ NV_NVDLA_CMAC_CORE_MAC_nan  u_nan (
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &Instance NV_NVDLA_CMAC_CORE_MAC_exp u_exp;
 NV_NVDLA_CMAC_CORE_MAC_exp  u_exp (
-    .nvdla_core_clk     (nvdla_core_clk)           //|<-i
-   ,.nvdla_core_rstn    (nvdla_core_rstn)          //|<-i
-   ,.cfg_is_fp16        (cfg_is_fp16)              //|<-i
-   ,.cfg_reg_en         (cfg_reg_en)               //|<-i
-   ,.dat_pre_exp        (dat_pre_exp[191:0])       //|<-i
-   ,.dat_pre_mask       (dat_pre_mask[63:0])       //|<-i
-   ,.dat_pre_pvld       (dat_pre_pvld)             //|<-i
-   ,.dat_pre_stripe_end (dat_pre_stripe_end)       //|<-i
-   ,.dat_pre_stripe_st  (dat_pre_stripe_st)        //|<-i
-   ,.wt_sd_exp          (wt_sd_exp[191:0])         //|<-i
-   ,.wt_sd_mask         (wt_sd_mask[63:0])         //|<-i
-   ,.wt_sd_pvld         (wt_sd_pvld)               //|<-i
-   ,.exp_max            (exp_max[3:0])             //|>-o
-   ,.exp_pvld           (exp_pvld)                 //|>-o
-   ,.exp_sft_00         (exp_sft_00[3:0])          //|>-o
-   ,.exp_sft_01         (exp_sft_01[3:0])          //|>-o
-   ,.exp_sft_02         (exp_sft_02[3:0])          //|>-o
-   ,.exp_sft_03         (exp_sft_03[3:0])          //|>-o
-   ,.exp_sft_04         (exp_sft_04[3:0])          //|>-o
-   ,.exp_sft_05         (exp_sft_05[3:0])          //|>-o
-   ,.exp_sft_06         (exp_sft_06[3:0])          //|>-o
-   ,.exp_sft_07         (exp_sft_07[3:0])          //|>-o
-   ,.exp_sft_08         (exp_sft_08[3:0])          //|>-o
-   ,.exp_sft_09         (exp_sft_09[3:0])          //|>-o
-   ,.exp_sft_10         (exp_sft_10[3:0])          //|>-o
-   ,.exp_sft_11         (exp_sft_11[3:0])          //|>-o
-   ,.exp_sft_12         (exp_sft_12[3:0])          //|>-o
-   ,.exp_sft_13         (exp_sft_13[3:0])          //|>-o
-   ,.exp_sft_14         (exp_sft_14[3:0])          //|>-o
-   ,.exp_sft_15         (exp_sft_15[3:0])          //|>-o
-   ,.exp_sft_16         (exp_sft_16[3:0])          //|>-o
-   ,.exp_sft_17         (exp_sft_17[3:0])          //|>-o
-   ,.exp_sft_18         (exp_sft_18[3:0])          //|>-o
-   ,.exp_sft_19         (exp_sft_19[3:0])          //|>-o
-   ,.exp_sft_20         (exp_sft_20[3:0])          //|>-o
-   ,.exp_sft_21         (exp_sft_21[3:0])          //|>-o
-   ,.exp_sft_22         (exp_sft_22[3:0])          //|>-o
-   ,.exp_sft_23         (exp_sft_23[3:0])          //|>-o
-   ,.exp_sft_24         (exp_sft_24[3:0])          //|>-o
-   ,.exp_sft_25         (exp_sft_25[3:0])          //|>-o
-   ,.exp_sft_26         (exp_sft_26[3:0])          //|>-o
-   ,.exp_sft_27         (exp_sft_27[3:0])          //|>-o
-   ,.exp_sft_28         (exp_sft_28[3:0])          //|>-o
-   ,.exp_sft_29         (exp_sft_29[3:0])          //|>-o
-   ,.exp_sft_30         (exp_sft_30[3:0])          //|>-o
-   ,.exp_sft_31         (exp_sft_31[3:0])          //|>-o
-   ,.exp_sft_32         (exp_sft_32[3:0])          //|>-o
-   ,.exp_sft_33         (exp_sft_33[3:0])          //|>-o
-   ,.exp_sft_34         (exp_sft_34[3:0])          //|>-o
-   ,.exp_sft_35         (exp_sft_35[3:0])          //|>-o
-   ,.exp_sft_36         (exp_sft_36[3:0])          //|>-o
-   ,.exp_sft_37         (exp_sft_37[3:0])          //|>-o
-   ,.exp_sft_38         (exp_sft_38[3:0])          //|>-o
-   ,.exp_sft_39         (exp_sft_39[3:0])          //|>-o
-   ,.exp_sft_40         (exp_sft_40[3:0])          //|>-o
-   ,.exp_sft_41         (exp_sft_41[3:0])          //|>-o
-   ,.exp_sft_42         (exp_sft_42[3:0])          //|>-o
-   ,.exp_sft_43         (exp_sft_43[3:0])          //|>-o
-   ,.exp_sft_44         (exp_sft_44[3:0])          //|>-o
-   ,.exp_sft_45         (exp_sft_45[3:0])          //|>-o
-   ,.exp_sft_46         (exp_sft_46[3:0])          //|>-o
-   ,.exp_sft_47         (exp_sft_47[3:0])          //|>-o
-   ,.exp_sft_48         (exp_sft_48[3:0])          //|>-o
-   ,.exp_sft_49         (exp_sft_49[3:0])          //|>-o
-   ,.exp_sft_50         (exp_sft_50[3:0])          //|>-o
-   ,.exp_sft_51         (exp_sft_51[3:0])          //|>-o
-   ,.exp_sft_52         (exp_sft_52[3:0])          //|>-o
-   ,.exp_sft_53         (exp_sft_53[3:0])          //|>-o
-   ,.exp_sft_54         (exp_sft_54[3:0])          //|>-o
-   ,.exp_sft_55         (exp_sft_55[3:0])          //|>-o
-   ,.exp_sft_56         (exp_sft_56[3:0])          //|>-o
-   ,.exp_sft_57         (exp_sft_57[3:0])          //|>-o
-   ,.exp_sft_58         (exp_sft_58[3:0])          //|>-o
-   ,.exp_sft_59         (exp_sft_59[3:0])          //|>-o
-   ,.exp_sft_60         (exp_sft_60[3:0])          //|>-o
-   ,.exp_sft_61         (exp_sft_61[3:0])          //|>-o
-   ,.exp_sft_62         (exp_sft_62[3:0])          //|>-o
-   ,.exp_sft_63         (exp_sft_63[3:0])          //|>-o
+    .nvdla_core_clk     (nvdla_core_clk)          , //|<-i
+    .nvdla_core_rstn    (nvdla_core_rstn)         , //|<-i
+    .cfg_is_fp16        (cfg_is_fp16)             , //|<-i
+    .cfg_reg_en         (cfg_reg_en)              , //|<-i
+    .dat_pre_exp        (dat_pre_exp[191:0])      , //|<-i
+    .dat_pre_mask       (dat_pre_mask[63:0])      , //|<-i
+    .dat_pre_pvld       (dat_pre_pvld)            , //|<-i
+    .dat_pre_stripe_end (dat_pre_stripe_end)      , //|<-i
+    .dat_pre_stripe_st  (dat_pre_stripe_st)       , //|<-i
+    .wt_sd_exp          (wt_sd_exp[191:0])        , //|<-i
+    .wt_sd_mask         (wt_sd_mask[63:0])        , //|<-i
+    .wt_sd_pvld         (wt_sd_pvld)              , //|<-i
+    .exp_max            (exp_max[3:0])            , //|>-o
+    .exp_pvld           (exp_pvld)                , //|>-o
+    .exp_sft_00         (exp_sft_00[3:0])         , //|>-o
+    .exp_sft_01         (exp_sft_01[3:0])         , //|>-o
+    .exp_sft_02         (exp_sft_02[3:0])         , //|>-o
+    .exp_sft_03         (exp_sft_03[3:0])         , //|>-o
+    .exp_sft_04         (exp_sft_04[3:0])         , //|>-o
+    .exp_sft_05         (exp_sft_05[3:0])         , //|>-o
+    .exp_sft_06         (exp_sft_06[3:0])         , //|>-o
+    .exp_sft_07         (exp_sft_07[3:0])         , //|>-o
+    .exp_sft_08         (exp_sft_08[3:0])         , //|>-o
+    .exp_sft_09         (exp_sft_09[3:0])         , //|>-o
+    .exp_sft_10         (exp_sft_10[3:0])         , //|>-o
+    .exp_sft_11         (exp_sft_11[3:0])         , //|>-o
+    .exp_sft_12         (exp_sft_12[3:0])         , //|>-o
+    .exp_sft_13         (exp_sft_13[3:0])         , //|>-o
+    .exp_sft_14         (exp_sft_14[3:0])         , //|>-o
+    .exp_sft_15         (exp_sft_15[3:0])         , //|>-o
+    .exp_sft_16         (exp_sft_16[3:0])         , //|>-o
+    .exp_sft_17         (exp_sft_17[3:0])         , //|>-o
+    .exp_sft_18         (exp_sft_18[3:0])         , //|>-o
+    .exp_sft_19         (exp_sft_19[3:0])         , //|>-o
+    .exp_sft_20         (exp_sft_20[3:0])         , //|>-o
+    .exp_sft_21         (exp_sft_21[3:0])         , //|>-o
+    .exp_sft_22         (exp_sft_22[3:0])         , //|>-o
+    .exp_sft_23         (exp_sft_23[3:0])         , //|>-o
+    .exp_sft_24         (exp_sft_24[3:0])         , //|>-o
+    .exp_sft_25         (exp_sft_25[3:0])         , //|>-o
+    .exp_sft_26         (exp_sft_26[3:0])         , //|>-o
+    .exp_sft_27         (exp_sft_27[3:0])         , //|>-o
+    .exp_sft_28         (exp_sft_28[3:0])         , //|>-o
+    .exp_sft_29         (exp_sft_29[3:0])         , //|>-o
+    .exp_sft_30         (exp_sft_30[3:0])         , //|>-o
+    .exp_sft_31         (exp_sft_31[3:0])         , //|>-o
+    .exp_sft_32         (exp_sft_32[3:0])         , //|>-o
+    .exp_sft_33         (exp_sft_33[3:0])         , //|>-o
+    .exp_sft_34         (exp_sft_34[3:0])         , //|>-o
+    .exp_sft_35         (exp_sft_35[3:0])         , //|>-o
+    .exp_sft_36         (exp_sft_36[3:0])         , //|>-o
+    .exp_sft_37         (exp_sft_37[3:0])         , //|>-o
+    .exp_sft_38         (exp_sft_38[3:0])         , //|>-o
+    .exp_sft_39         (exp_sft_39[3:0])         , //|>-o
+    .exp_sft_40         (exp_sft_40[3:0])         , //|>-o
+    .exp_sft_41         (exp_sft_41[3:0])         , //|>-o
+    .exp_sft_42         (exp_sft_42[3:0])         , //|>-o
+    .exp_sft_43         (exp_sft_43[3:0])         , //|>-o
+    .exp_sft_44         (exp_sft_44[3:0])         , //|>-o
+    .exp_sft_45         (exp_sft_45[3:0])         , //|>-o
+    .exp_sft_46         (exp_sft_46[3:0])         , //|>-o
+    .exp_sft_47         (exp_sft_47[3:0])         , //|>-o
+    .exp_sft_48         (exp_sft_48[3:0])         , //|>-o
+    .exp_sft_49         (exp_sft_49[3:0])         , //|>-o
+    .exp_sft_50         (exp_sft_50[3:0])         , //|>-o
+    .exp_sft_51         (exp_sft_51[3:0])         , //|>-o
+    .exp_sft_52         (exp_sft_52[3:0])         , //|>-o
+    .exp_sft_53         (exp_sft_53[3:0])         , //|>-o
+    .exp_sft_54         (exp_sft_54[3:0])         , //|>-o
+    .exp_sft_55         (exp_sft_55[3:0])         , //|>-o
+    .exp_sft_56         (exp_sft_56[3:0])         , //|>-o
+    .exp_sft_57         (exp_sft_57[3:0])         , //|>-o
+    .exp_sft_58         (exp_sft_58[3:0])         , //|>-o
+    .exp_sft_59         (exp_sft_59[3:0])         , //|>-o
+    .exp_sft_60         (exp_sft_60[3:0])         , //|>-o
+    .exp_sft_61         (exp_sft_61[3:0])         , //|>-o
+    .exp_sft_62         (exp_sft_62[3:0])         , //|>-o
+    .exp_sft_63         (exp_sft_63[3:0])           //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -1205,7 +1788,7 @@ end
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //|     for my $i (0..63) {
 //| 		my $ii = sprintf("%02d",$i);
-//| 	    print STDOUT " ---\$ii == $ii ---\n";
+//| 	    #print STDOUT " ---\$ii == $ii ---\n";
 //| 	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
 //|           &Connect exp_sft      exp_sft_$ii;
 //|            Connect op_a_dat     wt_actv_data${i};
@@ -1219,1155 +1802,1155 @@ end
 //| 
 //| 	}
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_0 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_00[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data0[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz00[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[0])        //|<-i
-   ,.op_b_dat        (dat_actv_data0[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz0[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[0])       //|<-i
-   ,.res_a           (res_a_00[31:0])         //|>-o
-   ,.res_b           (res_b_00[31:0])         //|>-o
-   ,.res_tag         (res_tag_0[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_00[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data0[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz00[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[0])       , //|<-i
+    .op_b_dat        (dat_actv_data0[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz0[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[0])      , //|<-i
+    .res_a           (res_a_00[31:0])        , //|>-o
+    .res_b           (res_b_00[31:0])        , //|>-o
+    .res_tag         (res_tag_0[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_1 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_01[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data1[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz01[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[1])        //|<-i
-   ,.op_b_dat        (dat_actv_data1[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz1[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[1])       //|<-i
-   ,.res_a           (res_a_01[31:0])         //|>-o
-   ,.res_b           (res_b_01[31:0])         //|>-o
-   ,.res_tag         (res_tag_1[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_01[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data1[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz01[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[1])       , //|<-i
+    .op_b_dat        (dat_actv_data1[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz1[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[1])      , //|<-i
+    .res_a           (res_a_01[31:0])        , //|>-o
+    .res_b           (res_b_01[31:0])        , //|>-o
+    .res_tag         (res_tag_1[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_2 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_02[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data2[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz02[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[2])        //|<-i
-   ,.op_b_dat        (dat_actv_data2[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz2[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[2])       //|<-i
-   ,.res_a           (res_a_02[31:0])         //|>-o
-   ,.res_b           (res_b_02[31:0])         //|>-o
-   ,.res_tag         (res_tag_2[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_02[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data2[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz02[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[2])       , //|<-i
+    .op_b_dat        (dat_actv_data2[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz2[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[2])      , //|<-i
+    .res_a           (res_a_02[31:0])        , //|>-o
+    .res_b           (res_b_02[31:0])        , //|>-o
+    .res_tag         (res_tag_2[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_3 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_03[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data3[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz03[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[3])        //|<-i
-   ,.op_b_dat        (dat_actv_data3[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz3[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[3])       //|<-i
-   ,.res_a           (res_a_03[31:0])         //|>-o
-   ,.res_b           (res_b_03[31:0])         //|>-o
-   ,.res_tag         (res_tag_3[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_03[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data3[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz03[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[3])       , //|<-i
+    .op_b_dat        (dat_actv_data3[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz3[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[3])      , //|<-i
+    .res_a           (res_a_03[31:0])        , //|>-o
+    .res_b           (res_b_03[31:0])        , //|>-o
+    .res_tag         (res_tag_3[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_4 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_04[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data4[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz04[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[4])        //|<-i
-   ,.op_b_dat        (dat_actv_data4[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz4[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[4])       //|<-i
-   ,.res_a           (res_a_04[31:0])         //|>-o
-   ,.res_b           (res_b_04[31:0])         //|>-o
-   ,.res_tag         (res_tag_4[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_04[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data4[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz04[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[4])       , //|<-i
+    .op_b_dat        (dat_actv_data4[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz4[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[4])      , //|<-i
+    .res_a           (res_a_04[31:0])        , //|>-o
+    .res_b           (res_b_04[31:0])        , //|>-o
+    .res_tag         (res_tag_4[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_5 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_05[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data5[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz05[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[5])        //|<-i
-   ,.op_b_dat        (dat_actv_data5[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz5[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[5])       //|<-i
-   ,.res_a           (res_a_05[31:0])         //|>-o
-   ,.res_b           (res_b_05[31:0])         //|>-o
-   ,.res_tag         (res_tag_5[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_05[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data5[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz05[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[5])       , //|<-i
+    .op_b_dat        (dat_actv_data5[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz5[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[5])      , //|<-i
+    .res_a           (res_a_05[31:0])        , //|>-o
+    .res_b           (res_b_05[31:0])        , //|>-o
+    .res_tag         (res_tag_5[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_6 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_06[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data6[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz06[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[6])        //|<-i
-   ,.op_b_dat        (dat_actv_data6[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz6[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[6])       //|<-i
-   ,.res_a           (res_a_06[31:0])         //|>-o
-   ,.res_b           (res_b_06[31:0])         //|>-o
-   ,.res_tag         (res_tag_6[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_06[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data6[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz06[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[6])       , //|<-i
+    .op_b_dat        (dat_actv_data6[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz6[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[6])      , //|<-i
+    .res_a           (res_a_06[31:0])        , //|>-o
+    .res_b           (res_b_06[31:0])        , //|>-o
+    .res_tag         (res_tag_6[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_7 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_07[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data7[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz07[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[7])        //|<-i
-   ,.op_b_dat        (dat_actv_data7[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz7[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[7])       //|<-i
-   ,.res_a           (res_a_07[31:0])         //|>-o
-   ,.res_b           (res_b_07[31:0])         //|>-o
-   ,.res_tag         (res_tag_7[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_07[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data7[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz07[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[7])       , //|<-i
+    .op_b_dat        (dat_actv_data7[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz7[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[7])      , //|<-i
+    .res_a           (res_a_07[31:0])        , //|>-o
+    .res_b           (res_b_07[31:0])        , //|>-o
+    .res_tag         (res_tag_7[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_8 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_08[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data8[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz08[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[8])        //|<-i
-   ,.op_b_dat        (dat_actv_data8[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz8[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[8])       //|<-i
-   ,.res_a           (res_a_08[31:0])         //|>-o
-   ,.res_b           (res_b_08[31:0])         //|>-o
-   ,.res_tag         (res_tag_8[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_08[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data8[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz08[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[8])       , //|<-i
+    .op_b_dat        (dat_actv_data8[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz8[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[8])      , //|<-i
+    .res_a           (res_a_08[31:0])        , //|>-o
+    .res_b           (res_b_08[31:0])        , //|>-o
+    .res_tag         (res_tag_8[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_9 (
-    .nvdla_core_clk  (nvdla_core_clk)         //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)        //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)            //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)            //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)             //|<-i
-   ,.exp_sft         (exp_sft_09[3:0])        //|<-i
-   ,.op_a_dat        (wt_actv_data9[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz09[1:0])      //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[9])        //|<-i
-   ,.op_b_dat        (dat_actv_data9[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz9[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[9])       //|<-i
-   ,.res_a           (res_a_09[31:0])         //|>-o
-   ,.res_b           (res_b_09[31:0])         //|>-o
-   ,.res_tag         (res_tag_9[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)        , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)       , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)           , //|<-i
+    .cfg_is_int8     (cfg_is_int8)           , //|<-i
+    .cfg_reg_en      (cfg_reg_en)            , //|<-i
+    .exp_sft         (exp_sft_09[3:0])       , //|<-i
+    .op_a_dat        (wt_actv_data9[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz09[1:0])     , //|<-i
+    .op_a_pvld       (wt_actv_pvld[9])       , //|<-i
+    .op_b_dat        (dat_actv_data9[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz9[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[9])      , //|<-i
+    .res_a           (res_a_09[31:0])        , //|>-o
+    .res_b           (res_b_09[31:0])        , //|>-o
+    .res_tag         (res_tag_9[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_10 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_10[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data10[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz10[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[10])        //|<-i
-   ,.op_b_dat        (dat_actv_data10[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz10[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[10])       //|<-i
-   ,.res_a           (res_a_10[31:0])          //|>-o
-   ,.res_b           (res_b_10[31:0])          //|>-o
-   ,.res_tag         (res_tag_10[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_10[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data10[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz10[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[10])       , //|<-i
+    .op_b_dat        (dat_actv_data10[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz10[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[10])      , //|<-i
+    .res_a           (res_a_10[31:0])         , //|>-o
+    .res_b           (res_b_10[31:0])         , //|>-o
+    .res_tag         (res_tag_10[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_11 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_11[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data11[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz11[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[11])        //|<-i
-   ,.op_b_dat        (dat_actv_data11[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz11[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[11])       //|<-i
-   ,.res_a           (res_a_11[31:0])          //|>-o
-   ,.res_b           (res_b_11[31:0])          //|>-o
-   ,.res_tag         (res_tag_11[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_11[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data11[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz11[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[11])       , //|<-i
+    .op_b_dat        (dat_actv_data11[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz11[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[11])      , //|<-i
+    .res_a           (res_a_11[31:0])         , //|>-o
+    .res_b           (res_b_11[31:0])         , //|>-o
+    .res_tag         (res_tag_11[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_12 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_12[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data12[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz12[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[12])        //|<-i
-   ,.op_b_dat        (dat_actv_data12[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz12[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[12])       //|<-i
-   ,.res_a           (res_a_12[31:0])          //|>-o
-   ,.res_b           (res_b_12[31:0])          //|>-o
-   ,.res_tag         (res_tag_12[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_12[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data12[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz12[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[12])       , //|<-i
+    .op_b_dat        (dat_actv_data12[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz12[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[12])      , //|<-i
+    .res_a           (res_a_12[31:0])         , //|>-o
+    .res_b           (res_b_12[31:0])         , //|>-o
+    .res_tag         (res_tag_12[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_13 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_13[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data13[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz13[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[13])        //|<-i
-   ,.op_b_dat        (dat_actv_data13[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz13[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[13])       //|<-i
-   ,.res_a           (res_a_13[31:0])          //|>-o
-   ,.res_b           (res_b_13[31:0])          //|>-o
-   ,.res_tag         (res_tag_13[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_13[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data13[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz13[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[13])       , //|<-i
+    .op_b_dat        (dat_actv_data13[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz13[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[13])      , //|<-i
+    .res_a           (res_a_13[31:0])         , //|>-o
+    .res_b           (res_b_13[31:0])         , //|>-o
+    .res_tag         (res_tag_13[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_14 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_14[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data14[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz14[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[14])        //|<-i
-   ,.op_b_dat        (dat_actv_data14[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz14[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[14])       //|<-i
-   ,.res_a           (res_a_14[31:0])          //|>-o
-   ,.res_b           (res_b_14[31:0])          //|>-o
-   ,.res_tag         (res_tag_14[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_14[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data14[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz14[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[14])       , //|<-i
+    .op_b_dat        (dat_actv_data14[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz14[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[14])      , //|<-i
+    .res_a           (res_a_14[31:0])         , //|>-o
+    .res_b           (res_b_14[31:0])         , //|>-o
+    .res_tag         (res_tag_14[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_15 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_15[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data15[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz15[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[15])        //|<-i
-   ,.op_b_dat        (dat_actv_data15[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz15[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[15])       //|<-i
-   ,.res_a           (res_a_15[31:0])          //|>-o
-   ,.res_b           (res_b_15[31:0])          //|>-o
-   ,.res_tag         (res_tag_15[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_15[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data15[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz15[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[15])       , //|<-i
+    .op_b_dat        (dat_actv_data15[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz15[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[15])      , //|<-i
+    .res_a           (res_a_15[31:0])         , //|>-o
+    .res_b           (res_b_15[31:0])         , //|>-o
+    .res_tag         (res_tag_15[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_16 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_16[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data16[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz16[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[16])        //|<-i
-   ,.op_b_dat        (dat_actv_data16[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz16[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[16])       //|<-i
-   ,.res_a           (res_a_16[31:0])          //|>-o
-   ,.res_b           (res_b_16[31:0])          //|>-o
-   ,.res_tag         (res_tag_16[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_16[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data16[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz16[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[16])       , //|<-i
+    .op_b_dat        (dat_actv_data16[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz16[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[16])      , //|<-i
+    .res_a           (res_a_16[31:0])         , //|>-o
+    .res_b           (res_b_16[31:0])         , //|>-o
+    .res_tag         (res_tag_16[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_17 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_17[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data17[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz17[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[17])        //|<-i
-   ,.op_b_dat        (dat_actv_data17[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz17[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[17])       //|<-i
-   ,.res_a           (res_a_17[31:0])          //|>-o
-   ,.res_b           (res_b_17[31:0])          //|>-o
-   ,.res_tag         (res_tag_17[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_17[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data17[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz17[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[17])       , //|<-i
+    .op_b_dat        (dat_actv_data17[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz17[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[17])      , //|<-i
+    .res_a           (res_a_17[31:0])         , //|>-o
+    .res_b           (res_b_17[31:0])         , //|>-o
+    .res_tag         (res_tag_17[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_18 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_18[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data18[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz18[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[18])        //|<-i
-   ,.op_b_dat        (dat_actv_data18[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz18[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[18])       //|<-i
-   ,.res_a           (res_a_18[31:0])          //|>-o
-   ,.res_b           (res_b_18[31:0])          //|>-o
-   ,.res_tag         (res_tag_18[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_18[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data18[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz18[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[18])       , //|<-i
+    .op_b_dat        (dat_actv_data18[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz18[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[18])      , //|<-i
+    .res_a           (res_a_18[31:0])         , //|>-o
+    .res_b           (res_b_18[31:0])         , //|>-o
+    .res_tag         (res_tag_18[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_19 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_19[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data19[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz19[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[19])        //|<-i
-   ,.op_b_dat        (dat_actv_data19[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz19[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[19])       //|<-i
-   ,.res_a           (res_a_19[31:0])          //|>-o
-   ,.res_b           (res_b_19[31:0])          //|>-o
-   ,.res_tag         (res_tag_19[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_19[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data19[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz19[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[19])       , //|<-i
+    .op_b_dat        (dat_actv_data19[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz19[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[19])      , //|<-i
+    .res_a           (res_a_19[31:0])         , //|>-o
+    .res_b           (res_b_19[31:0])         , //|>-o
+    .res_tag         (res_tag_19[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_20 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_20[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data20[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz20[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[20])        //|<-i
-   ,.op_b_dat        (dat_actv_data20[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz20[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[20])       //|<-i
-   ,.res_a           (res_a_20[31:0])          //|>-o
-   ,.res_b           (res_b_20[31:0])          //|>-o
-   ,.res_tag         (res_tag_20[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_20[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data20[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz20[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[20])       , //|<-i
+    .op_b_dat        (dat_actv_data20[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz20[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[20])      , //|<-i
+    .res_a           (res_a_20[31:0])         , //|>-o
+    .res_b           (res_b_20[31:0])         , //|>-o
+    .res_tag         (res_tag_20[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_21 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_21[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data21[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz21[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[21])        //|<-i
-   ,.op_b_dat        (dat_actv_data21[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz21[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[21])       //|<-i
-   ,.res_a           (res_a_21[31:0])          //|>-o
-   ,.res_b           (res_b_21[31:0])          //|>-o
-   ,.res_tag         (res_tag_21[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_21[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data21[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz21[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[21])       , //|<-i
+    .op_b_dat        (dat_actv_data21[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz21[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[21])      , //|<-i
+    .res_a           (res_a_21[31:0])         , //|>-o
+    .res_b           (res_b_21[31:0])         , //|>-o
+    .res_tag         (res_tag_21[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_22 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_22[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data22[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz22[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[22])        //|<-i
-   ,.op_b_dat        (dat_actv_data22[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz22[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[22])       //|<-i
-   ,.res_a           (res_a_22[31:0])          //|>-o
-   ,.res_b           (res_b_22[31:0])          //|>-o
-   ,.res_tag         (res_tag_22[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_22[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data22[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz22[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[22])       , //|<-i
+    .op_b_dat        (dat_actv_data22[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz22[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[22])      , //|<-i
+    .res_a           (res_a_22[31:0])         , //|>-o
+    .res_b           (res_b_22[31:0])         , //|>-o
+    .res_tag         (res_tag_22[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_23 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_23[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data23[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz23[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[23])        //|<-i
-   ,.op_b_dat        (dat_actv_data23[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz23[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[23])       //|<-i
-   ,.res_a           (res_a_23[31:0])          //|>-o
-   ,.res_b           (res_b_23[31:0])          //|>-o
-   ,.res_tag         (res_tag_23[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_23[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data23[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz23[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[23])       , //|<-i
+    .op_b_dat        (dat_actv_data23[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz23[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[23])      , //|<-i
+    .res_a           (res_a_23[31:0])         , //|>-o
+    .res_b           (res_b_23[31:0])         , //|>-o
+    .res_tag         (res_tag_23[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_24 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_24[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data24[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz24[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[24])        //|<-i
-   ,.op_b_dat        (dat_actv_data24[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz24[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[24])       //|<-i
-   ,.res_a           (res_a_24[31:0])          //|>-o
-   ,.res_b           (res_b_24[31:0])          //|>-o
-   ,.res_tag         (res_tag_24[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_24[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data24[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz24[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[24])       , //|<-i
+    .op_b_dat        (dat_actv_data24[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz24[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[24])      , //|<-i
+    .res_a           (res_a_24[31:0])         , //|>-o
+    .res_b           (res_b_24[31:0])         , //|>-o
+    .res_tag         (res_tag_24[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_25 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_25[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data25[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz25[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[25])        //|<-i
-   ,.op_b_dat        (dat_actv_data25[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz25[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[25])       //|<-i
-   ,.res_a           (res_a_25[31:0])          //|>-o
-   ,.res_b           (res_b_25[31:0])          //|>-o
-   ,.res_tag         (res_tag_25[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_25[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data25[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz25[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[25])       , //|<-i
+    .op_b_dat        (dat_actv_data25[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz25[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[25])      , //|<-i
+    .res_a           (res_a_25[31:0])         , //|>-o
+    .res_b           (res_b_25[31:0])         , //|>-o
+    .res_tag         (res_tag_25[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_26 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_26[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data26[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz26[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[26])        //|<-i
-   ,.op_b_dat        (dat_actv_data26[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz26[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[26])       //|<-i
-   ,.res_a           (res_a_26[31:0])          //|>-o
-   ,.res_b           (res_b_26[31:0])          //|>-o
-   ,.res_tag         (res_tag_26[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_26[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data26[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz26[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[26])       , //|<-i
+    .op_b_dat        (dat_actv_data26[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz26[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[26])      , //|<-i
+    .res_a           (res_a_26[31:0])         , //|>-o
+    .res_b           (res_b_26[31:0])         , //|>-o
+    .res_tag         (res_tag_26[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_27 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_27[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data27[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz27[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[27])        //|<-i
-   ,.op_b_dat        (dat_actv_data27[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz27[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[27])       //|<-i
-   ,.res_a           (res_a_27[31:0])          //|>-o
-   ,.res_b           (res_b_27[31:0])          //|>-o
-   ,.res_tag         (res_tag_27[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_27[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data27[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz27[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[27])       , //|<-i
+    .op_b_dat        (dat_actv_data27[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz27[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[27])      , //|<-i
+    .res_a           (res_a_27[31:0])         , //|>-o
+    .res_b           (res_b_27[31:0])         , //|>-o
+    .res_tag         (res_tag_27[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_28 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_28[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data28[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz28[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[28])        //|<-i
-   ,.op_b_dat        (dat_actv_data28[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz28[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[28])       //|<-i
-   ,.res_a           (res_a_28[31:0])          //|>-o
-   ,.res_b           (res_b_28[31:0])          //|>-o
-   ,.res_tag         (res_tag_28[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_28[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data28[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz28[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[28])       , //|<-i
+    .op_b_dat        (dat_actv_data28[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz28[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[28])      , //|<-i
+    .res_a           (res_a_28[31:0])         , //|>-o
+    .res_b           (res_b_28[31:0])         , //|>-o
+    .res_tag         (res_tag_28[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_29 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_29[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data29[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz29[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[29])        //|<-i
-   ,.op_b_dat        (dat_actv_data29[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz29[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[29])       //|<-i
-   ,.res_a           (res_a_29[31:0])          //|>-o
-   ,.res_b           (res_b_29[31:0])          //|>-o
-   ,.res_tag         (res_tag_29[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_29[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data29[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz29[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[29])       , //|<-i
+    .op_b_dat        (dat_actv_data29[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz29[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[29])      , //|<-i
+    .res_a           (res_a_29[31:0])         , //|>-o
+    .res_b           (res_b_29[31:0])         , //|>-o
+    .res_tag         (res_tag_29[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_30 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_30[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data30[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz30[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[30])        //|<-i
-   ,.op_b_dat        (dat_actv_data30[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz30[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[30])       //|<-i
-   ,.res_a           (res_a_30[31:0])          //|>-o
-   ,.res_b           (res_b_30[31:0])          //|>-o
-   ,.res_tag         (res_tag_30[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_30[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data30[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz30[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[30])       , //|<-i
+    .op_b_dat        (dat_actv_data30[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz30[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[30])      , //|<-i
+    .res_a           (res_a_30[31:0])         , //|>-o
+    .res_b           (res_b_30[31:0])         , //|>-o
+    .res_tag         (res_tag_30[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_31 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_31[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data31[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz31[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[31])        //|<-i
-   ,.op_b_dat        (dat_actv_data31[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz31[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[31])       //|<-i
-   ,.res_a           (res_a_31[31:0])          //|>-o
-   ,.res_b           (res_b_31[31:0])          //|>-o
-   ,.res_tag         (res_tag_31[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_31[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data31[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz31[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[31])       , //|<-i
+    .op_b_dat        (dat_actv_data31[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz31[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[31])      , //|<-i
+    .res_a           (res_a_31[31:0])         , //|>-o
+    .res_b           (res_b_31[31:0])         , //|>-o
+    .res_tag         (res_tag_31[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_32 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_32[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data32[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz32[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[32])        //|<-i
-   ,.op_b_dat        (dat_actv_data32[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz32[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[32])       //|<-i
-   ,.res_a           (res_a_32[31:0])          //|>-o
-   ,.res_b           (res_b_32[31:0])          //|>-o
-   ,.res_tag         (res_tag_32[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_32[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data32[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz32[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[32])       , //|<-i
+    .op_b_dat        (dat_actv_data32[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz32[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[32])      , //|<-i
+    .res_a           (res_a_32[31:0])         , //|>-o
+    .res_b           (res_b_32[31:0])         , //|>-o
+    .res_tag         (res_tag_32[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_33 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_33[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data33[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz33[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[33])        //|<-i
-   ,.op_b_dat        (dat_actv_data33[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz33[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[33])       //|<-i
-   ,.res_a           (res_a_33[31:0])          //|>-o
-   ,.res_b           (res_b_33[31:0])          //|>-o
-   ,.res_tag         (res_tag_33[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_33[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data33[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz33[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[33])       , //|<-i
+    .op_b_dat        (dat_actv_data33[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz33[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[33])      , //|<-i
+    .res_a           (res_a_33[31:0])         , //|>-o
+    .res_b           (res_b_33[31:0])         , //|>-o
+    .res_tag         (res_tag_33[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_34 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_34[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data34[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz34[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[34])        //|<-i
-   ,.op_b_dat        (dat_actv_data34[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz34[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[34])       //|<-i
-   ,.res_a           (res_a_34[31:0])          //|>-o
-   ,.res_b           (res_b_34[31:0])          //|>-o
-   ,.res_tag         (res_tag_34[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_34[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data34[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz34[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[34])       , //|<-i
+    .op_b_dat        (dat_actv_data34[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz34[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[34])      , //|<-i
+    .res_a           (res_a_34[31:0])         , //|>-o
+    .res_b           (res_b_34[31:0])         , //|>-o
+    .res_tag         (res_tag_34[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_35 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_35[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data35[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz35[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[35])        //|<-i
-   ,.op_b_dat        (dat_actv_data35[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz35[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[35])       //|<-i
-   ,.res_a           (res_a_35[31:0])          //|>-o
-   ,.res_b           (res_b_35[31:0])          //|>-o
-   ,.res_tag         (res_tag_35[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_35[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data35[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz35[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[35])       , //|<-i
+    .op_b_dat        (dat_actv_data35[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz35[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[35])      , //|<-i
+    .res_a           (res_a_35[31:0])         , //|>-o
+    .res_b           (res_b_35[31:0])         , //|>-o
+    .res_tag         (res_tag_35[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_36 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_36[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data36[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz36[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[36])        //|<-i
-   ,.op_b_dat        (dat_actv_data36[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz36[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[36])       //|<-i
-   ,.res_a           (res_a_36[31:0])          //|>-o
-   ,.res_b           (res_b_36[31:0])          //|>-o
-   ,.res_tag         (res_tag_36[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_36[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data36[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz36[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[36])       , //|<-i
+    .op_b_dat        (dat_actv_data36[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz36[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[36])      , //|<-i
+    .res_a           (res_a_36[31:0])         , //|>-o
+    .res_b           (res_b_36[31:0])         , //|>-o
+    .res_tag         (res_tag_36[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_37 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_37[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data37[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz37[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[37])        //|<-i
-   ,.op_b_dat        (dat_actv_data37[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz37[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[37])       //|<-i
-   ,.res_a           (res_a_37[31:0])          //|>-o
-   ,.res_b           (res_b_37[31:0])          //|>-o
-   ,.res_tag         (res_tag_37[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_37[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data37[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz37[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[37])       , //|<-i
+    .op_b_dat        (dat_actv_data37[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz37[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[37])      , //|<-i
+    .res_a           (res_a_37[31:0])         , //|>-o
+    .res_b           (res_b_37[31:0])         , //|>-o
+    .res_tag         (res_tag_37[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_38 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_38[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data38[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz38[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[38])        //|<-i
-   ,.op_b_dat        (dat_actv_data38[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz38[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[38])       //|<-i
-   ,.res_a           (res_a_38[31:0])          //|>-o
-   ,.res_b           (res_b_38[31:0])          //|>-o
-   ,.res_tag         (res_tag_38[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_38[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data38[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz38[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[38])       , //|<-i
+    .op_b_dat        (dat_actv_data38[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz38[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[38])      , //|<-i
+    .res_a           (res_a_38[31:0])         , //|>-o
+    .res_b           (res_b_38[31:0])         , //|>-o
+    .res_tag         (res_tag_38[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_39 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_39[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data39[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz39[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[39])        //|<-i
-   ,.op_b_dat        (dat_actv_data39[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz39[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[39])       //|<-i
-   ,.res_a           (res_a_39[31:0])          //|>-o
-   ,.res_b           (res_b_39[31:0])          //|>-o
-   ,.res_tag         (res_tag_39[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_39[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data39[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz39[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[39])       , //|<-i
+    .op_b_dat        (dat_actv_data39[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz39[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[39])      , //|<-i
+    .res_a           (res_a_39[31:0])         , //|>-o
+    .res_b           (res_b_39[31:0])         , //|>-o
+    .res_tag         (res_tag_39[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_40 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_40[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data40[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz40[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[40])        //|<-i
-   ,.op_b_dat        (dat_actv_data40[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz40[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[40])       //|<-i
-   ,.res_a           (res_a_40[31:0])          //|>-o
-   ,.res_b           (res_b_40[31:0])          //|>-o
-   ,.res_tag         (res_tag_40[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_40[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data40[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz40[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[40])       , //|<-i
+    .op_b_dat        (dat_actv_data40[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz40[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[40])      , //|<-i
+    .res_a           (res_a_40[31:0])         , //|>-o
+    .res_b           (res_b_40[31:0])         , //|>-o
+    .res_tag         (res_tag_40[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_41 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_41[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data41[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz41[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[41])        //|<-i
-   ,.op_b_dat        (dat_actv_data41[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz41[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[41])       //|<-i
-   ,.res_a           (res_a_41[31:0])          //|>-o
-   ,.res_b           (res_b_41[31:0])          //|>-o
-   ,.res_tag         (res_tag_41[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_41[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data41[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz41[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[41])       , //|<-i
+    .op_b_dat        (dat_actv_data41[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz41[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[41])      , //|<-i
+    .res_a           (res_a_41[31:0])         , //|>-o
+    .res_b           (res_b_41[31:0])         , //|>-o
+    .res_tag         (res_tag_41[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_42 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_42[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data42[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz42[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[42])        //|<-i
-   ,.op_b_dat        (dat_actv_data42[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz42[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[42])       //|<-i
-   ,.res_a           (res_a_42[31:0])          //|>-o
-   ,.res_b           (res_b_42[31:0])          //|>-o
-   ,.res_tag         (res_tag_42[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_42[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data42[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz42[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[42])       , //|<-i
+    .op_b_dat        (dat_actv_data42[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz42[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[42])      , //|<-i
+    .res_a           (res_a_42[31:0])         , //|>-o
+    .res_b           (res_b_42[31:0])         , //|>-o
+    .res_tag         (res_tag_42[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_43 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_43[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data43[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz43[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[43])        //|<-i
-   ,.op_b_dat        (dat_actv_data43[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz43[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[43])       //|<-i
-   ,.res_a           (res_a_43[31:0])          //|>-o
-   ,.res_b           (res_b_43[31:0])          //|>-o
-   ,.res_tag         (res_tag_43[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_43[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data43[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz43[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[43])       , //|<-i
+    .op_b_dat        (dat_actv_data43[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz43[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[43])      , //|<-i
+    .res_a           (res_a_43[31:0])         , //|>-o
+    .res_b           (res_b_43[31:0])         , //|>-o
+    .res_tag         (res_tag_43[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_44 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_44[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data44[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz44[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[44])        //|<-i
-   ,.op_b_dat        (dat_actv_data44[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz44[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[44])       //|<-i
-   ,.res_a           (res_a_44[31:0])          //|>-o
-   ,.res_b           (res_b_44[31:0])          //|>-o
-   ,.res_tag         (res_tag_44[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_44[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data44[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz44[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[44])       , //|<-i
+    .op_b_dat        (dat_actv_data44[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz44[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[44])      , //|<-i
+    .res_a           (res_a_44[31:0])         , //|>-o
+    .res_b           (res_b_44[31:0])         , //|>-o
+    .res_tag         (res_tag_44[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_45 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_45[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data45[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz45[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[45])        //|<-i
-   ,.op_b_dat        (dat_actv_data45[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz45[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[45])       //|<-i
-   ,.res_a           (res_a_45[31:0])          //|>-o
-   ,.res_b           (res_b_45[31:0])          //|>-o
-   ,.res_tag         (res_tag_45[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_45[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data45[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz45[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[45])       , //|<-i
+    .op_b_dat        (dat_actv_data45[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz45[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[45])      , //|<-i
+    .res_a           (res_a_45[31:0])         , //|>-o
+    .res_b           (res_b_45[31:0])         , //|>-o
+    .res_tag         (res_tag_45[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_46 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_46[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data46[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz46[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[46])        //|<-i
-   ,.op_b_dat        (dat_actv_data46[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz46[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[46])       //|<-i
-   ,.res_a           (res_a_46[31:0])          //|>-o
-   ,.res_b           (res_b_46[31:0])          //|>-o
-   ,.res_tag         (res_tag_46[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_46[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data46[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz46[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[46])       , //|<-i
+    .op_b_dat        (dat_actv_data46[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz46[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[46])      , //|<-i
+    .res_a           (res_a_46[31:0])         , //|>-o
+    .res_b           (res_b_46[31:0])         , //|>-o
+    .res_tag         (res_tag_46[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_47 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_47[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data47[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz47[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[47])        //|<-i
-   ,.op_b_dat        (dat_actv_data47[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz47[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[47])       //|<-i
-   ,.res_a           (res_a_47[31:0])          //|>-o
-   ,.res_b           (res_b_47[31:0])          //|>-o
-   ,.res_tag         (res_tag_47[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_47[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data47[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz47[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[47])       , //|<-i
+    .op_b_dat        (dat_actv_data47[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz47[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[47])      , //|<-i
+    .res_a           (res_a_47[31:0])         , //|>-o
+    .res_b           (res_b_47[31:0])         , //|>-o
+    .res_tag         (res_tag_47[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_48 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_48[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data48[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz48[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[48])        //|<-i
-   ,.op_b_dat        (dat_actv_data48[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz48[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[48])       //|<-i
-   ,.res_a           (res_a_48[31:0])          //|>-o
-   ,.res_b           (res_b_48[31:0])          //|>-o
-   ,.res_tag         (res_tag_48[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_48[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data48[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz48[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[48])       , //|<-i
+    .op_b_dat        (dat_actv_data48[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz48[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[48])      , //|<-i
+    .res_a           (res_a_48[31:0])         , //|>-o
+    .res_b           (res_b_48[31:0])         , //|>-o
+    .res_tag         (res_tag_48[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_49 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_49[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data49[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz49[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[49])        //|<-i
-   ,.op_b_dat        (dat_actv_data49[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz49[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[49])       //|<-i
-   ,.res_a           (res_a_49[31:0])          //|>-o
-   ,.res_b           (res_b_49[31:0])          //|>-o
-   ,.res_tag         (res_tag_49[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_49[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data49[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz49[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[49])       , //|<-i
+    .op_b_dat        (dat_actv_data49[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz49[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[49])      , //|<-i
+    .res_a           (res_a_49[31:0])         , //|>-o
+    .res_b           (res_b_49[31:0])         , //|>-o
+    .res_tag         (res_tag_49[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_50 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_50[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data50[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz50[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[50])        //|<-i
-   ,.op_b_dat        (dat_actv_data50[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz50[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[50])       //|<-i
-   ,.res_a           (res_a_50[31:0])          //|>-o
-   ,.res_b           (res_b_50[31:0])          //|>-o
-   ,.res_tag         (res_tag_50[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_50[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data50[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz50[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[50])       , //|<-i
+    .op_b_dat        (dat_actv_data50[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz50[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[50])      , //|<-i
+    .res_a           (res_a_50[31:0])         , //|>-o
+    .res_b           (res_b_50[31:0])         , //|>-o
+    .res_tag         (res_tag_50[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_51 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_51[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data51[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz51[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[51])        //|<-i
-   ,.op_b_dat        (dat_actv_data51[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz51[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[51])       //|<-i
-   ,.res_a           (res_a_51[31:0])          //|>-o
-   ,.res_b           (res_b_51[31:0])          //|>-o
-   ,.res_tag         (res_tag_51[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_51[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data51[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz51[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[51])       , //|<-i
+    .op_b_dat        (dat_actv_data51[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz51[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[51])      , //|<-i
+    .res_a           (res_a_51[31:0])         , //|>-o
+    .res_b           (res_b_51[31:0])         , //|>-o
+    .res_tag         (res_tag_51[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_52 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_52[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data52[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz52[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[52])        //|<-i
-   ,.op_b_dat        (dat_actv_data52[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz52[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[52])       //|<-i
-   ,.res_a           (res_a_52[31:0])          //|>-o
-   ,.res_b           (res_b_52[31:0])          //|>-o
-   ,.res_tag         (res_tag_52[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_52[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data52[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz52[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[52])       , //|<-i
+    .op_b_dat        (dat_actv_data52[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz52[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[52])      , //|<-i
+    .res_a           (res_a_52[31:0])         , //|>-o
+    .res_b           (res_b_52[31:0])         , //|>-o
+    .res_tag         (res_tag_52[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_53 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_53[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data53[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz53[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[53])        //|<-i
-   ,.op_b_dat        (dat_actv_data53[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz53[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[53])       //|<-i
-   ,.res_a           (res_a_53[31:0])          //|>-o
-   ,.res_b           (res_b_53[31:0])          //|>-o
-   ,.res_tag         (res_tag_53[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_53[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data53[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz53[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[53])       , //|<-i
+    .op_b_dat        (dat_actv_data53[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz53[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[53])      , //|<-i
+    .res_a           (res_a_53[31:0])         , //|>-o
+    .res_b           (res_b_53[31:0])         , //|>-o
+    .res_tag         (res_tag_53[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_54 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_54[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data54[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz54[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[54])        //|<-i
-   ,.op_b_dat        (dat_actv_data54[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz54[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[54])       //|<-i
-   ,.res_a           (res_a_54[31:0])          //|>-o
-   ,.res_b           (res_b_54[31:0])          //|>-o
-   ,.res_tag         (res_tag_54[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_54[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data54[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz54[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[54])       , //|<-i
+    .op_b_dat        (dat_actv_data54[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz54[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[54])      , //|<-i
+    .res_a           (res_a_54[31:0])         , //|>-o
+    .res_b           (res_b_54[31:0])         , //|>-o
+    .res_tag         (res_tag_54[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_55 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_55[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data55[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz55[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[55])        //|<-i
-   ,.op_b_dat        (dat_actv_data55[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz55[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[55])       //|<-i
-   ,.res_a           (res_a_55[31:0])          //|>-o
-   ,.res_b           (res_b_55[31:0])          //|>-o
-   ,.res_tag         (res_tag_55[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_55[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data55[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz55[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[55])       , //|<-i
+    .op_b_dat        (dat_actv_data55[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz55[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[55])      , //|<-i
+    .res_a           (res_a_55[31:0])         , //|>-o
+    .res_b           (res_b_55[31:0])         , //|>-o
+    .res_tag         (res_tag_55[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_56 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_56[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data56[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz56[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[56])        //|<-i
-   ,.op_b_dat        (dat_actv_data56[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz56[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[56])       //|<-i
-   ,.res_a           (res_a_56[31:0])          //|>-o
-   ,.res_b           (res_b_56[31:0])          //|>-o
-   ,.res_tag         (res_tag_56[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_56[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data56[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz56[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[56])       , //|<-i
+    .op_b_dat        (dat_actv_data56[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz56[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[56])      , //|<-i
+    .res_a           (res_a_56[31:0])         , //|>-o
+    .res_b           (res_b_56[31:0])         , //|>-o
+    .res_tag         (res_tag_56[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_57 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_57[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data57[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz57[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[57])        //|<-i
-   ,.op_b_dat        (dat_actv_data57[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz57[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[57])       //|<-i
-   ,.res_a           (res_a_57[31:0])          //|>-o
-   ,.res_b           (res_b_57[31:0])          //|>-o
-   ,.res_tag         (res_tag_57[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_57[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data57[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz57[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[57])       , //|<-i
+    .op_b_dat        (dat_actv_data57[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz57[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[57])      , //|<-i
+    .res_a           (res_a_57[31:0])         , //|>-o
+    .res_b           (res_b_57[31:0])         , //|>-o
+    .res_tag         (res_tag_57[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_58 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_58[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data58[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz58[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[58])        //|<-i
-   ,.op_b_dat        (dat_actv_data58[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz58[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[58])       //|<-i
-   ,.res_a           (res_a_58[31:0])          //|>-o
-   ,.res_b           (res_b_58[31:0])          //|>-o
-   ,.res_tag         (res_tag_58[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_58[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data58[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz58[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[58])       , //|<-i
+    .op_b_dat        (dat_actv_data58[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz58[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[58])      , //|<-i
+    .res_a           (res_a_58[31:0])         , //|>-o
+    .res_b           (res_b_58[31:0])         , //|>-o
+    .res_tag         (res_tag_58[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_59 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_59[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data59[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz59[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[59])        //|<-i
-   ,.op_b_dat        (dat_actv_data59[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz59[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[59])       //|<-i
-   ,.res_a           (res_a_59[31:0])          //|>-o
-   ,.res_b           (res_b_59[31:0])          //|>-o
-   ,.res_tag         (res_tag_59[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_59[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data59[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz59[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[59])       , //|<-i
+    .op_b_dat        (dat_actv_data59[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz59[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[59])      , //|<-i
+    .res_a           (res_a_59[31:0])         , //|>-o
+    .res_b           (res_b_59[31:0])         , //|>-o
+    .res_tag         (res_tag_59[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_60 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_60[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data60[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz60[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[60])        //|<-i
-   ,.op_b_dat        (dat_actv_data60[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz60[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[60])       //|<-i
-   ,.res_a           (res_a_60[31:0])          //|>-o
-   ,.res_b           (res_b_60[31:0])          //|>-o
-   ,.res_tag         (res_tag_60[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_60[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data60[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz60[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[60])       , //|<-i
+    .op_b_dat        (dat_actv_data60[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz60[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[60])      , //|<-i
+    .res_a           (res_a_60[31:0])         , //|>-o
+    .res_b           (res_b_60[31:0])         , //|>-o
+    .res_tag         (res_tag_60[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_61 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_61[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data61[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz61[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[61])        //|<-i
-   ,.op_b_dat        (dat_actv_data61[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz61[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[61])       //|<-i
-   ,.res_a           (res_a_61[31:0])          //|>-o
-   ,.res_b           (res_b_61[31:0])          //|>-o
-   ,.res_tag         (res_tag_61[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_61[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data61[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz61[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[61])       , //|<-i
+    .op_b_dat        (dat_actv_data61[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz61[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[61])      , //|<-i
+    .res_a           (res_a_61[31:0])         , //|>-o
+    .res_b           (res_b_61[31:0])         , //|>-o
+    .res_tag         (res_tag_61[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_62 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_62[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data62[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz62[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[62])        //|<-i
-   ,.op_b_dat        (dat_actv_data62[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz62[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[62])       //|<-i
-   ,.res_a           (res_a_62[31:0])          //|>-o
-   ,.res_b           (res_b_62[31:0])          //|>-o
-   ,.res_tag         (res_tag_62[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_62[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data62[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz62[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[62])       , //|<-i
+    .op_b_dat        (dat_actv_data62[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz62[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[62])      , //|<-i
+    .res_a           (res_a_62[31:0])         , //|>-o
+    .res_b           (res_b_62[31:0])         , //|>-o
+    .res_tag         (res_tag_62[7:0])          //|>-o
    );
 
 NV_NVDLA_CMAC_CORE_MAC_mul  u_mul_63 (
-    .nvdla_core_clk  (nvdla_core_clk)          //|<-i
-   ,.nvdla_core_rstn (nvdla_core_rstn)         //|<-i
-   ,.cfg_is_fp16     (cfg_is_fp16)             //|<-i
-   ,.cfg_is_int8     (cfg_is_int8)             //|<-i
-   ,.cfg_reg_en      (cfg_reg_en)              //|<-i
-   ,.exp_sft         (exp_sft_63[3:0])         //|<-i
-   ,.op_a_dat        (wt_actv_data63[15:0])    //|<-i
-   ,.op_a_nz         (wt_actv_nz63[1:0])       //|<-i
-   ,.op_a_pvld       (wt_actv_pvld[63])        //|<-i
-   ,.op_b_dat        (dat_actv_data63[15:0])   //|<-i
-   ,.op_b_nz         (dat_actv_nz63[1:0])      //|<-i
-   ,.op_b_pvld       (dat_actv_pvld[63])       //|<-i
-   ,.res_a           (res_a_63[31:0])          //|>-o
-   ,.res_b           (res_b_63[31:0])          //|>-o
-   ,.res_tag         (res_tag_63[7:0])         //|>-o
+    .nvdla_core_clk  (nvdla_core_clk)         , //|<-i
+    .nvdla_core_rstn (nvdla_core_rstn)        , //|<-i
+    .cfg_is_fp16     (cfg_is_fp16)            , //|<-i
+    .cfg_is_int8     (cfg_is_int8)            , //|<-i
+    .cfg_reg_en      (cfg_reg_en)             , //|<-i
+    .exp_sft         (exp_sft_63[3:0])        , //|<-i
+    .op_a_dat        (wt_actv_data63[15:0])   , //|<-i
+    .op_a_nz         (wt_actv_nz63[1:0])      , //|<-i
+    .op_a_pvld       (wt_actv_pvld[63])       , //|<-i
+    .op_b_dat        (dat_actv_data63[15:0])  , //|<-i
+    .op_b_nz         (dat_actv_nz63[1:0])     , //|<-i
+    .op_b_pvld       (dat_actv_pvld[63])      , //|<-i
+    .res_a           (res_a_63[31:0])         , //|>-o
+    .res_b           (res_b_63[31:0])         , //|>-o
+    .res_tag         (res_tag_63[7:0])          //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -2618,20 +3201,20 @@ end
 //|   Connect /(clk.*)/ IPX_\${1};
 //|   Connect /(rst.*)/ IPX_\${1};
 simple_spi  my_spi (
-    .clk_i  (IPX_clk_i)        //|<-i
-   ,.rst_i  (IPX_rst_i)        //|<-i
-   ,.adr_i  (adr_i[2:0])       //|<-i
-   ,.cyc_i  (cyc_i)            //|<-i
-   ,.dat_i  (dat_i[7:0])       //|<-i
-   ,.miso_i (MISO_I_IPX)       //|<-i
-   ,.stb_i  (stb_i)            //|<-i
-   ,.we_i   (we_i)             //|<-i
-   ,.ack_o  (ack_o)            //|>-o
-   ,.dat_o  (dat_o[7:0])       //|>-o
-   ,.inta_o (inta_o)           //|>-o
-   ,.mosi_o (MOSI_O_IPX)       //|>-o
-   ,.sck_o  (SCK_O_IPX)        //|>-o
-   ,.ss_o   (SS_O_IPX)         //|>-o
+    .clk_i  (IPX_clk_i)       , //|<-i
+    .rst_i  (IPX_rst_i)       , //|<-i
+    .adr_i  (adr_i[2:0])      , //|<-i
+    .cyc_i  (cyc_i)           , //|<-i
+    .dat_i  (dat_i[7:0])      , //|<-i
+    .miso_i (MISO_I_IPX)      , //|<-i
+    .stb_i  (stb_i)           , //|<-i
+    .we_i   (we_i)            , //|<-i
+    .ack_o  (ack_o)           , //|>-o
+    .dat_o  (dat_o[7:0])      , //|>-o
+    .inta_o (inta_o)          , //|>-o
+    .mosi_o (MOSI_O_IPX)      , //|>-o
+    .sck_o  (SCK_O_IPX)       , //|>-o
+    .ss_o   (SS_O_IPX)          //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -2658,20 +3241,20 @@ simple_spi
 		 .param2(2)
 	 )
  my_spi (
-    .clk_i  (IPX_clk_i)        //|<-i
-   ,.rst_i  (IPX_rst_i)        //|<-i
-   ,.adr_i  (adr_i[2:0])       //|<-i
-   ,.cyc_i  (cyc_i)            //|<-i
-   ,.dat_i  (dat_i[7:0])       //|<-i
-   ,.miso_i (MISO_I_IPX)       //|<-i
-   ,.stb_i  (stb_i)            //|<-i
-   ,.we_i   (we_i)             //|<-i
-   ,.ack_o  (ack_o)            //|>-o
-   ,.dat_o  (dat_o[7:0])       //|>-o
-   ,.inta_o (inta_o)           //|>-o
-   ,.mosi_o (MOSI_O_IPX)       //|>-o
-   ,.sck_o  (SCK_O_IPX)        //|>-o
-   ,.ss_o   (SS_O_IPX)         //|>-o
+    .clk_i  (IPX_clk_i)       , //|<-i
+    .rst_i  (IPX_rst_i)       , //|<-i
+    .adr_i  (adr_i[2:0])      , //|<-i
+    .cyc_i  (cyc_i)           , //|<-i
+    .dat_i  (dat_i[7:0])      , //|<-i
+    .miso_i (MISO_I_IPX)      , //|<-i
+    .stb_i  (stb_i)           , //|<-i
+    .we_i   (we_i)            , //|<-i
+    .ack_o  (ack_o)           , //|>-o
+    .dat_o  (dat_o[7:0])      , //|>-o
+    .inta_o (inta_o)          , //|>-o
+    .mosi_o (MOSI_O_IPX)      , //|>-o
+    .sck_o  (SCK_O_IPX)       , //|>-o
+    .ss_o   (SS_O_IPX)          //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -2694,25 +3277,25 @@ end
 //| &AddIntfByIPX("./cfg/simple_spi.xml");
 //|  &AddIntfByJson("./cfg/MyIntf.json");
 //|  &PrintIntfPort("-intf spi");
-input                     miso_i          ;
-output                    ss_o            ;
-output                    mosi_o          ;
 output                    sck_o           ;
+output                    ss_o            ;
+input                     miso_i          ;
+output                    mosi_o          ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
-reg                       TEST_PSLVERR    ;
-reg      [17:0]           TEST_PADDR      ;
-reg                       TEST_PSEL       ;
 reg                       TEST_PREADY     ;
-reg      [31:0]           TEST_PWDATA     ;
-reg      [31:0]           TEST_PRDATA     ;
-reg                       TEST_PCLK       ;
-reg                       TEST_PWRITE     ;
 reg                       TEST_PENABLE    ;
+reg      [17:0]           TEST_PADDR      ;
+reg                       TEST_PSLVERR    ;
+reg      [31:0]           TEST_PRDATA     ;
+reg                       TEST_PSEL       ;
+reg      [31:0]           TEST_PWDATA     ;
+reg                       TEST_PWRITE     ;
+reg                       TEST_PCLK       ;
 reg                       TEST_PRESETN    ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
@@ -2745,23 +3328,23 @@ assign test_wire3 = test_input3 & (  sys_ctrl &  sys_en &  sys_off |  sys_on   )
 //| &Instance test_sys_ctrl_apb_regs;
 //|   Connect -final -interface APB3  -up \${1}_suffix ;
 test_sys_ctrl_apb_regs  u_test_sys_ctrl_apb_regs (
-    .pclk                       (PCLK_SUFFIX)                      //|<-i
-   ,.presetn                    (PRESETN_SUFFIX)                   //|<-i
-   ,.paddr                      (PADDR_SUFFIX[31:0])               //|<-i
-   ,.penable                    (PENABLE_SUFFIX)                   //|<-i
-   ,.psel                       (PSEL_SUFFIX)                      //|<-i
-   ,.pwdata                     (PWDATA_SUFFIX[31:0])              //|<-i
-   ,.pwrite                     (PWRITE_SUFFIX)                    //|<-i
-   ,.prdata                     (PRDATA_SUFFIX[31:0])              //|>-o
-   ,.pready                     (PREADY_SUFFIX)                    //|>-o
-   ,.pslverr                    (PSLVERR_SUFFIX)                   //|>-o
-   ,.sys_ctrl0_l2c_strip_mode   (sys_ctrl0_l2c_strip_mode[2:0])    //|>-o
-   ,.sys_ctrl0_mem_repair_done  (sys_ctrl0_mem_repair_done[6:0])   //|>-o
-   ,.sys_ctrl0_mem_repair_en    (sys_ctrl0_mem_repair_en[0:0])     //|>-o
-   ,.sys_ctrl0_pdc_use_arm_ctrl (sys_ctrl0_pdc_use_arm_ctrl[0:0])  //|>-o
-   ,.sys_ctrl0_smmu_mmusid      (sys_ctrl0_smmu_mmusid[4:0])       //|>-o
-   ,.test_reg_test_field0       (test_reg_test_field0[3:0])        //|>-o
-   ,.test_reg_test_filed1       (test_reg_test_filed1[1:0])        //|>-o
+    .pclk                       (PCLK_SUFFIX)                     , //|<-i
+    .presetn                    (PRESETN_SUFFIX)                  , //|<-i
+    .paddr                      (PADDR_SUFFIX[31:0])              , //|<-i
+    .penable                    (PENABLE_SUFFIX)                  , //|<-i
+    .psel                       (PSEL_SUFFIX)                     , //|<-i
+    .pwdata                     (PWDATA_SUFFIX[31:0])             , //|<-i
+    .pwrite                     (PWRITE_SUFFIX)                   , //|<-i
+    .prdata                     (PRDATA_SUFFIX[31:0])             , //|>-o
+    .pready                     (PREADY_SUFFIX)                   , //|>-o
+    .pslverr                    (PSLVERR_SUFFIX)                  , //|>-o
+    .sys_ctrl0_l2c_strip_mode   (sys_ctrl0_l2c_strip_mode[2:0])   , //|>-o
+    .sys_ctrl0_mem_repair_done  (sys_ctrl0_mem_repair_done[6:0])  , //|>-o
+    .sys_ctrl0_mem_repair_en    (sys_ctrl0_mem_repair_en[0:0])    , //|>-o
+    .sys_ctrl0_pdc_use_arm_ctrl (sys_ctrl0_pdc_use_arm_ctrl[0:0]) , //|>-o
+    .sys_ctrl0_smmu_mmusid      (sys_ctrl0_smmu_mmusid[4:0])      , //|>-o
+    .test_reg_test_field0       (test_reg_test_field0[3:0])       , //|>-o
+    .test_reg_test_filed1       (test_reg_test_filed1[1:0])         //|>-o
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
@@ -2779,21 +3362,21 @@ test_sys_ctrl_apb_regs  u_test_sys_ctrl_apb_regs (
 //|   );
 //|   &AddIntfByHash(\%APB3,"test_APB3");
 //|   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
-input    [31:0]           my_pDAT         ;
-output   [31:0]           my_pRDATA       ;
-input                     my_pSELx        ;
-output                    my_pREADY       ;
-output                    my_pSLVERR      ;
-input    [11:0]           my_pADDR        ;
 input                     my_pENABL       ;
+input    [31:0]           my_pDAT         ;
+output                    my_pREADY       ;
+input    [11:0]           my_pADDR        ;
+output                    my_pSLVERR      ;
+input                     my_pSELx        ;
+output   [31:0]           my_pRDATA       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //|   &AddIntfByJson("MyIntf.json");
 //|   &PrintIntfPort("-intf MyIntf");
-wire                      intf_sig1       ;
 reg      [31:0]           intf_sig2       ;
+wire                      intf_sig1       ;
 reg                       intf_sig0       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
@@ -2811,11 +3394,11 @@ reg                       intf_sig0       ;
 //| 	&AddIntfBySV($sv);
 //| 	&ShowIntf("test_if");
 //|     &PrintIntfPort("-intf test_if -up"); 
+wire                      PORT_B_0        ;
+logic                     RST_N           ;
+logic    [12:0]           PORT_A_1        ;
 wire     [1:0]            PORT_A_0        ;
 logic                     PORT_B_1        ;
-wire                      PORT_B_0        ;
-logic    [12:0]           PORT_A_1        ;
-logic                     RST_N           ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
