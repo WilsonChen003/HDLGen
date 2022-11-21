@@ -1380,7 +1380,8 @@ sub UpdateAutoWarning {
 
    ###########################################
    for my $sig (keys(%$AutoInstSigs)) {
-	   #next if ($CurMod_Top->{"ports"}->{"input"}->{"$port_conn"});
+	   next if ($CurMod_Top->{"ports"}->{"input"}->{"$sig"});
+	   next if ($CurMod_Top->{"ports"}->{"output"}->{"$sig"});
 	   next if ($CurMod_Top->{"connections"}->{"input"}->{"$sig"} eq 1);
 	   next if ($CurMod_Top->{"connections"}->{"output"}->{"$sig"} eq 1);
 	   next if ($CurMod_Top->{"regs"}->{"$sig"});
