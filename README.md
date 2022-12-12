@@ -67,7 +67,9 @@ Function generation
     ├── doc                       # usage introduction 
 
 ## Usage
-   It's as simple as: <br>
+   first you need to set shell ENV of ***HDLGEN_ROOT***, otherwise tool will report error.<br>
+   plese refer to `setenv.sh`<br>
+   then run command as simple as: <br>
    `cd test` <br>
    `../HDLGen.pl -i NV_NVDLA_CMAC_CORE_mac.src` or `../HDLGen.bin -i NV_NVDLA_CMAC_CORE_mac.src` <br>
    or `../HDLGen.pl -f ./src.list`<br>
@@ -87,6 +89,7 @@ Function generation
 * several Perl Modules are required, can refer to the package head in source code, here listed:<br>
                         Getopt<br>
                         JSON<br>
+			Text::Template<br>
                         File::Basename<br>
                         File::Find<br>
                         XML::Simple<br>
@@ -94,6 +97,7 @@ Function generation
                         Dumper<br>
 			Text::ParseWords<br>
                         Term::ANSIColor<br>
+			
 			
 **Suggestion:**<br>
  You can first run HDLGen.pl, then install any package according to the error message,<br>
