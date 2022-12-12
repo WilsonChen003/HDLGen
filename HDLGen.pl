@@ -86,9 +86,11 @@ if ($usage) {
 sub Version {
 	print BOLD BLUE <<EOF;
 
+
                                     *********************************************
                                     ****** Current HDLGen Version is V0.95 ******
                                     *********************************************
+
 EOF
 
 }
