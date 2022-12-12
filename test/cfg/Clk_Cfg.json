@@ -1,0 +1,17 @@
+{
+    "clk"   : "clk",
+    "oclk"  : "clk_out",
+    "divn"  : "1",
+    "clk_sel"  : "clk_sel0",
+    "src0"  : "xtal_clk",
+    "src1"  : "clk_32khz",
+    "src2"  : "pll0",
+    "src3"  : "pll1",
+    "src4"  : "pll2",
+    "src5"  : "1'b0",
+    "src6"  : "1'b0",
+    "src7"  : "1'b0",
+    "en"    : "clk_en0",
+    "occ_clk"    : "test_clk",
+    "test"  : "1" 
+}	  

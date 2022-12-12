@@ -8,6 +8,8 @@
 
 // File Name: NV_NVDLA_CMAC_CORE_mac.v
 
+ `define INT_NUM_PLIC   240
+
 module NV_NVDLA_CMAC_CORE_mac (
    nvdla_core_clk     //|< i
   ,nvdla_wg_clk       //|< i
@@ -20,7 +22,7 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,dat_actv_data      //|< i
   ,dat_actv_nan       //|< i
   ,dat_actv_nz        //|< i
-  ,dat_actv_pvld      //|< i
+  //,dat_actv_pvld      //|< i
   ,dat_pre_exp        //|< i
   ,dat_pre_mask       //|< /
   ,dat_pre_pvld       //|< i
@@ -29,14 +31,21 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_data       //|< i
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
-  //,wt_actv_pvld       //|< i --- test for width-learning
-  ,wt_sd_exp          //|< i
+  ,wt_actv_pvld       //|< i
+  //test for Auto Warnning
+  //,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
   ,mac_out_data       //|> o
   ,mac_out_nan        //|> o
-  ,mac_out_pvld       //|> o
+  ,mac_out_pvld      //|> o
   );
+
+ parameter NUM_INT  =    24;
+ parameter NUM_TEST  =   8;
+ parameter NUM_TOTAL  =  NUM_INT * NUM_TEST;
+
+//: our $NUM_INT_VAR = 240;
 
 input           nvdla_core_clk;
 input           nvdla_wg_clk;
@@ -49,7 +58,7 @@ input           cfg_reg_en;
 input  [1023:0] dat_actv_data;
 input    [63:0] dat_actv_nan;
 input   [127:0] dat_actv_nz;
-input   [103:0] dat_actv_pvld;
+//input   [103:0] dat_actv_pvld;
 input   [191:0] dat_pre_exp;
 input    [63:0] dat_pre_mask;
 input           dat_pre_pvld;
@@ -58,8 +67,8 @@ input           dat_pre_stripe_st;
 input  [1023:0] wt_actv_data;
 input    [63:0] wt_actv_nan;
 input   [127:0] wt_actv_nz;
-//input   [103:0] wt_actv_pvld; //--- test for width-learning
-input   [191:0] wt_sd_exp;
+input   [103:0] wt_actv_pvld;
+//input   [191:0] wt_sd_exp;
 input    [63:0] wt_sd_mask;
 input           wt_sd_pvld;
 output  [175:0] mac_out_data;
@@ -72,9 +81,9 @@ output          mac_out_pvld;
 //:AutoInstSig;
 // ========================================================================================
 
-wire     [65:0] dbg_sign;
-wire      [3:0] exp_max;
-wire            exp_pvld;
+reg     [65:0] dbg_sign;
+reg      [3:0] exp_max;
+reg            exp_pvld;
 
 //: SRC ./incr
 //: &SRC ./cfg
@@ -82,7 +91,7 @@ wire            exp_pvld;
 // wire      [3:0] exp_sft_00;
 // ..
 //: for my $i (0..63) {
-//:   print("wire [7:0] exp_test_$i;\n");;
+//:   print("wire [7:0] exp_test_$i;\n");
 //: }
 // wire      [3:0] exp_sft_63;
 //
@@ -111,7 +120,7 @@ wire            exp_pvld;
 //:&DTIWire("top2dp", 512);
 
 
-wire [63:0] res_tag_b0;
+//wire [63:0] res_tag_b0;
 wire [63:0] res_tag_b1;
 wire [63:0] res_tag_b2;
 wire [63:0] res_tag_b3;
@@ -126,7 +135,7 @@ wire [63:0] res_tag_b7;
 // ============= for Python Script ==============
 //#Begin
     for i in [0,1,2,3,4,5,6,7]:
-       print("wire [63:0] test_data%d;" % i )
+       print("wire [63:0] test_PY_data%d;" % i )
 //#End 
 // ========================================================================================
 
@@ -171,7 +180,6 @@ end
 //:Begin
     for my $i (0..63) {
 		my $ii = sprintf("%02d",$i);
-	    #print STDOUT " ---\$ii == $ii ---\n";
 	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
           &Connect exp_sft      exp_sft_$ii;
            Connect op_a_dat     wt_actv_data${i};
@@ -294,6 +302,12 @@ always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
 end
 
 
+always @(*)
+begin
+  MISO_I_IPX = my_msio;
+  MOSI_O_IPX = my_mosi;
+end
+
 //:Begin
  &Instance simple_spi.xml my_spi;
   Connect -final -interface spi  -up \${1}_IPX ;
@@ -301,10 +315,7 @@ end
   Connect /(rst.*)/ IPX_\${1};
 //:End
 
-//:	&ReadIPX("simple_spi.xml");
-//:	&ShowIPX("simple_spi.xml");
 
-//:Begin
  &Instance simple_spi.xml
      #( .parm0(0),
 		 .param1(1),
@@ -314,7 +325,6 @@ end
   Connect -final -interface spi  -up \${1}_IPX ;
   Connect /(clk.*)/ IPX_\${1};
   Connect /(rst.*)/ IPX_\${1};
-//:End
 
 //==========================================================
 // Final register for MAC output
@@ -329,13 +339,20 @@ always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
 end
 
 
+//=========================================================================================
+//====== test for IPX & JSON ======
+//=========================================================================================
 //: &AddIntfByIPX("./cfg/simple_spi.xml");
+////:	&ShowIntf("spi");
 //: &AddIntfByJson("./cfg/MyIntf.json");
 //: &PrintIntfPort("-intf spi");
 
 
 //: &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
 
+//=========================================================================================
+//====== test for Perl scrip with hasht ======
+//=========================================================================================
 //:Begin
   my %test_hash = (
        'sys_ctrl'=> "&",
@@ -353,12 +370,19 @@ end
 //:End
 
 
+always @(*) begin
+  dat_pre_exp <= my_data_pre_exp                  ;
+  dat_pre_mask<= my_data_pre_max                 ;
+end
 
 
 &Instance test_sys_ctrl_apb_regs;
   Connect -final -interface APB3  -up \${1}_suffix ;
 
 
+//=========================================================================================
+//====== test for perl hash usage ======
+//=========================================================================================
 //:Begin
   my %APB3 = (
        'pSELx' => "input: 1",
@@ -373,11 +397,10 @@ end
   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
 //:End
 
-//:Begin
-  &AddIntfByJson("MyIntf.json");
-  &PrintIntfPort("-intf MyIntf");
-//:End  
 
+//=========================================================================================
+//====== test for SV interface ======
+//=========================================================================================
 //:Begin
   my $sv = "
   interface test_if(input clk);
@@ -389,9 +412,16 @@ end
    endinterface	
 ";
 	&AddIntfBySV($sv);
-	&ShowIntf("test_if");
+
+##&ShowIntf("test_if");
+
     &PrintIntfPort("-intf test_if -up"); 
+
 //:End
+
+//=========================================================================================
+//====== test for flexible variable ======
+//=========================================================================================
 
 //: our $reset= " or negedge resetn";
 
@@ -405,14 +435,58 @@ end
 
 
 
-//: &eFunc::ClkGen("-clk clk_m");
-//: &eFunc::RstGen("-clk clk_m");
-//: &eFunc::FuseGen("-clk clk_m");
-//: &eFunc::PmuGen("-clk clk_m");
-//: &eFunc::MemGen("-clk clk_m");
-//: &eFunc::FifoGen("-clk clk_m");
-//: &eFunc::AsyncGen("-clk clk_m");
+//=========================================================================================
+//====== test for paramater and define, but it's still simple ======
+//=========================================================================================
+assign plic_int_vld[`INT_NUM_PLIC+15:0] = {pad_plic_int_vld[`INT_NUM_PLIC-1:0],14'b0,l2c_plic_ecc_int_vld,1'b0};
+assign plic_int_cfg[`INT_NUM_PLIC+15:0] = {pad_plic_int_cfg[`INT_NUM_PLIC-1:0],16'b0};
+//assign plic_int_cfg = {pad_plic_int_cfg[`INT_NUM_PLIC-1:0],16'b0};
+assign plic_int_cfg_test_0 = {pad_plic_int_cfg[`INT_NUM_PLIC-1:0],16'b0};
+assign plic_int_cfg_test_1 = {pad_plic_int_cfg[239:0],16'b0};
+assign plic_int_cfg_test_2 = {pad_plic_int_cfg[240-1:0],16'b0};
 
-//: GenIPX("my_design.xml");
+assign plic_int_cfg_test_3 = pad_plic_int_cfg[239:0];
+
+assign plic_int_cfg_test_4 = {pad_plic_int_cfg[240+2:0],16'b0};
+
+assign plic_int_cfg_test_5 = pad_plic_int_cfg[NUM_INT-1:0];
+assign plic_int_cfg_test_6 = {pad_plic_int_cfg[${NUM_INT_VAR}-1:0],16'b0};
+
+assign plic_int_cfg_test_7 = {pad_plic_int_cfg[NUM_TOTAL-1:0],16'b0};
+
+assign plic_core0_me_int  = plic_hartx_mint_req[0];
+assign plic_core0_se_int  = plic_hartx_sint_req[0];
+
+//=========================================================================================
+//====== test for extend functions, need inhouse developed design template file ======
+//=========================================================================================
+//: &eFunc::ClkGen("Test_Clk", "./cfg/Clk_Cfg.json");
+
+//: &eFunc::RstGen("Test_Rst", "./cfg/Rst_Cfg.json");
+
+//: &eFunc::FuseGen("Test_Fuse", "./cfg/Fuse_Cfg.json");
+
+//: &eFunc::PmuGen("Test_Pmu", "./cfg/Pmu_Cfg.json");
+
+//: &eFunc::MemGen("Test_Mem", "./cfg/Mem_Cfg.json");
+
+//: &eFunc::AsyncIntfGen("Test_AsyncIntf", "./cfg/AsyncIntf_Cfg.json");
+
+//: &eFunc::FifoGen("Test_SFifo", "./cfg/SFifo_Cfg.json");
+
+&Instance Test_SFifo;
+
+//: &eFunc::FifoGen("Test_AFifo", "./cfg/AFifo_Cfg.json");
+
+&Instance Test_AFifo;
+
+
+
+//=========================================================================================
+//====== not implemented yet ======
+//=========================================================================================
+////: GenIPX("my_design");
+
+
 
 endmodule // NV_NVDLA_CMAC_CORE_mac

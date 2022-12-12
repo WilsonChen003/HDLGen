@@ -1,0 +1,10 @@
+{
+    "awd"    : "4",  
+    "dwd"    : "64",
+    "depth"  : "16",
+    "clk"    : "clks",
+    "async"  : "0",
+    "noram"  : "0",
+    "ilatch" : "0",
+    "olatch" : "0"
+}	  

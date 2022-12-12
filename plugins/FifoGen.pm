@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+		
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
@@ -17,25 +17,24 @@
 ##############################################################################################################
 ##############################################################################################################
 
+
 package FifoGen;
 use strict;
 use warnings FATAL => qw(all);
 
-use Getopt::Long qw(GetOptions);
-use Text::ParseWords qw(shellwords);
+use Text::Template;
+use JSON;
 
-use eFuncPrint;
 
 =head1 FifoGen
 
-  &eFunc::FifoGen("");
+  &eFunc::FifoGen("mod_name", "json_file");
 
-  Optional Inputs:
-    -clk clk_name    :  name of logic working on clock
-    -output name     :  name suffix of output signals
-    
-    -reset  rst_name :  enable/disable ctrl signal name
-    -test            :  generate test logic(OCC) if enabled
+  Required Inputs:
+    mod_name     :  generated RTL & Module name 
+    json_file    :  containt all parameters template design file needs
+    tmplate_file :  design template file as verilog HDL, any parameter can be replaced by $vars in above json file
+	                all Perl syntax is supported 
 
 =cut
 
@@ -43,33 +42,50 @@ use base ("Exporter");
 our @EXPORT = qw(FifoGen);
 
 sub FifoGen {
-    my $args = shift;
-    @ARGV = shellwords($args);
-    
+    my $mod_name = shift;
+    my $cfg_file = shift;
+
+    open(MOD_OUT, ">${mod_name}.v") or die "!!! Error: can't find output module file of (${mod_name}.v) \n\n";
     #================================
-    # OPTIONS
     #================================
-    my $clk     = "clk";
-    my $osuffix = "suffix";
+    our $clk     = "clk";
     
     my $reset = "";
     my $test  = 0;
     
-    GetOptions (
-               'clk=s'     => \$clk,
-               'output=s'  => \$osuffix,
-               'reset=s'   => \$reset,
-               'test=s'    => \$test,
-               )  or die "Unrecognized options @ARGV";
+    my $left  = "<:";
+    my $right = ":>";
+    #================================
+
+    my $cfg_json = &HDLGen::FindFile($cfg_file);
+    open(JSON, "<$cfg_json") or die "!!! Error: can't find input cfg JSON file of ($cfg_json) \n\n";
+    my $json_text = do { local $/; <JSON> };
+    close(JSON);
+    my $cfg_hash = decode_json($json_text);
+	$cfg_hash->{"mod_name"} = "$mod_name";
+
+	my $async = $cfg_hash->{"async"};
+ 
+    #================================
+    my $result = "";
+    if ($async == 1) {
+        my $tmpl_file = "$main::HDLGEN_ROOT/plugins/Design_Template/AsyncFifo.tmpl.v";
+		if (!(-e $tmpl_file)) {
+			die " !!!ERROR!!!: your Async-FIFO design template does NOT existe!\n";
+		}
+        my $template = Text::Template->new(DELIMITERS => [$left, $right], TYPE => "FILE", SOURCE => "$tmpl_file");
+        $result = $template->fill_in(HASH => \%$cfg_hash, OUTPUT => \*MOD_OUT);
+    } else {
+        my $tmpl_file = "$main::HDLGEN_ROOT/plugins/Design_Template/SyncFifo.tmpl.v";
+		if (!(-e $tmpl_file)) {
+			die " !!!ERROR!!!: your Sync-FIFO design template does NOT existe!\n";
+		}
+        my $template = Text::Template->new(DELIMITERS => [$left, $right], TYPE => "FILE", SOURCE => "$tmpl_file");
+		$result = $template->fill_in(HASH => \%$cfg_hash, OUTPUT => \*MOD_OUT);
+    }
     
-    #================================
+	close(MOD_OUT);
 
-    vprintl("\n//| =========================================================\n");
-	vprintl("//| FifoGen function is still underconstruction, need more time\n");
-	vprintl("//| any suggestion or solotion or contribution is really welcome!\n");
-    vprintl("//| =========================================================\n\n");
-
-    #================================
 }
 
 1;

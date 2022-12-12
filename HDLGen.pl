@@ -1,22 +1,5 @@
 #!/usr/bin/env perl
 
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
-###                         Copyright 2022 Wilson Chen                                                     ###
-###            Licensed under the Apache License, Version 2.0 (the "License");                             ###
-###            You may not use this file except in compliance with the License.                            ###
-###            You may obtain a copy of the License at                                                     ###
-###                    http://www.apache.org/licenses/LICENSE-2.0                                          ###
-###            Unless required by applicable law or agreed to in writing, software                         ###
-###            distributed under the License is distributed on an "AS IS" BASIS,                           ###
-###            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                    ###
-###            See the License for the specific language governing permissions and                         ###
-###            limitations under the License.                                                              ###
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
-
 #============================================================================================================#
 #============================================================================================================#
 #========================================= Public Packages ==================================================#
@@ -35,6 +18,11 @@ $Term::ANSIColor::AUTORESET = 1;
 ### Add Script Dir as include paths, most for all PlugIn APIs ###
 use lib abs_path(dirname(__FILE__)) . '/plugins';
 
+our $HDLGEN_ROOT = $ENV{"HDLGEN_ROOT"};
+if ($HDLGEN_ROOT eq "") {
+	print STDOUT BOLD RED " !!! ERROR !!! : HDLGEN_ROOT is not defined!\n\n";
+	exit(1);
+}
 
 #============================================================================================================#
 #========================= Inhouse Packages for internal developed functions ================================#
@@ -98,9 +86,9 @@ if ($usage) {
 sub Version {
 	print BOLD BLUE <<EOF;
 
-         *********************************************
-         ****** Current HDLGen Version is V0.86 ******
-         *********************************************
+                                    *********************************************
+                                    ****** Current HDLGen Version is V0.95 ******
+                                    *********************************************
 EOF
 
 }
@@ -111,8 +99,11 @@ sub Usage {
        print <<EOF;
        --------------------------------------------------------------------------------------------------------------
        --------------------------------------------------------------------------------------------------------------
-       --- This is a script to read in HDL design file with emdedded Perl/Python scripts in
-       --- and generate final HDL files with Perl/Python scripts parsed & executed
+       --- This is a script to read in HDL design file with emdedded Functions,                                   ---
+       --- and support embedded Perl/Python scripts for any operation,                                            ---
+       --- finally generate pure HDL file with all Functions & Scripts parsed & executed                          ---
+       --- This tool is a plus version of Emacs Verilog-Mode with a few more functions added                      ---
+       --------------------------------------------------------------------------------------------------------------
        EX:
 EOF
     
@@ -134,7 +125,8 @@ EOF
 EOF
     
        print GREEN <<EOF;
-                                                   assign wire_sig[m:n] = left_sig<[q:p]>
+                                                   assign wire_sig[m:n]  = left_sig<[q:p]>
+                                                   assign {sig0,sig1...} = {left_sig0<[q:p]>,left_sig1<[x:y]...}
 EOF
     
        RESET;

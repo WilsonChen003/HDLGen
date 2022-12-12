@@ -27,6 +27,7 @@ package HDLGen;
 #============================================================================================================#
 #============================================================================================================#
 #============================================================================================================#
+#use strict;
 use File::Basename;
 use File::Find;
 use Cwd qw/abs_path/;
@@ -36,6 +37,7 @@ use XML::Simple;
 use Verilog::Netlist;
 use JSON;
 use Data::Dumper;
+
 $Term::ANSIColor::AUTORESET = 1;
 #============================================================================================================#
 #========================================= End of Public Packages ===========================================#
@@ -126,8 +128,8 @@ sub Initial {
     @VOUT       =();
     $AutoWires  =();
     $AutoRegs   =();
-    $AutoInstSigs =();
-    $AutoWarnings = ();
+    $AutoInstSigs  =();
+    $AutoWarnings  =();
     $vout_autowirereg  = 0;
     $vout_autoinstwire = 0;
     $vout_autoinst_warning = 0;
@@ -165,6 +167,7 @@ sub ProcessOneFile {
       open(VXP_OUT, ">$output_vxp") or die "!!! Error: output file of ($output_vxp) can\'t create!\n";
     }
     
+    my $port_psr_done = 0;
     #============================================================================================================#
     #============================================================================================================#
     #===================================== Main Loop to handle 1 input file =====================================#
@@ -181,8 +184,6 @@ sub ProcessOneFile {
     	  $vout_autoinstwire = 1;
       } elsif ( ($PerlBegin eq "1") or ($PythonBegin eq "1") ) {
           &PerlGen($_,$escript_n);
-      } elsif ($_ =~ /^\s*\/\/:\s*&?Force \s*(.*)\s*;/) {
-         &Force($1);
       } elsif ($_ =~ /^\s*(\/\/)/ ) {
           if ($_ =~ /^\s*(\/\/):/) {
              if ($_ =~ m/:\s*&?PerlRequire (\S+)/) {
@@ -236,6 +237,7 @@ sub PerlGen {
    my($eperl_num)="$_[1]";
    my(@eperl)=();
    my($eperl_script)="";
+   my($CmdError)="";
    my($exa_line)="";
 
    &HDLGenInfo("$SubName", " current Src input_line == $eperl") if ($main::HDLGEN_DEBUG_MODE);
@@ -344,12 +346,29 @@ sub EvalEperl {
 }
 
 #================================================================================#
-#------ if Verilog line contain ${var} then need to replace ------#
-#------ NOTE: such ${var} must be defined as "our" type!    ------#
 #================================================================================#
 sub RplcLine {
   my ($line) = shift;
-  if ($line =~ /\$\{\w+\}/) {
+  
+  #==========================================================
+  #==========================================================
+  if ($line =~ /parameter \s*(\S+)\s*=\s*(\d+)/) { 
+      $CurMod_Top->{"parameter"}->{"$1"}="$2";
+      push @VOUT, "$line";
+  } elsif ($line =~ /parameter \s*(\S+)\s*=\s*(.*)/) {
+	  my $parm = $1;
+	  my $parm_val = $2;
+	  if (exists($CurMod_Top->{"parameter"})) {
+		  my $Parm_Hash = $CurMod_Top->{"parameter"};
+		  foreach my $pm (keys(%$Parm_Hash)) {
+			  my $pm_val = $Parm_Hash->{"$pm"};
+			  $parm_val =~ s/$pm/$pm_val/g;
+		  }
+		  $parm_val =eval($parm_val);
+          $CurMod_Top->{"parameter"}->{"$parm"}="$parm_val";
+	  }
+      push @VOUT, "$line";
+  } elsif ($line =~ /\$\{\w+\}/) {
 	  $line =~ s/\\n/\\\\n/g;
       $line =~ s/\$$/\\\$/;
 	  my $p_line = "vprintl(\"$line\");";
@@ -360,7 +379,6 @@ sub RplcLine {
 }
 
 #================================================================================#
-#------ change print to push into OUT array ------#
 #================================================================================#
 sub vprintl {
   my @list = @_;
@@ -373,7 +391,6 @@ sub vprintl {
   } 
 } 
 #================================================================================#
-#------ change print to push into OUT array ------#
 #================================================================================#
 sub vprinti {
   my @list = @_;
@@ -392,7 +409,6 @@ sub vprinti {
 }
 
 #================================================================================#
-#------ a way to call any shell/perl/python script ------#
 #================================================================================#
 sub CallCmd {
   my $call_cmd = shift;
@@ -410,23 +426,20 @@ sub CallCmd {
 }
 
 #================================================================================#
-#------ eval Perl Script and return an array ------#
 #================================================================================#
 sub EvalEpython {
   my ($ePython) = shift;
   my ($CmrErr);
+
   my $epython_f = "./.epython.py";
   open(EPYTHON,">$epython_f") or die "!!! Error: temp file of $epython_f can\'t create!\n";
   print EPYTHON "$ePython";
   system("chmod +x $epython_f");
   close(EPYTHON);
 
-  #open(PTMP,">.epython.out") or die "!!! Error: can't open ./.epython.out !!!\n";
-  # open(STDOUT, ">&PTMP");
   my $CmdErr= system("$epython_f > .epython.out");### FIXME: temp ugly fix
   print STDOUT " !!!ePython Error when run script:\n $ePython\n CmdErr:\n  $CmdErr\n" if ($CmdErr);
-  #close(STD_OUT);
-  #open(STDOUT,">>/dev/tty");
+
   open(POUT,"<.epython.out");
   my $epython_out = do { local $/; <POUT> };
   close(POUT);
@@ -445,10 +458,11 @@ sub PythonGen {
    my(@epython)=();
    my($epython_script)="";
    my($exa_line)="";
+   my($CmdError)="";
    my($py_pre)="";
 
    $epython =~ s/\s*\/\/#//;
-   $epython_script .= "#!/usr/bin/env python3\n"; ### FIXME: temp ugly fix
+   $epython_script .= "#!/usr/bin/env python3\n";
    $epython_script .= "import os\n";
    $epython_script .= "import sys\n";
    $epython_script .= "import math\n";
@@ -507,7 +521,6 @@ sub PythonGen {
 #================================================================================#
 	
 #============================================================================================================#
-#------ Parse Verilog Wire/Reg define ------#
 #============================================================================================================#
 sub ParseWireReg {
    my($SubName)="ParseWireReg";
@@ -519,8 +532,8 @@ sub ParseWireReg {
 
 }
 
+
 #============================================================================================================#
-#------ Parse Reg line ------#
 #============================================================================================================#
 sub ParseReg {
    my($vlg_line) = shift;
@@ -531,6 +544,8 @@ sub ParseReg {
  	    return if (exists($AutoRegs->{"$reg_sig"}->{"done"}));
  	    if ( $reg_wd eq "0" ) {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "1";
+	    } elsif ($width =~ /:/) {
+ 	       $AutoRegs->{"$reg_sig"}->{"width"} = "$reg_wd";
  	    } else {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "$reg_wd:0";
  	    }
@@ -575,9 +590,9 @@ sub ParseReg {
 	    return;
       }
 }
+#============================================================================================================#
 
 #============================================================================================================#
-#------ Instance args Handler ------#
 #============================================================================================================#
 sub InstanceParser {
   my $SubName = "InstanceParser";
@@ -654,7 +669,6 @@ sub InstanceParser {
 #============================================================================================================#
 
 #============================================================================================================#
-#------ Module Instance Handler ------#
 #============================================================================================================#
 sub Instance {
   my($inst_line) = shift;
@@ -710,7 +724,6 @@ sub Instance {
 #============================================================================================================#
 
 #============================================================================================================#
-#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindVlg {
     my($VlgName)=$_[0];
@@ -731,7 +744,6 @@ sub FindVlg {
 }
 
 #============================================================================================================#
-#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindFile {
     my($FName)=$_[0];
@@ -753,7 +765,6 @@ sub FindFile {
 #============================================================================================================#
 
 #============================================================================================================#
-#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub ParseInstVlg{
     my($SubName)="ParseInstVlg";
@@ -816,7 +827,6 @@ sub ParseInstVlg{
 #============================================================================================================#
 	       
 #============================================================================================================#
-#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub ParseInstIPX{
     my($SubName)="ParseInstIPX";
@@ -892,7 +902,6 @@ sub ParseInstIPX{
 #============================================================================================================#
 
 #============================================================================================================#
-#------ Module Instance Handler ------#
 #============================================================================================================#
 sub Connect {
   my($SubName)="Connect";
@@ -954,8 +963,15 @@ sub Connect {
 }
 #============================================================================================================#
 
+
 #============================================================================================================#
-#------ Call Connect by update Hash------#
+#------ Placehold for AddParam as a new opened issue ------#
+#============================================================================================================#
+#--- &AddParam  A A_PARAM ;
+sub AddParam {
+}
+
+#============================================================================================================#
 #============================================================================================================#
 sub ConnectDone {
   my($SubName)="ConnectDone";
@@ -1038,7 +1054,6 @@ sub ConnectDone {
 
 
 #============================================================================================================#
-#------ Real Print Connections ------#
 #============================================================================================================#
 sub PrintConnect {
   my($SubName)="PrintConnect";
@@ -1078,12 +1093,12 @@ sub PrintConnect {
 	  my $width= $CI->{"input"}->{"$cr"}->{"width"};
 	  delete($CI->{"input"}->{"$port"});
 	  $conn = "$cr" if ($conn eq "");
-	  my $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn)");  
+	  my $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn");  
       if ($first_line) {
     	  push @VOUT,"    .$line_pt";
 		  $first_line = 0;
       } else {
-    	  push @VOUT,", //|<-i\n    .$line_pt";
+    	  push @VOUT,"), //|<-i\n    .$line_pt";
       }
       delete($CI->{"input"}->{"$port"});
       $first_line = 0;
@@ -1100,7 +1115,7 @@ sub PrintConnect {
 	     $AutoInstSigs->{"$conn"}->{"direction"} = "input";
 	  }
   }
-  push @VOUT, ", //|<-i\n";
+  push @VOUT, "), //|<-i\n";
   $first_line = 1;
 
   foreach my $port (sort(keys %{$CI->{"input"}})) {
@@ -1125,12 +1140,12 @@ sub PrintConnect {
 		  }
       }
 
-	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn_pt)");  
+	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn_pt");  
       if ($first_line) {
 		  push @VOUT,"    .$line_pt";
           $first_line = 0;
       } else {
-		  push @VOUT,", //|<-i\n    .$line_pt";
+		  push @VOUT,"), //|<-i\n    .$line_pt";
       }
       
 	  if ( $AUTO_INST eq "" ) {
@@ -1192,7 +1207,7 @@ sub PrintConnect {
 
 	  $CurMod_Top->{"connections"}->{"input"}->{"$conn"} = 0;
   }
-  push @VOUT, ", //|<-i\n";
+  push @VOUT, "), //|<-i\n";
   $first_line = 1;
 
   foreach my $port (sort(keys %{$CI->{"output"}})) {
@@ -1216,12 +1231,12 @@ sub PrintConnect {
 		  }
       }
 
-	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn)");  
+	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn");  
 	  if ($first_line eq "1") {
          push @VOUT, "    .$line_pt";
 		 $first_line = 0 ;
 	  } else {
-         push @VOUT, ", //|>-o\n    .$line_pt";
+         push @VOUT, "), //|>-o\n    .$line_pt";
 	  }
 
 	  if ( $AUTO_INST eq "" ) {
@@ -1282,7 +1297,7 @@ sub PrintConnect {
 	  }
 	  $CurMod_Top->{"connections"}->{"output"}->{"$conn"} = 0;
   }
-  push @VOUT, "  //|>-o\n";
+  push @VOUT, ")  //|>-o\n";
   push @VOUT, "   );\n\n";
 
   if ( $AUTO_INST eq "" ) {
@@ -1308,45 +1323,117 @@ sub ParseContAssign {
    my $width= 0;
    my $name = "$LHS";
    if ($LHS =~ /,/) {
-	   $LHS =~ s/\n|\{|\}//;
+	   $LHS =~ s/\n|\s//;
+	   $LHS =~ s/^\{|\}$//;
 	   my @LHS_list = split(",",$LHS);
 	   foreach my $wire (@LHS_list) {
-         &ParseAutoWireWidth($wire);
+         &ParseAutoWidth($wire,"wire");
        }
    } else {
-       $AutoWires->{"$LHS"}->{"width"} = "1";
+	   if ($name =~ /\[(.*)\]/) {
+	     $name =~ s/\[(.*)\]//;
+         $AutoWires->{"$name"}->{"width"} = $1;
+         $AutoWires->{"$name"}->{"done"}  = 1;
+	   } 
+
 	   if ($RHS =~ /,/) {
-	      $RHS =~ s/\n|\{|\}//;
+	      my $cur_width =0;
+		  $width = 0;
+	      $RHS =~ s/\n|\s//;
+	      $RHS =~ s/^\{//;
+	      $RHS =~ s/\}$// if ($RHS !~ /\{/);
 	      my @RHS_list = split(",",$RHS);
 	      foreach my $wire (@RHS_list) {
-            &ParseAutoWireWidth($wire);
+             $cur_width = &ParseAutoWidth($wire,"wire");
+	         $width += $cur_width;
           }
-	   } else {
-          &ParseAutoWireWidth($RHS);
+       } else {
+          my $cur_width = &ParseAutoWidth($RHS,"wire");
+		  $width = $cur_width;
+	   }
+       $width-- if ($width > 1); 
+       if ( !exists($AutoWires->{"$name"}->{"done"}) ) {
+		   if ( ($width ne "0") and ($width ne "1") ) {
+              if ($width =~ /:/) {
+				  $AutoWires->{"$name"}->{"width"} = "${width}";
+			  } else {
+				  $AutoWires->{"$name"}->{"width"} = "${width}:0";
+			  }
+		   } else {
+              $AutoWires->{"$name"}->{"width"} = "${width}";
+		   }
 	   }
    }
-
 }
+#============================================================================================================#
 
 
-sub ParseAutoWireWidth {
+#============================================================================================================#
+#============================================================================================================#
+sub ParseAutoWidth {
 	my($wire) = shift;
+	my($type) = shift;
 	my $width = 0;
+	my $cur_width = 0;
 	my $name  = "";
 
-	$width = ":" if ($wire =~ /\[.*\]/);
-	if ( ($wire =~ /(\w*)\[(.*)\]/) or ($wire =~ /(\w*)\[(.*)\]/) ) {
-       $name = $1 if ($width ne "0");
+	my $AutoHash;
+	if ($type eq "wire") {
+		$AutoHash = $AutoWires;
+	} elsif ($type eq "reg") {
+		$AutoHash = $AutoRegs;
+	} else {
+		die(" !!! not support signal type other than wire or reg !!!\n");
+	}
+
+	
+	my $CurParam = $CurMod_Top->{"parameter"};
+	foreach my $parm (keys(%$CurParam)) {
+		my $parm_val = $CurParam->{"$parm"};
+		$wire =~ s/$parm/$parm_val/g;
+	}
+
+    if ($wire =~ /\{?\s*(\d+)\{/ ) {
+	   $cur_width = $1;
+	   return($cur_width);
+	}
+    if ($wire =~ /(\d+)\'/ ) {
+	   $cur_width = $1;
+	   return($cur_width);
+	}
+
+	if ( $wire =~ /(\w*)\[(.*)\]/ )  {
+       $name = $1;
        $width = $2;
-	   $width = "$width".":$width" if ($width !~ /:/);
-       if ( !exists($AutoWires->{"$name"}) ) {
-          $AutoWires->{"$name"}->{"width"} = "$width";
+	   $cur_width = $width;
+       my $width_msb = 0;
+       my $width_lsb = 0;
+
+	   if ($width =~ /:/) {
+          $width =~ /(\S+)\s*:\s*(\S+)/;
+          $width_msb = $1;
+          $width_lsb = $2;
+		  if ($width_msb =~ /-|\+|\*/) {
+			  $width_msb = eval($width_msb);
+		  }
+		  if ($width_lsb =~ /-|\+|\*/) {
+			  $width_lsb = eval($width_lsb);
+		  }
+		  $width = $width_msb.":$width_lsb";
+		  $cur_width = $width_msb - $width_lsb;
+	   } else {
+	       if ($width =~ /-|\+|\*/) {
+		       $width = eval($width);
+		   }
+	      $width = "$width".":$width";
+		  $cur_width = 1;
+	   }
+
+       if ( !exists($SigHash->{"$name"}) ) {
+          $AutoHash->{"$name"}->{"width"} = "$width";
        } else {
-          $width =~ /(\d*)\s*:\s*(\d*)/;
-          my $width_msb = $1;
-          my $width_lsb = $2;
-          my $width_exist = $AutoWires->{"$name"}->{"width"};
-          $width_exist =~ /(\d*)\s*:(\d*)/;
+          my $width_exist = $AutoHash->{"$name"}->{"width"};
+          $width_exist =~ /(\w+)*:(\w+)/;
           my $width_exist_msb = $1;
           my $width_exist_lsb = $2;
           if ($width_lsb >= $width_exist_msb) {
@@ -1354,31 +1441,30 @@ sub ParseAutoWireWidth {
           } elsif ($width_msb > $width_exist_msb) {
               $width = $width_msb.":$width_exist_lsb";
           }
-          $AutoWires->{"$name"}->{"width"} = "$width";
+          $AutoHash->{"$name"}->{"width"} = "$width";
        }
      } else {
-       if ( !exists($AutoWires->{"$name"}) ) {
-          $AutoWires->{"$name"}->{"width"} = "1";
+       if ( !exists($AutoHash->{"$name"}) ) {
+          $AutoHash->{"$name"}->{"width"} = "1";
        }
 	 }
+	 return($cur_width);
 }
+
 #============================================================================================================#
-
-
+#============================================================================================================#
 sub UpdateAutoWarning {
    my($SubName)="UpdateAutoWarning";
 
-   ### first loop all connections to check if any input<->output connection exist
-   my $Inputs  = $CurMod_Top->{"connections"}->{"input"}; ### these ports already removed [...]
+   my $Inputs  = $CurMod_Top->{"connections"}->{"input"};
    my $Outputs = $CurMod_Top->{"connections"}->{"output"};
    foreach my $in (keys(%$Inputs)) {
-   	  $Inputs->{"$in"} = 1 if (exists($Outputs->{"$in"})); ### 1 means there is input<->output connection
+   	  $Inputs->{"$in"} = 1 if (exists($Outputs->{"$in"}));
    }
    foreach my $out (keys(%$Outputs)) {
-   	  $Outputs->{"$out"} = 1 if (exists($Inputs->{"$out"})); ### 1 means there is input<->output connection
+   	  $Outputs->{"$out"} = 1 if (exists($Inputs->{"$out"}));
    }
 
-   ###########################################
    for my $sig (keys(%$AutoInstSigs)) {
 	   next if ($CurMod_Top->{"ports"}->{"input"}->{"$sig"});
 	   next if ($CurMod_Top->{"ports"}->{"output"}->{"$sig"});
@@ -1391,14 +1477,23 @@ sub UpdateAutoWarning {
 	   my $inst = $AutoInstSigs->{"$sig"}->{"inst"};
 	   $AutoWarnings->{"$inst"}->{"$sig"}->{"direction"} = $AutoInstSigs->{"$sig"}->{"direction"};
        my $width = $AutoInstSigs->{"$sig"}->{"width"};
-	   if (exists($AutoInstSigs->{$sig}->{"auto_width"})) { ### auto_width need to handle
+	   if (exists($AutoInstSigs->{$sig}->{"auto_width"})) {
               $width = $AutoInstSigs->{$sig}->{"auto_width"};
 	   }
 	   $AutoWarnings->{"$inst"}->{"$sig"}->{"width"} = $width;
    }
-   #################################################
-}
 
+}
+#============================================================================================================#
+
+#============================================================================================================#
+#------ Placehold for Always block ------#
+#============================================================================================================#
+#sub ProcessAlways {
+#}
+
+
+#============================================================================================================#
 #============================================================================================================#
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
@@ -1411,6 +1506,7 @@ sub UpdateAutos {
         $nl->read_libraries();
         $nl->read_file (filename=>"./temp.v");
         $nl->link();
+        system("rm ./temp.v");
         foreach my $mod ($nl->top_modules_sorted) {
 			my ($name, $type, $width) = ("","","");
 	        foreach my $net ($mod->nets_sorted) {
@@ -1478,13 +1574,13 @@ sub UpdateAutos {
 			}
 	   }
     }
+
     &UpdateAutoWarning();
 
 }
+#============================================================================================================#
 
 #============================================================================================================#
-#------ Print auto wire & reg defines ------#
-#------ FIXME: unmature or unperfect yet, has bugs so far by 2022/09 ! ------#
 #============================================================================================================#
 sub  PrintAutoSigs {
    my($SubName)="PrintAutoSigs";
@@ -1497,7 +1593,7 @@ sub  PrintAutoSigs {
 	   next if ($sig_name eq "");
 	   if (!exists($AutoWires->{$sig_name}->{"exists"}) ) { 
 		   my $width = $AutoWires->{"$sig_name"}->{"width"};
-		   if ( $width eq "1" ) {
+		   if ( ($width eq "1") or ($width eq "0") ) {
 			   $width = "";
 		   } else {
 		       $width = "["."$width"."]";
@@ -1514,7 +1610,7 @@ sub  PrintAutoSigs {
 	   next if ($sig_name eq "");
 	   if (!exists($AutoRegs->{"$sig_name"}->{"exists"}) ) {
 		   my $width = $AutoRegs->{$sig_name}->{"width"};
-		   if ( $width eq "1" ) {
+		   if ( ($width eq "1") or ($width eq "0") ) {
 			   $width = "";
 		   } else {
 		       $width = "["."$width"."]";
@@ -1527,7 +1623,6 @@ sub  PrintAutoSigs {
 
 
 #============================================================================================================#
-#------ Print All &Instance module's wire defines, NO duplication ------#
 #============================================================================================================#
 sub  PrintAutoInstSigs {
    my($SubName)="PrintAutoInstSigs";
@@ -1558,7 +1653,7 @@ sub  PrintAutoInstSigs {
                    $width = "";
            } elsif ( $width =~ /:/) {
                $width = "[${width}]";
-		   }else {
+		   } else {
                $width = "[${width}:0]";
            }
            my $line_pt = sprintf("%-12s %-${sig_length}s", $width, $sig_name);
@@ -1579,7 +1674,10 @@ sub  PrintAutoInstSigs {
    }
 
 }
+#============================================================================================================#
 
+#============================================================================================================#
+#============================================================================================================#
 sub PrintAutoWarning {
 	if (%$AutoWarnings) {
 	    print "// ======================================================================\n";
@@ -1604,9 +1702,8 @@ sub PrintAutoWarning {
 	    print STDOUT BOLD RED " !!!       Please search & check \"Warning\" in output RTL     !!!\n";
 	}
 }
-########################################################################	
 
-
+#============================================================================================================#
 #============================================================================================================#
 sub PrintRTLHdr {
   print "// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
@@ -1618,6 +1715,7 @@ sub PrintRTLHdr {
   print "// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
 }
 
+#============================================================================================================#
 #============================================================================================================#
 sub PrintVOUT {
 
@@ -1638,9 +1736,9 @@ sub PrintVOUT {
                &PrintAutoSigs();
   	           print "//| ============================= End of Auto Wires/Regs ===========================\n";
   	           print "//| ================================================================================\n\n";
-		    } else {
+		   } else {
 		       print("$line");
-		    }
+		   }
 	    } elsif ($vout_autoinstwire eq "1") {
 			if ($line eq  "//|: &AutoInstSig;\n") {
 			   $vout_autoinstwire = 0;
@@ -1651,10 +1749,9 @@ sub PrintVOUT {
                &PrintAutoInstSigs();
   	           print "//| ========================= End of Instance Wires/Regs ===============================\n";
   	           print "//| ====================================================================================\n\n";
-
-               &PrintAutoWarning();
+			   &PrintAutoWarning();
 		     } else {
-		       print("$line");
+		         print("$line");
 		     }
 	     } else {
 		      print("$line");

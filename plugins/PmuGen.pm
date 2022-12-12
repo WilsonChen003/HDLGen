@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+		
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
@@ -17,27 +17,25 @@
 ##############################################################################################################
 ##############################################################################################################
 
+
+
 package PmuGen;
 use strict;
 use warnings FATAL => qw(all);
 
-use Getopt::Long qw(GetOptions);
-use Text::ParseWords qw(shellwords);
+use Text::Template;
+use JSON;
 
-use eFuncPrint;
 
 =head1 PmuGen
 
-  &eFunc::PmuGen("");
+  &eFunc::PmuGen("json_file", "template_file");
 
-  Optional Inputs:
-    -clk clk_name    :  name of logic working on clock
-    -output name     :  name suffix of output signals
-    
-    -arm  pwr_intf_style :  input clk soruce, from src0 to src7
-
-    -en    en_ctrl   :  enable/disable ctrl signal name
-    -test            :  generate test logic(OCC) if enabled
+  Required Inputs:
+    mod_name      :  generated RTL & Module name 
+    json_file    :  containt all parameters template design file needs
+    tmplate_file :  design template file as verilog HDL, any parameter can be replaced by $vars in above json file
+	                all Perl syntax is supported 
 
 =cut
 
@@ -45,35 +43,41 @@ use base ("Exporter");
 our @EXPORT = qw(PmuGen);
 
 sub PmuGen {
-    my $args = shift;
-    @ARGV = shellwords($args);
-    
+    my $mod_name = shift;
+    my $cfg_file = shift;
+
+    open(MOD_OUT, ">${mod_name}.v") or die "!!! Error: can't find output module file of (${mod_name}.v) \n\n";
     #================================
-    # OPTIONS
     #================================
-    my $clk     = "clk";
-    my $osuffix = "suffix";
-    my $arm_intf= "";
+    our $clk     = "clk";
     
-    my $en    = "";
+    my $reset = "";
     my $test  = 0;
     
-    GetOptions (
-               'clk=s'     => \$clk,
-               'output=s'  => \$osuffix,
-               'en=s'      => \$en,
-               'test=s'    => \$test,
-               'arm=s'     => \$arm_intf,
-               )  or die "Unrecognized options @ARGV";
+    my $left  = "<:";
+    my $right = ":>";
+    #================================
+
+    my $cfg_json = &HDLGen::FindFile($cfg_file);
+    open(JSON, "<$cfg_json") or die "!!! Error: can't find input cfg JSON file of ($cfg_json) \n\n";
+    my $json_text = do { local $/; <JSON> };
+    close(JSON);
+    my $cfg_hash = decode_json($json_text);
+	$cfg_hash->{"mod_name"} = "$mod_name"; 
+
+    #================================
+    my $result = "";
+
+	my $tmpl_file = "$main::HDLGEN_ROOT/plugins/Design_Template/Pmu.tmpl.v";
+   	if (!(-e $tmpl_file)) {
+   		die " !!!ERROR!!!: your Pmu design template does NOT existe!\n";
+   	}
+    my $template = Text::Template->new(DELIMITERS => [$left, $right], TYPE => "FILE", SOURCE => "$tmpl_file");
+    $result = $template->fill_in(HASH => \%$cfg_hash, OUTPUT => \*MOD_OUT);
     
-    #================================
+	close(MOD_OUT);
 
-    vprintl("\n//| =========================================================\n");
-	vprintl("//| This function is still underconstruction, need more time\n");
-	vprintl("//| any suggestion or solotion or contribution is really welcome!\n");
-    vprintl("//| =========================================================\n\n");
 
-    #================================
 }
 
 1;
