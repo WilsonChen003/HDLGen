@@ -1,0 +1,7 @@
+{
+    "clk"    : "clk",  
+    "rst_in" : "rstn_i",
+    "rst_out": "rstn_o",
+    "en"     : "en",
+    "test"   : "1"
+}	  

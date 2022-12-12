@@ -1,0 +1,31 @@
+{ 
+   "#mod_name" : "Optional",
+   #"mod_name" : "Optional",
+   "mod_name"  :  "test_sys_ctrl",
+   "#base_addr" : "Optional to add base offset on all registers",
+   "base_addr"  :  "0x00000010",
+   "sys_ctrl0" : {
+       "#field_name"      : "width, RW/RO/WO, Reset_Value, 'Comments' ",
+       "pdc_use_ctrl" : "1, RW, init=0, 'Control if use arm ctrl-seq, HIGH enable' " ,
+	                      : "NO=0",
+	                      : "YES = 1",
+       "l2c_strip_mode"   : "3, RW, init=0, 'Control L2 cache stripping mode, HIGH enable' " ,
+	                      : "md0=0",
+	                      : "md1=1",
+	                      : "md2=2",
+	                      : "md5=5",
+       "smmu_mmusid"      : "5, RW, init=3" ,
+       "mem_repair_en"    : "1, RW, init=5" ,
+	                      : "NO =0",
+	                      : "YES= 1",
+       "mem_repair_done"  : "7, RO, init=7" 
+   },
+   "test_reg" : {
+       "#offset" : "Optional to change per-reg offset, default is incr4(0x4), can be any of aligned hex addr" ,
+       "offset" : "0xc" ,
+       "test_field0" : "4, RW, init=0 , 'This test comments'",
+       "test_filed1" : "2, WO, init=3" 
+   }
+}
+
+
