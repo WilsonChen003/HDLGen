@@ -5,7 +5,8 @@
 2022/11/30  V0.94   Wilson Chen   support inhouse function module generation:
                                       use JSON file for paramaters
 		 		      use ePerl Template file for custom design
-2022/11/26  V0.89   Wilson Chen   support PARAMETER & DEFINE on auto signal declare
+2022/11/26  V0.89   Wilson Chen   fix AutoWarning function
+                                  support PARAMETER & DEFINE on auto signal declare
                                       sig declare will change to final value but not PARAM/DEFINE name
 
 2022/11/18  V0.88   Wilson Chen   fix LHS multi-signal: handle {wire0,wire1...} = {sig0[...], sig1[...] ...}
