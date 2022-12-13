@@ -1,0 +1,46 @@
+
+2022/12/12  V0.95   Wilson Chen   fix some typo & format
+                                  Beta release
+
+2022/11/30  V0.94   Wilson Chen   support inhouse function module generation:
+                                      use JSON file for paramaters
+		 		      use ePerl Template file for custom design
+2022/11/26  V0.89   Wilson Chen   support PARAMETER & DEFINE on auto signal declare
+                                      sig declare will change to final value but not PARAM/DEFINE name
+
+2022/11/18  V0.88   Wilson Chen   fix LHS multi-signal: handle {wire0,wire1...} = {sig0[...], sig1[...] ...}
+
+2022/11/14  V0.87   Wilson Chen   update AutoInstSigs to do width-learning from all Instance & Assignments
+	                              need to update: handle assign LHS multi-signal (FIXME)
+
+2022/11/12  V0.86   Wilson Chen   add AutoWarning feature, but not perfect yet (FIXME)
+
+2022/11/10  V0.85   Wilson Chen   add Instance inputs & outputs no connection warnings
+
+2022/11/08  V0.84   Wilson Chen   use Verilog::Netlist to handle Assignments
+	                              change "AutoInstWire" to "AutoInstSig" as "reg" is possible for Instance's port connection
+                                      "reg" is not perfect but should work in most case
+
+2022/10/14  V0.83   Wilson Chen	  add ShowIntf & ShowIPX function
+
+2022/10/11  V0.82   Wilson Chen	  fix Instance bug(return)
+                                  update colorful information print
+
+2022/10/10  V0.81   Wilson Chen	  update Instance to support IPXACT
+                                  update Instance for multi-parameter support
+                                  fix Instance function bug($C_done)£»
+
+2022/10/08  V0.8    Wilson Chen	  change ExptIPX function name (remove IPX)£»
+                                  add RmIntfPort function & usage
+                                  add CallCmd function & usage
+                                  add 3 DTI(Data Transfer Interface) function & usage
+                                  fix Connect bug($n)
+
+2022/9/30   V0.7    Wilson Chen	  fix a few bugs
+                                  change from temp file to mem array for internal database
+
+2022/6/01   V0.7    Wilson Chen	  Alpha release
+
+2022/4/19   V0.3    Wilson Chen	  support IPXACT & XML readin
+
+2022/4/05   V0.1    Wilson Chen	  project initial
