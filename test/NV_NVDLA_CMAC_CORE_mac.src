@@ -309,7 +309,9 @@ begin
 end
 
 //:Begin
- &Instance simple_spi.xml my_spi;
+ &Instance simple_spi.xml my_spi_Param;
+  AddParam PARM0 A0;
+  AddParam PARM1 A1;
   Connect -final -interface spi  -up \${1}_IPX ;
   Connect /(clk.*)/ IPX_\${1};
   Connect /(rst.*)/ IPX_\${1};
