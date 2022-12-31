@@ -637,6 +637,9 @@ sub InstanceParser {
       } elsif ($_ =~ /^\s*&?Connect \s*(.*)\s*;/) {
 		 my $call_arg = $1; 
          $eline = "&Connect(\"$call_arg\");\n";
+	  } elsif ($_ =~ /^\s*&?AddParam \s*(.*)\s*;/) {
+		 my $call_arg = $1; 
+         $eline = "&AddParam(\"$call_arg\");\n";
       } elsif ($_ =~ /^\s*(#|\/\/)/) {
          $eline = "$_";
 	     $eline =~ s/\/\//#/;
@@ -718,7 +721,9 @@ sub Instance {
      &ParseInstVlg($mod_inst,$mod_parm,$mod_name);
   }
   $CurMod_Top->{"inst"}->{"$CurInst"}->{"connect_list"}=0;
-  push @VOUT, "$mod_name $mod_parm $mod_inst (\n";
+  $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
+  $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
+  $CurMod_Top->{"inst"}->{"$mod_inst"}->{"instance"}="$mod_inst";
 
 }
 #============================================================================================================#
@@ -969,6 +974,19 @@ sub Connect {
 #============================================================================================================#
 #--- &AddParam  A A_PARAM ;
 sub AddParam {
+  my($SubName)="AddParam";
+  my ($call) = join (" ", @_);
+  &HDLGenInfo($SubName,"--- \$call args==$call\n") if ($main::HDLGEN_DEBUG_MODE);
+
+  my ($param)  = ""; ### input/output/interface
+  my ($pm_val) = ""; ### search source expr
+
+  if ($call =~ /(\w+) \s*(.*)\s*$/) {
+	  $param  = $1;
+	  $pm_val = $2;
+	  $CurMod_Top->{"inst"}->{"$CurInst"}->{"param"}->{$param} = $pm_val;
+  }
+
 }
 
 #============================================================================================================#
@@ -1047,10 +1065,46 @@ sub ConnectDone {
      print INST_HASH Dumper($CI);
      close(INST_HASH);
   }
+
+  if (exists($CurMod_Top->{"inst"}->{"$CurInst"}->{"param"})) { ### has AddParam functions
+	 my $mod_name = $CurMod_Top->{"inst"}->{"$CurInst"}->{"module"};
+	 my $mod_inst = $CurMod_Top->{"inst"}->{"$CurInst"}->{"instance"};
+     push @VOUT, "$mod_name\n";
+     &PrintParam();
+     push @VOUT, "  $mod_inst (\n";
+  } else {
+	 my $mod_name = $CurMod_Top->{"inst"}->{"$CurInst"}->{"module"};
+	 my $mod_parm = $CurMod_Top->{"inst"}->{"$CurInst"}->{"parameter"};
+	 my $mod_inst = $CurMod_Top->{"inst"}->{"$CurInst"}->{"instance"};
+     push @VOUT, "$mod_name $mod_parm $mod_inst (\n";
+  }
   &PrintConnect();
 
 }
 #============================================================================================================#
+
+#============================================================================================================#
+#------ Real Print Connections ------#
+#============================================================================================================#
+sub PrintParam {
+  my($SubName)="PrintParam";
+  my($param_hash) = $CurMod_Top->{"inst"}->{"$CurInst"}->{"param"};
+
+  push @VOUT,"   #(\n";
+  my $first_line = 1;
+  foreach my $param (keys(%$param_hash)) {
+	  my $pm_val = $param_hash->{$param};
+
+      if ($first_line) {
+          push @VOUT,"       .${param}($pm_val)";
+		  $first_line = 0;
+      } else {
+          push @VOUT,",\n       .${param}($pm_val)";
+      }
+  }
+  push @VOUT,"\n    )\n";
+
+}
 
 
 #============================================================================================================#
