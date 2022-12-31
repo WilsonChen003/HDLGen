@@ -27,7 +27,7 @@ RTL stitch
    * Instance module from RTL or IPXACT file as what Verilog does
    * Connect  module's port to wires with native regular express
    * Automatically generate instance's wires definitions
-   * Automatically generate reg or wire definictions(not perfect yet) 
+   * Automatically generate reg or wire definictions(not perfect but really helpful) 
    * Warning out any Instance signals which has no connection
    * Use embedded native Perl or Python to generate(print) whatever code you want
 
@@ -46,7 +46,7 @@ IPXACT manipulate
  
 Function generation
    * Use embedded functions to generate differnt module or loigc you want
-     * Clk, Reset, Fuse, Pmu, Fifo, Async-interface, Memories etc ( in development )
+     * Clk, Reset, Fuse, Pmu, Fifo, Async-interface, Memories etc ( flow done, can custom design )
    * Extend your own module/logic by standard config ( in development )
 	 * config can be in Verilog, JSON, YAML, EXCEL etc.
 	 * then generate these logic with parameters by just a simple function call
