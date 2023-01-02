@@ -79,7 +79,7 @@ Function generation
 ### NOTE: 
 * Verilog-mode for EMACS or VIM is very powerful to do AUTO Port,Reg/Wire, and Instance, but it has some limitations or inconvenient things:<br>
              --- mostly used in GUI mode but no batch mode -- ***seems NOT TURE*** <br>
-	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted***<br>
+	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted but need 3rd file***<br>
 	     --- No Warning for unconnected instance signals<br>
 	     --- No Interface a/o IPXACT support<br>
 	     --- No embedded Perl/Python support<br>
@@ -92,6 +92,7 @@ Function generation
 			Text::Template<br>
                         File::Basename<br>
                         File::Find<br>
+			Verilog::Netlist<br>
                         XML::Simple<br>
                         XML::SAX::Expat; *#this is strange as not used at all, but pp need it*<br>
                         Dumper<br>
