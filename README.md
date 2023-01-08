@@ -7,7 +7,7 @@
   HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
 
 ## License 
-                         Copyright 2022 Wilson Chen                                                     
+                         Copyright 2022~2023 Wilson Chen                                                     
             Licensed under the Apache License, Version 2.0 (the "License");                            
             You may not use this file except in compliance with the License.                          
             You may obtain a copy of the License at                                                  
@@ -61,6 +61,7 @@ Function generation
     ├── HDLGen.bin                # Tool binary for easy adopt
     ├── HDLGen.pl                 # Tool source code
     ├── plugins                   # Tool plugin funcitons in Perl module
+        ├── Design_Template         # custom module design template files
     ├── test                      # Source design code for testing
 	    ├── cfg                     # JSON and XML for config
 	    ├── incr                    # necessary design files
