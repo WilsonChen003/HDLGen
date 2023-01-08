@@ -3,7 +3,7 @@
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
-###                         Copyright 2022 Wilson Chen                                                     ###
+###                         Copyright 2022~2023 Wilson Chen                                                ###
 ###            Licensed under the Apache License, Version 2.0 (the "License");                             ###
 ###            You may not use this file except in compliance with the License.                            ###
 ###            You may obtain a copy of the License at                                                     ###
@@ -1071,7 +1071,7 @@ sub ConnectDone {
 	 my $mod_inst = $CurMod_Top->{"inst"}->{"$CurInst"}->{"instance"};
      push @VOUT, "$mod_name\n";
      &PrintParam();
-     push @VOUT, "  $mod_inst (\n";
+	 push @VOUT, "  $mod_inst (\n";
   } else {
 	 my $mod_name = $CurMod_Top->{"inst"}->{"$CurInst"}->{"module"};
 	 my $mod_parm = $CurMod_Top->{"inst"}->{"$CurInst"}->{"parameter"};
@@ -1474,7 +1474,7 @@ sub ParseAutoWidth {
 			  $width_lsb = eval($width_lsb);
 		  }
 		  $width = $width_msb.":$width_lsb";
-		  $cur_width = $width_msb - $width_lsb;
+		  $cur_width = $width_msb - $width_lsb + 1;
 	   } else {
 	       if ($width =~ /-|\+|\*/) {
 		       $width = eval($width);
@@ -1691,7 +1691,7 @@ sub  PrintAutoInstSigs {
    $sig_length +=3;
 
    for my $inst (sort(keys(%$auto_inst))) {
-     print  "// ------ wires of Instance: $inst ------\n" ;
+     print  "// ------ signals of Instance: $inst ------\n" ;
      my $cur_inst = $auto_inst->{$inst};
      for my $sig_name (sort(keys(%$cur_inst))) {
          next if ($sig_name eq "");

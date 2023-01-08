@@ -94,21 +94,21 @@ output          mac_out_pvld;
 //| ============ these definitions may be not perfect or correct   =================
 //| ============ you may need to manually update/correct           =================
 //| ================================================================================
-wire [239:0]      pad_plic_int_cfg      ;
+wire [191:0]      pad_plic_int_cfg      ;
 wire [239:0]      pad_plic_int_vld      ;
 wire              plic_core0_me_int     ;
 wire              plic_core0_se_int     ;
 wire [0:0]        plic_hartx_mint_req   ;
 wire [0:0]        plic_hartx_sint_req   ;
 wire [240+15:0]   plic_int_cfg          ;
-wire [254:0]      plic_int_cfg_test_0   ;
-wire [254:0]      plic_int_cfg_test_1   ;
-wire [254:0]      plic_int_cfg_test_2   ;
-wire [238:0]      plic_int_cfg_test_3   ;
-wire [257:0]      plic_int_cfg_test_4   ;
-wire [22:0]       plic_int_cfg_test_5   ;
-wire [254:0]      plic_int_cfg_test_6   ;
-wire [206:0]      plic_int_cfg_test_7   ;
+wire [255:0]      plic_int_cfg_test_0   ;
+wire [255:0]      plic_int_cfg_test_1   ;
+wire [255:0]      plic_int_cfg_test_2   ;
+wire [239:0]      plic_int_cfg_test_3   ;
+wire [258:0]      plic_int_cfg_test_4   ;
+wire [23:0]       plic_int_cfg_test_5   ;
+wire [255:0]      plic_int_cfg_test_6   ;
+wire [207:0]      plic_int_cfg_test_7   ;
 wire [240+15:0]   plic_int_vld          ;
 wire [63:0]       res_tag_b0            ;
 wire [3:0]        test_input            ;
@@ -116,7 +116,7 @@ wire              test_wire0            ;
 wire              test_wire1            ;
 wire              test_wire2            ;
 wire              test_wire3            ;
-wire [2:0]        test_wires            ;
+wire [3:0]        test_wires            ;
 reg  [64:0]       cfg_is_int8_d0           ;
 reg               cfg_reg_en_d0            ;
 reg               mac_out_pvld             ;
@@ -128,7 +128,7 @@ reg               q                        ;
 //| ====================================================================================
 //| ======== Below Wires are for all &Instance modules by &AutoInstSig  ===============
 //| ============ you may need to manually update/correct                 ===============
-// ------ wires of Instance: my_spi_Param & my_spi ------
+// ------ signals of Instance: my_spi_Param & my_spi ------
 wire              IPX_clk_i                    ;
 wire              IPX_rst_i                    ;
 wire              MISO_I_IPX                   ;
@@ -143,22 +143,22 @@ wire [7:0]        dat_o                        ;
 wire              inta_o                       ;
 wire              stb_i                        ;
 wire              we_i                         ;
-// ------ wires of Instance: u_Test_AFifo ------
+// ------ signals of Instance: u_Test_AFifo ------
 wire              rd_clk                       ;
 wire              rst_rd                       ;
 wire              rst_wr                       ;
 wire              wr_clk                       ;
-// ------ wires of Instance: u_Test_SFifo ------
+// ------ signals of Instance: u_Test_SFifo ------
 wire              clks                         ;
 wire              rstn                         ;
-// ------ wires of Instance: u_Test_SFifo & u_Test_AFifo ------
+// ------ signals of Instance: u_Test_SFifo & u_Test_AFifo ------
 wire              empty                        ;
 wire              full                         ;
 wire [1:0]        rd_dout                      ;
 wire              rd_en                        ;
 wire [data_width-1:0] wr_din                       ;
 wire              wr_en                        ;
-// ------ wires of Instance: u_exp ------
+// ------ signals of Instance: u_exp ------
 reg  [191:0]      dat_pre_exp                  ;
 reg  [63:0]       dat_pre_mask                 ;
 wire              dat_pre_pvld                 ;
@@ -167,135 +167,135 @@ wire              dat_pre_stripe_st            ;
 wire [191:0]      wt_sd_exp                    ;
 wire [63:0]       wt_sd_mask                   ;
 wire              wt_sd_pvld                   ;
-// ------ wires of Instance: u_exp & u_mul_0 ------
+// ------ signals of Instance: u_exp & u_mul_0 ------
 wire [3:0]        exp_sft_00                   ;
-// ------ wires of Instance: u_exp & u_mul_1 ------
+// ------ signals of Instance: u_exp & u_mul_1 ------
 wire [3:0]        exp_sft_01                   ;
-// ------ wires of Instance: u_exp & u_mul_10 ------
+// ------ signals of Instance: u_exp & u_mul_10 ------
 wire [3:0]        exp_sft_10                   ;
-// ------ wires of Instance: u_exp & u_mul_11 ------
+// ------ signals of Instance: u_exp & u_mul_11 ------
 wire [3:0]        exp_sft_11                   ;
-// ------ wires of Instance: u_exp & u_mul_12 ------
+// ------ signals of Instance: u_exp & u_mul_12 ------
 wire [3:0]        exp_sft_12                   ;
-// ------ wires of Instance: u_exp & u_mul_13 ------
+// ------ signals of Instance: u_exp & u_mul_13 ------
 wire [3:0]        exp_sft_13                   ;
-// ------ wires of Instance: u_exp & u_mul_14 ------
+// ------ signals of Instance: u_exp & u_mul_14 ------
 wire [3:0]        exp_sft_14                   ;
-// ------ wires of Instance: u_exp & u_mul_15 ------
+// ------ signals of Instance: u_exp & u_mul_15 ------
 wire [3:0]        exp_sft_15                   ;
-// ------ wires of Instance: u_exp & u_mul_16 ------
+// ------ signals of Instance: u_exp & u_mul_16 ------
 wire [3:0]        exp_sft_16                   ;
-// ------ wires of Instance: u_exp & u_mul_17 ------
+// ------ signals of Instance: u_exp & u_mul_17 ------
 wire [3:0]        exp_sft_17                   ;
-// ------ wires of Instance: u_exp & u_mul_18 ------
+// ------ signals of Instance: u_exp & u_mul_18 ------
 wire [3:0]        exp_sft_18                   ;
-// ------ wires of Instance: u_exp & u_mul_19 ------
+// ------ signals of Instance: u_exp & u_mul_19 ------
 wire [3:0]        exp_sft_19                   ;
-// ------ wires of Instance: u_exp & u_mul_2 ------
+// ------ signals of Instance: u_exp & u_mul_2 ------
 wire [3:0]        exp_sft_02                   ;
-// ------ wires of Instance: u_exp & u_mul_20 ------
+// ------ signals of Instance: u_exp & u_mul_20 ------
 wire [3:0]        exp_sft_20                   ;
-// ------ wires of Instance: u_exp & u_mul_21 ------
+// ------ signals of Instance: u_exp & u_mul_21 ------
 wire [3:0]        exp_sft_21                   ;
-// ------ wires of Instance: u_exp & u_mul_22 ------
+// ------ signals of Instance: u_exp & u_mul_22 ------
 wire [3:0]        exp_sft_22                   ;
-// ------ wires of Instance: u_exp & u_mul_23 ------
+// ------ signals of Instance: u_exp & u_mul_23 ------
 wire [3:0]        exp_sft_23                   ;
-// ------ wires of Instance: u_exp & u_mul_24 ------
+// ------ signals of Instance: u_exp & u_mul_24 ------
 wire [3:0]        exp_sft_24                   ;
-// ------ wires of Instance: u_exp & u_mul_25 ------
+// ------ signals of Instance: u_exp & u_mul_25 ------
 wire [3:0]        exp_sft_25                   ;
-// ------ wires of Instance: u_exp & u_mul_26 ------
+// ------ signals of Instance: u_exp & u_mul_26 ------
 wire [3:0]        exp_sft_26                   ;
-// ------ wires of Instance: u_exp & u_mul_27 ------
+// ------ signals of Instance: u_exp & u_mul_27 ------
 wire [3:0]        exp_sft_27                   ;
-// ------ wires of Instance: u_exp & u_mul_28 ------
+// ------ signals of Instance: u_exp & u_mul_28 ------
 wire [3:0]        exp_sft_28                   ;
-// ------ wires of Instance: u_exp & u_mul_29 ------
+// ------ signals of Instance: u_exp & u_mul_29 ------
 wire [3:0]        exp_sft_29                   ;
-// ------ wires of Instance: u_exp & u_mul_3 ------
+// ------ signals of Instance: u_exp & u_mul_3 ------
 wire [3:0]        exp_sft_03                   ;
-// ------ wires of Instance: u_exp & u_mul_30 ------
+// ------ signals of Instance: u_exp & u_mul_30 ------
 wire [3:0]        exp_sft_30                   ;
-// ------ wires of Instance: u_exp & u_mul_31 ------
+// ------ signals of Instance: u_exp & u_mul_31 ------
 wire [3:0]        exp_sft_31                   ;
-// ------ wires of Instance: u_exp & u_mul_32 ------
+// ------ signals of Instance: u_exp & u_mul_32 ------
 wire [3:0]        exp_sft_32                   ;
-// ------ wires of Instance: u_exp & u_mul_33 ------
+// ------ signals of Instance: u_exp & u_mul_33 ------
 wire [3:0]        exp_sft_33                   ;
-// ------ wires of Instance: u_exp & u_mul_34 ------
+// ------ signals of Instance: u_exp & u_mul_34 ------
 wire [3:0]        exp_sft_34                   ;
-// ------ wires of Instance: u_exp & u_mul_35 ------
+// ------ signals of Instance: u_exp & u_mul_35 ------
 wire [3:0]        exp_sft_35                   ;
-// ------ wires of Instance: u_exp & u_mul_36 ------
+// ------ signals of Instance: u_exp & u_mul_36 ------
 wire [3:0]        exp_sft_36                   ;
-// ------ wires of Instance: u_exp & u_mul_37 ------
+// ------ signals of Instance: u_exp & u_mul_37 ------
 wire [3:0]        exp_sft_37                   ;
-// ------ wires of Instance: u_exp & u_mul_38 ------
+// ------ signals of Instance: u_exp & u_mul_38 ------
 wire [3:0]        exp_sft_38                   ;
-// ------ wires of Instance: u_exp & u_mul_39 ------
+// ------ signals of Instance: u_exp & u_mul_39 ------
 wire [3:0]        exp_sft_39                   ;
-// ------ wires of Instance: u_exp & u_mul_4 ------
+// ------ signals of Instance: u_exp & u_mul_4 ------
 wire [3:0]        exp_sft_04                   ;
-// ------ wires of Instance: u_exp & u_mul_40 ------
+// ------ signals of Instance: u_exp & u_mul_40 ------
 wire [3:0]        exp_sft_40                   ;
-// ------ wires of Instance: u_exp & u_mul_41 ------
+// ------ signals of Instance: u_exp & u_mul_41 ------
 wire [3:0]        exp_sft_41                   ;
-// ------ wires of Instance: u_exp & u_mul_42 ------
+// ------ signals of Instance: u_exp & u_mul_42 ------
 wire [3:0]        exp_sft_42                   ;
-// ------ wires of Instance: u_exp & u_mul_43 ------
+// ------ signals of Instance: u_exp & u_mul_43 ------
 wire [3:0]        exp_sft_43                   ;
-// ------ wires of Instance: u_exp & u_mul_44 ------
+// ------ signals of Instance: u_exp & u_mul_44 ------
 wire [3:0]        exp_sft_44                   ;
-// ------ wires of Instance: u_exp & u_mul_45 ------
+// ------ signals of Instance: u_exp & u_mul_45 ------
 wire [3:0]        exp_sft_45                   ;
-// ------ wires of Instance: u_exp & u_mul_46 ------
+// ------ signals of Instance: u_exp & u_mul_46 ------
 wire [3:0]        exp_sft_46                   ;
-// ------ wires of Instance: u_exp & u_mul_47 ------
+// ------ signals of Instance: u_exp & u_mul_47 ------
 wire [3:0]        exp_sft_47                   ;
-// ------ wires of Instance: u_exp & u_mul_48 ------
+// ------ signals of Instance: u_exp & u_mul_48 ------
 wire [3:0]        exp_sft_48                   ;
-// ------ wires of Instance: u_exp & u_mul_49 ------
+// ------ signals of Instance: u_exp & u_mul_49 ------
 wire [3:0]        exp_sft_49                   ;
-// ------ wires of Instance: u_exp & u_mul_5 ------
+// ------ signals of Instance: u_exp & u_mul_5 ------
 wire [3:0]        exp_sft_05                   ;
-// ------ wires of Instance: u_exp & u_mul_50 ------
+// ------ signals of Instance: u_exp & u_mul_50 ------
 wire [3:0]        exp_sft_50                   ;
-// ------ wires of Instance: u_exp & u_mul_51 ------
+// ------ signals of Instance: u_exp & u_mul_51 ------
 wire [3:0]        exp_sft_51                   ;
-// ------ wires of Instance: u_exp & u_mul_52 ------
+// ------ signals of Instance: u_exp & u_mul_52 ------
 wire [3:0]        exp_sft_52                   ;
-// ------ wires of Instance: u_exp & u_mul_53 ------
+// ------ signals of Instance: u_exp & u_mul_53 ------
 wire [3:0]        exp_sft_53                   ;
-// ------ wires of Instance: u_exp & u_mul_54 ------
+// ------ signals of Instance: u_exp & u_mul_54 ------
 wire [3:0]        exp_sft_54                   ;
-// ------ wires of Instance: u_exp & u_mul_55 ------
+// ------ signals of Instance: u_exp & u_mul_55 ------
 wire [3:0]        exp_sft_55                   ;
-// ------ wires of Instance: u_exp & u_mul_56 ------
+// ------ signals of Instance: u_exp & u_mul_56 ------
 wire [3:0]        exp_sft_56                   ;
-// ------ wires of Instance: u_exp & u_mul_57 ------
+// ------ signals of Instance: u_exp & u_mul_57 ------
 wire [3:0]        exp_sft_57                   ;
-// ------ wires of Instance: u_exp & u_mul_58 ------
+// ------ signals of Instance: u_exp & u_mul_58 ------
 wire [3:0]        exp_sft_58                   ;
-// ------ wires of Instance: u_exp & u_mul_59 ------
+// ------ signals of Instance: u_exp & u_mul_59 ------
 wire [3:0]        exp_sft_59                   ;
-// ------ wires of Instance: u_exp & u_mul_6 ------
+// ------ signals of Instance: u_exp & u_mul_6 ------
 wire [3:0]        exp_sft_06                   ;
-// ------ wires of Instance: u_exp & u_mul_60 ------
+// ------ signals of Instance: u_exp & u_mul_60 ------
 wire [3:0]        exp_sft_60                   ;
-// ------ wires of Instance: u_exp & u_mul_61 ------
+// ------ signals of Instance: u_exp & u_mul_61 ------
 wire [3:0]        exp_sft_61                   ;
-// ------ wires of Instance: u_exp & u_mul_62 ------
+// ------ signals of Instance: u_exp & u_mul_62 ------
 wire [3:0]        exp_sft_62                   ;
-// ------ wires of Instance: u_exp & u_mul_63 ------
+// ------ signals of Instance: u_exp & u_mul_63 ------
 wire [3:0]        exp_sft_63                   ;
-// ------ wires of Instance: u_exp & u_mul_7 ------
+// ------ signals of Instance: u_exp & u_mul_7 ------
 wire [3:0]        exp_sft_07                   ;
-// ------ wires of Instance: u_exp & u_mul_8 ------
+// ------ signals of Instance: u_exp & u_mul_8 ------
 wire [3:0]        exp_sft_08                   ;
-// ------ wires of Instance: u_exp & u_mul_9 ------
+// ------ signals of Instance: u_exp & u_mul_9 ------
 wire [3:0]        exp_sft_09                   ;
-// ------ wires of Instance: u_mul_0 ------
+// ------ signals of Instance: u_mul_0 ------
 wire [15:0]       dat_actv_data0               ;
 wire [1:0]        dat_actv_nz0                 ;
 wire [31:0]       res_a_00                     ;
@@ -303,11 +303,11 @@ wire [31:0]       res_b_00                     ;
 wire [7:0]        res_tag_0                    ;
 wire [15:0]       wt_actv_data0                ;
 wire [1:0]        wt_actv_nz00                 ;
-// ------ wires of Instance: u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ------
+// ------ signals of Instance: u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ------
 wire              cfg_is_int8                  ;
 wire [63:0]       dat_actv_pvld                ;
 wire [63:0]       wt_actv_pvld                 ;
-// ------ wires of Instance: u_mul_1 ------
+// ------ signals of Instance: u_mul_1 ------
 wire [15:0]       dat_actv_data1               ;
 wire [1:0]        dat_actv_nz1                 ;
 wire [31:0]       res_a_01                     ;
@@ -315,7 +315,7 @@ wire [31:0]       res_b_01                     ;
 wire [7:0]        res_tag_1                    ;
 wire [15:0]       wt_actv_data1                ;
 wire [1:0]        wt_actv_nz01                 ;
-// ------ wires of Instance: u_mul_10 ------
+// ------ signals of Instance: u_mul_10 ------
 wire [15:0]       dat_actv_data10              ;
 wire [1:0]        dat_actv_nz10                ;
 wire [31:0]       res_a_10                     ;
@@ -323,7 +323,7 @@ wire [31:0]       res_b_10                     ;
 wire [7:0]        res_tag_10                   ;
 wire [15:0]       wt_actv_data10               ;
 wire [1:0]        wt_actv_nz10                 ;
-// ------ wires of Instance: u_mul_11 ------
+// ------ signals of Instance: u_mul_11 ------
 wire [15:0]       dat_actv_data11              ;
 wire [1:0]        dat_actv_nz11                ;
 wire [31:0]       res_a_11                     ;
@@ -331,7 +331,7 @@ wire [31:0]       res_b_11                     ;
 wire [7:0]        res_tag_11                   ;
 wire [15:0]       wt_actv_data11               ;
 wire [1:0]        wt_actv_nz11                 ;
-// ------ wires of Instance: u_mul_12 ------
+// ------ signals of Instance: u_mul_12 ------
 wire [15:0]       dat_actv_data12              ;
 wire [1:0]        dat_actv_nz12                ;
 wire [31:0]       res_a_12                     ;
@@ -339,7 +339,7 @@ wire [31:0]       res_b_12                     ;
 wire [7:0]        res_tag_12                   ;
 wire [15:0]       wt_actv_data12               ;
 wire [1:0]        wt_actv_nz12                 ;
-// ------ wires of Instance: u_mul_13 ------
+// ------ signals of Instance: u_mul_13 ------
 wire [15:0]       dat_actv_data13              ;
 wire [1:0]        dat_actv_nz13                ;
 wire [31:0]       res_a_13                     ;
@@ -347,7 +347,7 @@ wire [31:0]       res_b_13                     ;
 wire [7:0]        res_tag_13                   ;
 wire [15:0]       wt_actv_data13               ;
 wire [1:0]        wt_actv_nz13                 ;
-// ------ wires of Instance: u_mul_14 ------
+// ------ signals of Instance: u_mul_14 ------
 wire [15:0]       dat_actv_data14              ;
 wire [1:0]        dat_actv_nz14                ;
 wire [31:0]       res_a_14                     ;
@@ -355,7 +355,7 @@ wire [31:0]       res_b_14                     ;
 wire [7:0]        res_tag_14                   ;
 wire [15:0]       wt_actv_data14               ;
 wire [1:0]        wt_actv_nz14                 ;
-// ------ wires of Instance: u_mul_15 ------
+// ------ signals of Instance: u_mul_15 ------
 wire [15:0]       dat_actv_data15              ;
 wire [1:0]        dat_actv_nz15                ;
 wire [31:0]       res_a_15                     ;
@@ -363,7 +363,7 @@ wire [31:0]       res_b_15                     ;
 wire [7:0]        res_tag_15                   ;
 wire [15:0]       wt_actv_data15               ;
 wire [1:0]        wt_actv_nz15                 ;
-// ------ wires of Instance: u_mul_16 ------
+// ------ signals of Instance: u_mul_16 ------
 wire [15:0]       dat_actv_data16              ;
 wire [1:0]        dat_actv_nz16                ;
 wire [31:0]       res_a_16                     ;
@@ -371,7 +371,7 @@ wire [31:0]       res_b_16                     ;
 wire [7:0]        res_tag_16                   ;
 wire [15:0]       wt_actv_data16               ;
 wire [1:0]        wt_actv_nz16                 ;
-// ------ wires of Instance: u_mul_17 ------
+// ------ signals of Instance: u_mul_17 ------
 wire [15:0]       dat_actv_data17              ;
 wire [1:0]        dat_actv_nz17                ;
 wire [31:0]       res_a_17                     ;
@@ -379,7 +379,7 @@ wire [31:0]       res_b_17                     ;
 wire [7:0]        res_tag_17                   ;
 wire [15:0]       wt_actv_data17               ;
 wire [1:0]        wt_actv_nz17                 ;
-// ------ wires of Instance: u_mul_18 ------
+// ------ signals of Instance: u_mul_18 ------
 wire [15:0]       dat_actv_data18              ;
 wire [1:0]        dat_actv_nz18                ;
 wire [31:0]       res_a_18                     ;
@@ -387,7 +387,7 @@ wire [31:0]       res_b_18                     ;
 wire [7:0]        res_tag_18                   ;
 wire [15:0]       wt_actv_data18               ;
 wire [1:0]        wt_actv_nz18                 ;
-// ------ wires of Instance: u_mul_19 ------
+// ------ signals of Instance: u_mul_19 ------
 wire [15:0]       dat_actv_data19              ;
 wire [1:0]        dat_actv_nz19                ;
 wire [31:0]       res_a_19                     ;
@@ -395,7 +395,7 @@ wire [31:0]       res_b_19                     ;
 wire [7:0]        res_tag_19                   ;
 wire [15:0]       wt_actv_data19               ;
 wire [1:0]        wt_actv_nz19                 ;
-// ------ wires of Instance: u_mul_2 ------
+// ------ signals of Instance: u_mul_2 ------
 wire [15:0]       dat_actv_data2               ;
 wire [1:0]        dat_actv_nz2                 ;
 wire [31:0]       res_a_02                     ;
@@ -403,7 +403,7 @@ wire [31:0]       res_b_02                     ;
 wire [7:0]        res_tag_2                    ;
 wire [15:0]       wt_actv_data2                ;
 wire [1:0]        wt_actv_nz02                 ;
-// ------ wires of Instance: u_mul_20 ------
+// ------ signals of Instance: u_mul_20 ------
 wire [15:0]       dat_actv_data20              ;
 wire [1:0]        dat_actv_nz20                ;
 wire [31:0]       res_a_20                     ;
@@ -411,7 +411,7 @@ wire [31:0]       res_b_20                     ;
 wire [7:0]        res_tag_20                   ;
 wire [15:0]       wt_actv_data20               ;
 wire [1:0]        wt_actv_nz20                 ;
-// ------ wires of Instance: u_mul_21 ------
+// ------ signals of Instance: u_mul_21 ------
 wire [15:0]       dat_actv_data21              ;
 wire [1:0]        dat_actv_nz21                ;
 wire [31:0]       res_a_21                     ;
@@ -419,7 +419,7 @@ wire [31:0]       res_b_21                     ;
 wire [7:0]        res_tag_21                   ;
 wire [15:0]       wt_actv_data21               ;
 wire [1:0]        wt_actv_nz21                 ;
-// ------ wires of Instance: u_mul_22 ------
+// ------ signals of Instance: u_mul_22 ------
 wire [15:0]       dat_actv_data22              ;
 wire [1:0]        dat_actv_nz22                ;
 wire [31:0]       res_a_22                     ;
@@ -427,7 +427,7 @@ wire [31:0]       res_b_22                     ;
 wire [7:0]        res_tag_22                   ;
 wire [15:0]       wt_actv_data22               ;
 wire [1:0]        wt_actv_nz22                 ;
-// ------ wires of Instance: u_mul_23 ------
+// ------ signals of Instance: u_mul_23 ------
 wire [15:0]       dat_actv_data23              ;
 wire [1:0]        dat_actv_nz23                ;
 wire [31:0]       res_a_23                     ;
@@ -435,7 +435,7 @@ wire [31:0]       res_b_23                     ;
 wire [7:0]        res_tag_23                   ;
 wire [15:0]       wt_actv_data23               ;
 wire [1:0]        wt_actv_nz23                 ;
-// ------ wires of Instance: u_mul_24 ------
+// ------ signals of Instance: u_mul_24 ------
 wire [15:0]       dat_actv_data24              ;
 wire [1:0]        dat_actv_nz24                ;
 wire [31:0]       res_a_24                     ;
@@ -443,7 +443,7 @@ wire [31:0]       res_b_24                     ;
 wire [7:0]        res_tag_24                   ;
 wire [15:0]       wt_actv_data24               ;
 wire [1:0]        wt_actv_nz24                 ;
-// ------ wires of Instance: u_mul_25 ------
+// ------ signals of Instance: u_mul_25 ------
 wire [15:0]       dat_actv_data25              ;
 wire [1:0]        dat_actv_nz25                ;
 wire [31:0]       res_a_25                     ;
@@ -451,7 +451,7 @@ wire [31:0]       res_b_25                     ;
 wire [7:0]        res_tag_25                   ;
 wire [15:0]       wt_actv_data25               ;
 wire [1:0]        wt_actv_nz25                 ;
-// ------ wires of Instance: u_mul_26 ------
+// ------ signals of Instance: u_mul_26 ------
 wire [15:0]       dat_actv_data26              ;
 wire [1:0]        dat_actv_nz26                ;
 wire [31:0]       res_a_26                     ;
@@ -459,7 +459,7 @@ wire [31:0]       res_b_26                     ;
 wire [7:0]        res_tag_26                   ;
 wire [15:0]       wt_actv_data26               ;
 wire [1:0]        wt_actv_nz26                 ;
-// ------ wires of Instance: u_mul_27 ------
+// ------ signals of Instance: u_mul_27 ------
 wire [15:0]       dat_actv_data27              ;
 wire [1:0]        dat_actv_nz27                ;
 wire [31:0]       res_a_27                     ;
@@ -467,7 +467,7 @@ wire [31:0]       res_b_27                     ;
 wire [7:0]        res_tag_27                   ;
 wire [15:0]       wt_actv_data27               ;
 wire [1:0]        wt_actv_nz27                 ;
-// ------ wires of Instance: u_mul_28 ------
+// ------ signals of Instance: u_mul_28 ------
 wire [15:0]       dat_actv_data28              ;
 wire [1:0]        dat_actv_nz28                ;
 wire [31:0]       res_a_28                     ;
@@ -475,7 +475,7 @@ wire [31:0]       res_b_28                     ;
 wire [7:0]        res_tag_28                   ;
 wire [15:0]       wt_actv_data28               ;
 wire [1:0]        wt_actv_nz28                 ;
-// ------ wires of Instance: u_mul_29 ------
+// ------ signals of Instance: u_mul_29 ------
 wire [15:0]       dat_actv_data29              ;
 wire [1:0]        dat_actv_nz29                ;
 wire [31:0]       res_a_29                     ;
@@ -483,7 +483,7 @@ wire [31:0]       res_b_29                     ;
 wire [7:0]        res_tag_29                   ;
 wire [15:0]       wt_actv_data29               ;
 wire [1:0]        wt_actv_nz29                 ;
-// ------ wires of Instance: u_mul_3 ------
+// ------ signals of Instance: u_mul_3 ------
 wire [15:0]       dat_actv_data3               ;
 wire [1:0]        dat_actv_nz3                 ;
 wire [31:0]       res_a_03                     ;
@@ -491,7 +491,7 @@ wire [31:0]       res_b_03                     ;
 wire [7:0]        res_tag_3                    ;
 wire [15:0]       wt_actv_data3                ;
 wire [1:0]        wt_actv_nz03                 ;
-// ------ wires of Instance: u_mul_30 ------
+// ------ signals of Instance: u_mul_30 ------
 wire [15:0]       dat_actv_data30              ;
 wire [1:0]        dat_actv_nz30                ;
 wire [31:0]       res_a_30                     ;
@@ -499,7 +499,7 @@ wire [31:0]       res_b_30                     ;
 wire [7:0]        res_tag_30                   ;
 wire [15:0]       wt_actv_data30               ;
 wire [1:0]        wt_actv_nz30                 ;
-// ------ wires of Instance: u_mul_31 ------
+// ------ signals of Instance: u_mul_31 ------
 wire [15:0]       dat_actv_data31              ;
 wire [1:0]        dat_actv_nz31                ;
 wire [31:0]       res_a_31                     ;
@@ -507,7 +507,7 @@ wire [31:0]       res_b_31                     ;
 wire [7:0]        res_tag_31                   ;
 wire [15:0]       wt_actv_data31               ;
 wire [1:0]        wt_actv_nz31                 ;
-// ------ wires of Instance: u_mul_32 ------
+// ------ signals of Instance: u_mul_32 ------
 wire [15:0]       dat_actv_data32              ;
 wire [1:0]        dat_actv_nz32                ;
 wire [31:0]       res_a_32                     ;
@@ -515,7 +515,7 @@ wire [31:0]       res_b_32                     ;
 wire [7:0]        res_tag_32                   ;
 wire [15:0]       wt_actv_data32               ;
 wire [1:0]        wt_actv_nz32                 ;
-// ------ wires of Instance: u_mul_33 ------
+// ------ signals of Instance: u_mul_33 ------
 wire [15:0]       dat_actv_data33              ;
 wire [1:0]        dat_actv_nz33                ;
 wire [31:0]       res_a_33                     ;
@@ -523,7 +523,7 @@ wire [31:0]       res_b_33                     ;
 wire [7:0]        res_tag_33                   ;
 wire [15:0]       wt_actv_data33               ;
 wire [1:0]        wt_actv_nz33                 ;
-// ------ wires of Instance: u_mul_34 ------
+// ------ signals of Instance: u_mul_34 ------
 wire [15:0]       dat_actv_data34              ;
 wire [1:0]        dat_actv_nz34                ;
 wire [31:0]       res_a_34                     ;
@@ -531,7 +531,7 @@ wire [31:0]       res_b_34                     ;
 wire [7:0]        res_tag_34                   ;
 wire [15:0]       wt_actv_data34               ;
 wire [1:0]        wt_actv_nz34                 ;
-// ------ wires of Instance: u_mul_35 ------
+// ------ signals of Instance: u_mul_35 ------
 wire [15:0]       dat_actv_data35              ;
 wire [1:0]        dat_actv_nz35                ;
 wire [31:0]       res_a_35                     ;
@@ -539,7 +539,7 @@ wire [31:0]       res_b_35                     ;
 wire [7:0]        res_tag_35                   ;
 wire [15:0]       wt_actv_data35               ;
 wire [1:0]        wt_actv_nz35                 ;
-// ------ wires of Instance: u_mul_36 ------
+// ------ signals of Instance: u_mul_36 ------
 wire [15:0]       dat_actv_data36              ;
 wire [1:0]        dat_actv_nz36                ;
 wire [31:0]       res_a_36                     ;
@@ -547,7 +547,7 @@ wire [31:0]       res_b_36                     ;
 wire [7:0]        res_tag_36                   ;
 wire [15:0]       wt_actv_data36               ;
 wire [1:0]        wt_actv_nz36                 ;
-// ------ wires of Instance: u_mul_37 ------
+// ------ signals of Instance: u_mul_37 ------
 wire [15:0]       dat_actv_data37              ;
 wire [1:0]        dat_actv_nz37                ;
 wire [31:0]       res_a_37                     ;
@@ -555,7 +555,7 @@ wire [31:0]       res_b_37                     ;
 wire [7:0]        res_tag_37                   ;
 wire [15:0]       wt_actv_data37               ;
 wire [1:0]        wt_actv_nz37                 ;
-// ------ wires of Instance: u_mul_38 ------
+// ------ signals of Instance: u_mul_38 ------
 wire [15:0]       dat_actv_data38              ;
 wire [1:0]        dat_actv_nz38                ;
 wire [31:0]       res_a_38                     ;
@@ -563,7 +563,7 @@ wire [31:0]       res_b_38                     ;
 wire [7:0]        res_tag_38                   ;
 wire [15:0]       wt_actv_data38               ;
 wire [1:0]        wt_actv_nz38                 ;
-// ------ wires of Instance: u_mul_39 ------
+// ------ signals of Instance: u_mul_39 ------
 wire [15:0]       dat_actv_data39              ;
 wire [1:0]        dat_actv_nz39                ;
 wire [31:0]       res_a_39                     ;
@@ -571,7 +571,7 @@ wire [31:0]       res_b_39                     ;
 wire [7:0]        res_tag_39                   ;
 wire [15:0]       wt_actv_data39               ;
 wire [1:0]        wt_actv_nz39                 ;
-// ------ wires of Instance: u_mul_4 ------
+// ------ signals of Instance: u_mul_4 ------
 wire [15:0]       dat_actv_data4               ;
 wire [1:0]        dat_actv_nz4                 ;
 wire [31:0]       res_a_04                     ;
@@ -579,7 +579,7 @@ wire [31:0]       res_b_04                     ;
 wire [7:0]        res_tag_4                    ;
 wire [15:0]       wt_actv_data4                ;
 wire [1:0]        wt_actv_nz04                 ;
-// ------ wires of Instance: u_mul_40 ------
+// ------ signals of Instance: u_mul_40 ------
 wire [15:0]       dat_actv_data40              ;
 wire [1:0]        dat_actv_nz40                ;
 wire [31:0]       res_a_40                     ;
@@ -587,7 +587,7 @@ wire [31:0]       res_b_40                     ;
 wire [7:0]        res_tag_40                   ;
 wire [15:0]       wt_actv_data40               ;
 wire [1:0]        wt_actv_nz40                 ;
-// ------ wires of Instance: u_mul_41 ------
+// ------ signals of Instance: u_mul_41 ------
 wire [15:0]       dat_actv_data41              ;
 wire [1:0]        dat_actv_nz41                ;
 wire [31:0]       res_a_41                     ;
@@ -595,7 +595,7 @@ wire [31:0]       res_b_41                     ;
 wire [7:0]        res_tag_41                   ;
 wire [15:0]       wt_actv_data41               ;
 wire [1:0]        wt_actv_nz41                 ;
-// ------ wires of Instance: u_mul_42 ------
+// ------ signals of Instance: u_mul_42 ------
 wire [15:0]       dat_actv_data42              ;
 wire [1:0]        dat_actv_nz42                ;
 wire [31:0]       res_a_42                     ;
@@ -603,7 +603,7 @@ wire [31:0]       res_b_42                     ;
 wire [7:0]        res_tag_42                   ;
 wire [15:0]       wt_actv_data42               ;
 wire [1:0]        wt_actv_nz42                 ;
-// ------ wires of Instance: u_mul_43 ------
+// ------ signals of Instance: u_mul_43 ------
 wire [15:0]       dat_actv_data43              ;
 wire [1:0]        dat_actv_nz43                ;
 wire [31:0]       res_a_43                     ;
@@ -611,7 +611,7 @@ wire [31:0]       res_b_43                     ;
 wire [7:0]        res_tag_43                   ;
 wire [15:0]       wt_actv_data43               ;
 wire [1:0]        wt_actv_nz43                 ;
-// ------ wires of Instance: u_mul_44 ------
+// ------ signals of Instance: u_mul_44 ------
 wire [15:0]       dat_actv_data44              ;
 wire [1:0]        dat_actv_nz44                ;
 wire [31:0]       res_a_44                     ;
@@ -619,7 +619,7 @@ wire [31:0]       res_b_44                     ;
 wire [7:0]        res_tag_44                   ;
 wire [15:0]       wt_actv_data44               ;
 wire [1:0]        wt_actv_nz44                 ;
-// ------ wires of Instance: u_mul_45 ------
+// ------ signals of Instance: u_mul_45 ------
 wire [15:0]       dat_actv_data45              ;
 wire [1:0]        dat_actv_nz45                ;
 wire [31:0]       res_a_45                     ;
@@ -627,7 +627,7 @@ wire [31:0]       res_b_45                     ;
 wire [7:0]        res_tag_45                   ;
 wire [15:0]       wt_actv_data45               ;
 wire [1:0]        wt_actv_nz45                 ;
-// ------ wires of Instance: u_mul_46 ------
+// ------ signals of Instance: u_mul_46 ------
 wire [15:0]       dat_actv_data46              ;
 wire [1:0]        dat_actv_nz46                ;
 wire [31:0]       res_a_46                     ;
@@ -635,7 +635,7 @@ wire [31:0]       res_b_46                     ;
 wire [7:0]        res_tag_46                   ;
 wire [15:0]       wt_actv_data46               ;
 wire [1:0]        wt_actv_nz46                 ;
-// ------ wires of Instance: u_mul_47 ------
+// ------ signals of Instance: u_mul_47 ------
 wire [15:0]       dat_actv_data47              ;
 wire [1:0]        dat_actv_nz47                ;
 wire [31:0]       res_a_47                     ;
@@ -643,7 +643,7 @@ wire [31:0]       res_b_47                     ;
 wire [7:0]        res_tag_47                   ;
 wire [15:0]       wt_actv_data47               ;
 wire [1:0]        wt_actv_nz47                 ;
-// ------ wires of Instance: u_mul_48 ------
+// ------ signals of Instance: u_mul_48 ------
 wire [15:0]       dat_actv_data48              ;
 wire [1:0]        dat_actv_nz48                ;
 wire [31:0]       res_a_48                     ;
@@ -651,7 +651,7 @@ wire [31:0]       res_b_48                     ;
 wire [7:0]        res_tag_48                   ;
 wire [15:0]       wt_actv_data48               ;
 wire [1:0]        wt_actv_nz48                 ;
-// ------ wires of Instance: u_mul_49 ------
+// ------ signals of Instance: u_mul_49 ------
 wire [15:0]       dat_actv_data49              ;
 wire [1:0]        dat_actv_nz49                ;
 wire [31:0]       res_a_49                     ;
@@ -659,7 +659,7 @@ wire [31:0]       res_b_49                     ;
 wire [7:0]        res_tag_49                   ;
 wire [15:0]       wt_actv_data49               ;
 wire [1:0]        wt_actv_nz49                 ;
-// ------ wires of Instance: u_mul_5 ------
+// ------ signals of Instance: u_mul_5 ------
 wire [15:0]       dat_actv_data5               ;
 wire [1:0]        dat_actv_nz5                 ;
 wire [31:0]       res_a_05                     ;
@@ -667,7 +667,7 @@ wire [31:0]       res_b_05                     ;
 wire [7:0]        res_tag_5                    ;
 wire [15:0]       wt_actv_data5                ;
 wire [1:0]        wt_actv_nz05                 ;
-// ------ wires of Instance: u_mul_50 ------
+// ------ signals of Instance: u_mul_50 ------
 wire [15:0]       dat_actv_data50              ;
 wire [1:0]        dat_actv_nz50                ;
 wire [31:0]       res_a_50                     ;
@@ -675,7 +675,7 @@ wire [31:0]       res_b_50                     ;
 wire [7:0]        res_tag_50                   ;
 wire [15:0]       wt_actv_data50               ;
 wire [1:0]        wt_actv_nz50                 ;
-// ------ wires of Instance: u_mul_51 ------
+// ------ signals of Instance: u_mul_51 ------
 wire [15:0]       dat_actv_data51              ;
 wire [1:0]        dat_actv_nz51                ;
 wire [31:0]       res_a_51                     ;
@@ -683,7 +683,7 @@ wire [31:0]       res_b_51                     ;
 wire [7:0]        res_tag_51                   ;
 wire [15:0]       wt_actv_data51               ;
 wire [1:0]        wt_actv_nz51                 ;
-// ------ wires of Instance: u_mul_52 ------
+// ------ signals of Instance: u_mul_52 ------
 wire [15:0]       dat_actv_data52              ;
 wire [1:0]        dat_actv_nz52                ;
 wire [31:0]       res_a_52                     ;
@@ -691,7 +691,7 @@ wire [31:0]       res_b_52                     ;
 wire [7:0]        res_tag_52                   ;
 wire [15:0]       wt_actv_data52               ;
 wire [1:0]        wt_actv_nz52                 ;
-// ------ wires of Instance: u_mul_53 ------
+// ------ signals of Instance: u_mul_53 ------
 wire [15:0]       dat_actv_data53              ;
 wire [1:0]        dat_actv_nz53                ;
 wire [31:0]       res_a_53                     ;
@@ -699,7 +699,7 @@ wire [31:0]       res_b_53                     ;
 wire [7:0]        res_tag_53                   ;
 wire [15:0]       wt_actv_data53               ;
 wire [1:0]        wt_actv_nz53                 ;
-// ------ wires of Instance: u_mul_54 ------
+// ------ signals of Instance: u_mul_54 ------
 wire [15:0]       dat_actv_data54              ;
 wire [1:0]        dat_actv_nz54                ;
 wire [31:0]       res_a_54                     ;
@@ -707,7 +707,7 @@ wire [31:0]       res_b_54                     ;
 wire [7:0]        res_tag_54                   ;
 wire [15:0]       wt_actv_data54               ;
 wire [1:0]        wt_actv_nz54                 ;
-// ------ wires of Instance: u_mul_55 ------
+// ------ signals of Instance: u_mul_55 ------
 wire [15:0]       dat_actv_data55              ;
 wire [1:0]        dat_actv_nz55                ;
 wire [31:0]       res_a_55                     ;
@@ -715,7 +715,7 @@ wire [31:0]       res_b_55                     ;
 wire [7:0]        res_tag_55                   ;
 wire [15:0]       wt_actv_data55               ;
 wire [1:0]        wt_actv_nz55                 ;
-// ------ wires of Instance: u_mul_56 ------
+// ------ signals of Instance: u_mul_56 ------
 wire [15:0]       dat_actv_data56              ;
 wire [1:0]        dat_actv_nz56                ;
 wire [31:0]       res_a_56                     ;
@@ -723,7 +723,7 @@ wire [31:0]       res_b_56                     ;
 wire [7:0]        res_tag_56                   ;
 wire [15:0]       wt_actv_data56               ;
 wire [1:0]        wt_actv_nz56                 ;
-// ------ wires of Instance: u_mul_57 ------
+// ------ signals of Instance: u_mul_57 ------
 wire [15:0]       dat_actv_data57              ;
 wire [1:0]        dat_actv_nz57                ;
 wire [31:0]       res_a_57                     ;
@@ -731,7 +731,7 @@ wire [31:0]       res_b_57                     ;
 wire [7:0]        res_tag_57                   ;
 wire [15:0]       wt_actv_data57               ;
 wire [1:0]        wt_actv_nz57                 ;
-// ------ wires of Instance: u_mul_58 ------
+// ------ signals of Instance: u_mul_58 ------
 wire [15:0]       dat_actv_data58              ;
 wire [1:0]        dat_actv_nz58                ;
 wire [31:0]       res_a_58                     ;
@@ -739,7 +739,7 @@ wire [31:0]       res_b_58                     ;
 wire [7:0]        res_tag_58                   ;
 wire [15:0]       wt_actv_data58               ;
 wire [1:0]        wt_actv_nz58                 ;
-// ------ wires of Instance: u_mul_59 ------
+// ------ signals of Instance: u_mul_59 ------
 wire [15:0]       dat_actv_data59              ;
 wire [1:0]        dat_actv_nz59                ;
 wire [31:0]       res_a_59                     ;
@@ -747,7 +747,7 @@ wire [31:0]       res_b_59                     ;
 wire [7:0]        res_tag_59                   ;
 wire [15:0]       wt_actv_data59               ;
 wire [1:0]        wt_actv_nz59                 ;
-// ------ wires of Instance: u_mul_6 ------
+// ------ signals of Instance: u_mul_6 ------
 wire [15:0]       dat_actv_data6               ;
 wire [1:0]        dat_actv_nz6                 ;
 wire [31:0]       res_a_06                     ;
@@ -755,7 +755,7 @@ wire [31:0]       res_b_06                     ;
 wire [7:0]        res_tag_6                    ;
 wire [15:0]       wt_actv_data6                ;
 wire [1:0]        wt_actv_nz06                 ;
-// ------ wires of Instance: u_mul_60 ------
+// ------ signals of Instance: u_mul_60 ------
 wire [15:0]       dat_actv_data60              ;
 wire [1:0]        dat_actv_nz60                ;
 wire [31:0]       res_a_60                     ;
@@ -763,7 +763,7 @@ wire [31:0]       res_b_60                     ;
 wire [7:0]        res_tag_60                   ;
 wire [15:0]       wt_actv_data60               ;
 wire [1:0]        wt_actv_nz60                 ;
-// ------ wires of Instance: u_mul_61 ------
+// ------ signals of Instance: u_mul_61 ------
 wire [15:0]       dat_actv_data61              ;
 wire [1:0]        dat_actv_nz61                ;
 wire [31:0]       res_a_61                     ;
@@ -771,7 +771,7 @@ wire [31:0]       res_b_61                     ;
 wire [7:0]        res_tag_61                   ;
 wire [15:0]       wt_actv_data61               ;
 wire [1:0]        wt_actv_nz61                 ;
-// ------ wires of Instance: u_mul_62 ------
+// ------ signals of Instance: u_mul_62 ------
 wire [15:0]       dat_actv_data62              ;
 wire [1:0]        dat_actv_nz62                ;
 wire [31:0]       res_a_62                     ;
@@ -779,7 +779,7 @@ wire [31:0]       res_b_62                     ;
 wire [7:0]        res_tag_62                   ;
 wire [15:0]       wt_actv_data62               ;
 wire [1:0]        wt_actv_nz62                 ;
-// ------ wires of Instance: u_mul_63 ------
+// ------ signals of Instance: u_mul_63 ------
 wire [15:0]       dat_actv_data63              ;
 wire [1:0]        dat_actv_nz63                ;
 wire [31:0]       res_a_63                     ;
@@ -787,7 +787,7 @@ wire [31:0]       res_b_63                     ;
 wire [7:0]        res_tag_63                   ;
 wire [15:0]       wt_actv_data63               ;
 wire [1:0]        wt_actv_nz63                 ;
-// ------ wires of Instance: u_mul_7 ------
+// ------ signals of Instance: u_mul_7 ------
 wire [15:0]       dat_actv_data7               ;
 wire [1:0]        dat_actv_nz7                 ;
 wire [31:0]       res_a_07                     ;
@@ -795,7 +795,7 @@ wire [31:0]       res_b_07                     ;
 wire [7:0]        res_tag_7                    ;
 wire [15:0]       wt_actv_data7                ;
 wire [1:0]        wt_actv_nz07                 ;
-// ------ wires of Instance: u_mul_8 ------
+// ------ signals of Instance: u_mul_8 ------
 wire [15:0]       dat_actv_data8               ;
 wire [1:0]        dat_actv_nz8                 ;
 wire [31:0]       res_a_08                     ;
@@ -803,7 +803,7 @@ wire [31:0]       res_b_08                     ;
 wire [7:0]        res_tag_8                    ;
 wire [15:0]       wt_actv_data8                ;
 wire [1:0]        wt_actv_nz08                 ;
-// ------ wires of Instance: u_mul_9 ------
+// ------ signals of Instance: u_mul_9 ------
 wire [15:0]       dat_actv_data9               ;
 wire [1:0]        dat_actv_nz9                 ;
 wire [31:0]       res_a_09                     ;
@@ -811,19 +811,19 @@ wire [31:0]       res_b_09                     ;
 wire [7:0]        res_tag_9                    ;
 wire [15:0]       wt_actv_data9                ;
 wire [1:0]        wt_actv_nz09                 ;
-// ------ wires of Instance: u_nan ------
+// ------ signals of Instance: u_nan ------
 wire [1023:0]     dat_actv_data                ;
 wire [63:0]       dat_actv_nan                 ;
 wire [10:0]       out_nan_mts                  ;
 wire              out_nan_pvld                 ;
 wire [1023:0]     wt_actv_data                 ;
 wire [63:0]       wt_actv_nan                  ;
-// ------ wires of Instance: u_nan & u_exp & u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ------
+// ------ signals of Instance: u_nan & u_exp & u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ------
 wire              cfg_is_fp16                  ;
 wire              cfg_reg_en                   ;
 wire              nvdla_core_clk               ;
 wire              nvdla_core_rstn              ;
-// ------ wires of Instance: u_test_sys_ctrl_apb_regs ------
+// ------ signals of Instance: u_test_sys_ctrl_apb_regs ------
 wire [31:0]       PADDR_SUFFIX                 ;
 wire              PCLK_SUFFIX                  ;
 wire              PENABLE_SUFFIX               ;
@@ -850,572 +850,572 @@ wire [1:0]        test_reg_test_filed1         ;
 // !!!!!!!!! please carefully check if they're correct or need fix !!!!!!
 // ======================================================================
 // ---------------- instance : my_spi_Param & my_spi ---------------
-//-:  output        [1]             SS_O_IPX
-//-:  output        [1]               inta_o
-//-:   input        [1]                 we_i
-//-:   input        [1]            IPX_rst_i
-//-:  output        [1]           MOSI_O_IPX
-//-:  output      [7:0]                dat_o
-//-:   input        [1]                stb_i
-//-:   input      [2:0]                adr_i
+//-:   input        [1]            IPX_clk_i
 //-:  output        [1]            SCK_O_IPX
 //-:  output        [1]                ack_o
-//-:   input        [1]            IPX_clk_i
 //-:   input        [1]           MISO_I_IPX
 //-:   input      [7:0]                dat_i
+//-:  output        [1]           MOSI_O_IPX
+//-:   input        [1]                 we_i
+//-:  output        [1]             SS_O_IPX
+//-:   input        [1]            IPX_rst_i
+//-:  output      [7:0]                dat_o
+//-:   input        [1]                stb_i
 //-:   input        [1]                cyc_i
+//-:   input      [2:0]                adr_i
+//-:  output        [1]               inta_o
 // ---------------- instance : u_Test_AFifo ---------------
-//-:   input        [1]               rst_rd
 //-:   input        [1]               rst_wr
-//-:   input        [1]               wr_clk
+//-:   input        [1]               rst_rd
 //-:   input        [1]               rd_clk
+//-:   input        [1]               wr_clk
 // ---------------- instance : u_Test_SFifo ---------------
 //-:   input        [1]                 rstn
 //-:   input        [1]                 clks
 // ---------------- instance : u_Test_SFifo & u_Test_AFifo ---------------
-//-:  output        [1]                empty
 //-:   input        [1]                rd_en
 //-:  output      [1:0]              rd_dout
 //-:   input [data_width-1:0]               wr_din
 //-:   input        [1]                wr_en
+//-:  output        [1]                empty
 //-:  output        [1]                 full
 // ---------------- instance : u_exp ---------------
 //-:   input    [191:0]            wt_sd_exp
 // ---------------- instance : u_mul_0 ---------------
 //-:   input      [1:0]         dat_actv_nz0
+//-:  output      [7:0]            res_tag_0
 //-:   input     [15:0]        wt_actv_data0
 //-:  output     [31:0]             res_a_00
+//-:   input     [15:0]       dat_actv_data0
 //-:  output     [31:0]             res_b_00
 //-:   input      [1:0]         wt_actv_nz00
-//-:  output      [7:0]            res_tag_0
-//-:   input     [15:0]       dat_actv_data0
 // ---------------- instance : u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ---------------
 //-:   input     [63:0]        dat_actv_pvld
 // ---------------- instance : u_mul_1 ---------------
-//-:  output      [7:0]            res_tag_1
-//-:   input      [1:0]         dat_actv_nz1
-//-:   input     [15:0]       dat_actv_data1
-//-:   input      [1:0]         wt_actv_nz01
-//-:   input     [15:0]        wt_actv_data1
 //-:  output     [31:0]             res_b_01
 //-:  output     [31:0]             res_a_01
+//-:   input      [1:0]         wt_actv_nz01
+//-:  output      [7:0]            res_tag_1
+//-:   input      [1:0]         dat_actv_nz1
+//-:   input     [15:0]        wt_actv_data1
+//-:   input     [15:0]       dat_actv_data1
 // ---------------- instance : u_mul_10 ---------------
-//-:   input     [15:0]       wt_actv_data10
-//-:  output     [31:0]             res_a_10
-//-:  output     [31:0]             res_b_10
 //-:   input      [1:0]        dat_actv_nz10
-//-:   input     [15:0]      dat_actv_data10
+//-:  output     [31:0]             res_b_10
+//-:   input     [15:0]       wt_actv_data10
 //-:  output      [7:0]           res_tag_10
+//-:  output     [31:0]             res_a_10
 //-:   input      [1:0]         wt_actv_nz10
+//-:   input     [15:0]      dat_actv_data10
 // ---------------- instance : u_mul_11 ---------------
-//-:   input      [1:0]         wt_actv_nz11
+//-:   input      [1:0]        dat_actv_nz11
 //-:  output      [7:0]           res_tag_11
 //-:   input     [15:0]       wt_actv_data11
-//-:   input      [1:0]        dat_actv_nz11
-//-:  output     [31:0]             res_a_11
+//-:   input      [1:0]         wt_actv_nz11
 //-:  output     [31:0]             res_b_11
 //-:   input     [15:0]      dat_actv_data11
+//-:  output     [31:0]             res_a_11
 // ---------------- instance : u_mul_12 ---------------
-//-:   input     [15:0]      dat_actv_data12
+//-:   input     [15:0]       wt_actv_data12
 //-:   input      [1:0]         wt_actv_nz12
 //-:   input      [1:0]        dat_actv_nz12
-//-:  output      [7:0]           res_tag_12
+//-:   input     [15:0]      dat_actv_data12
 //-:  output     [31:0]             res_b_12
 //-:  output     [31:0]             res_a_12
-//-:   input     [15:0]       wt_actv_data12
+//-:  output      [7:0]           res_tag_12
 // ---------------- instance : u_mul_13 ---------------
-//-:  output      [7:0]           res_tag_13
 //-:  output     [31:0]             res_b_13
 //-:  output     [31:0]             res_a_13
+//-:   input      [1:0]        dat_actv_nz13
+//-:   input      [1:0]         wt_actv_nz13
 //-:   input     [15:0]      dat_actv_data13
 //-:   input     [15:0]       wt_actv_data13
-//-:   input      [1:0]         wt_actv_nz13
-//-:   input      [1:0]        dat_actv_nz13
+//-:  output      [7:0]           res_tag_13
 // ---------------- instance : u_mul_14 ---------------
+//-:   input      [1:0]         wt_actv_nz14
 //-:   input     [15:0]       wt_actv_data14
 //-:  output      [7:0]           res_tag_14
-//-:  output     [31:0]             res_b_14
-//-:  output     [31:0]             res_a_14
-//-:   input      [1:0]         wt_actv_nz14
 //-:   input      [1:0]        dat_actv_nz14
+//-:  output     [31:0]             res_a_14
 //-:   input     [15:0]      dat_actv_data14
+//-:  output     [31:0]             res_b_14
 // ---------------- instance : u_mul_15 ---------------
-//-:   input     [15:0]      dat_actv_data15
-//-:   input     [15:0]       wt_actv_data15
-//-:   input      [1:0]        dat_actv_nz15
-//-:   input      [1:0]         wt_actv_nz15
-//-:  output      [7:0]           res_tag_15
-//-:  output     [31:0]             res_a_15
 //-:  output     [31:0]             res_b_15
+//-:   input      [1:0]        dat_actv_nz15
+//-:   input     [15:0]       wt_actv_data15
+//-:   input     [15:0]      dat_actv_data15
+//-:   input      [1:0]         wt_actv_nz15
+//-:  output     [31:0]             res_a_15
+//-:  output      [7:0]           res_tag_15
 // ---------------- instance : u_mul_16 ---------------
-//-:  output     [31:0]             res_a_16
-//-:  output     [31:0]             res_b_16
-//-:   input      [1:0]        dat_actv_nz16
-//-:   input      [1:0]         wt_actv_nz16
-//-:   input     [15:0]      dat_actv_data16
-//-:  output      [7:0]           res_tag_16
 //-:   input     [15:0]       wt_actv_data16
+//-:   input      [1:0]        dat_actv_nz16
+//-:  output     [31:0]             res_a_16
+//-:   input     [15:0]      dat_actv_data16
+//-:  output     [31:0]             res_b_16
+//-:   input      [1:0]         wt_actv_nz16
+//-:  output      [7:0]           res_tag_16
 // ---------------- instance : u_mul_17 ---------------
-//-:  output      [7:0]           res_tag_17
+//-:   input      [1:0]         wt_actv_nz17
+//-:  output     [31:0]             res_a_17
 //-:   input      [1:0]        dat_actv_nz17
 //-:  output     [31:0]             res_b_17
-//-:  output     [31:0]             res_a_17
-//-:   input      [1:0]         wt_actv_nz17
-//-:   input     [15:0]      dat_actv_data17
 //-:   input     [15:0]       wt_actv_data17
+//-:   input     [15:0]      dat_actv_data17
+//-:  output      [7:0]           res_tag_17
 // ---------------- instance : u_mul_18 ---------------
+//-:   input      [1:0]        dat_actv_nz18
 //-:  output     [31:0]             res_b_18
+//-:  output      [7:0]           res_tag_18
 //-:  output     [31:0]             res_a_18
+//-:   input      [1:0]         wt_actv_nz18
 //-:   input     [15:0]      dat_actv_data18
 //-:   input     [15:0]       wt_actv_data18
-//-:   input      [1:0]         wt_actv_nz18
-//-:  output      [7:0]           res_tag_18
-//-:   input      [1:0]        dat_actv_nz18
 // ---------------- instance : u_mul_19 ---------------
-//-:   input     [15:0]       wt_actv_data19
-//-:   input     [15:0]      dat_actv_data19
-//-:   input      [1:0]         wt_actv_nz19
 //-:  output     [31:0]             res_b_19
-//-:  output     [31:0]             res_a_19
-//-:  output      [7:0]           res_tag_19
 //-:   input      [1:0]        dat_actv_nz19
+//-:   input      [1:0]         wt_actv_nz19
+//-:   input     [15:0]      dat_actv_data19
+//-:  output      [7:0]           res_tag_19
+//-:  output     [31:0]             res_a_19
+//-:   input     [15:0]       wt_actv_data19
 // ---------------- instance : u_mul_2 ---------------
-//-:   input      [1:0]         dat_actv_nz2
-//-:   input     [15:0]       dat_actv_data2
 //-:   input     [15:0]        wt_actv_data2
 //-:   input      [1:0]         wt_actv_nz02
+//-:   input     [15:0]       dat_actv_data2
 //-:  output      [7:0]            res_tag_2
 //-:  output     [31:0]             res_a_02
+//-:   input      [1:0]         dat_actv_nz2
 //-:  output     [31:0]             res_b_02
 // ---------------- instance : u_mul_20 ---------------
-//-:   input     [15:0]      dat_actv_data20
-//-:  output     [31:0]             res_b_20
-//-:  output     [31:0]             res_a_20
-//-:   input     [15:0]       wt_actv_data20
 //-:   input      [1:0]         wt_actv_nz20
-//-:  output      [7:0]           res_tag_20
+//-:  output     [31:0]             res_b_20
+//-:   input     [15:0]       wt_actv_data20
+//-:  output     [31:0]             res_a_20
 //-:   input      [1:0]        dat_actv_nz20
+//-:  output      [7:0]           res_tag_20
+//-:   input     [15:0]      dat_actv_data20
 // ---------------- instance : u_mul_21 ---------------
-//-:   input     [15:0]      dat_actv_data21
-//-:  output     [31:0]             res_b_21
-//-:  output     [31:0]             res_a_21
-//-:   input      [1:0]        dat_actv_nz21
-//-:  output      [7:0]           res_tag_21
 //-:   input     [15:0]       wt_actv_data21
 //-:   input      [1:0]         wt_actv_nz21
+//-:  output      [7:0]           res_tag_21
+//-:  output     [31:0]             res_b_21
+//-:   input      [1:0]        dat_actv_nz21
+//-:  output     [31:0]             res_a_21
+//-:   input     [15:0]      dat_actv_data21
 // ---------------- instance : u_mul_22 ---------------
-//-:   input      [1:0]        dat_actv_nz22
-//-:   input     [15:0]       wt_actv_data22
 //-:  output     [31:0]             res_a_22
-//-:  output     [31:0]             res_b_22
-//-:  output      [7:0]           res_tag_22
 //-:   input      [1:0]         wt_actv_nz22
+//-:   input      [1:0]        dat_actv_nz22
+//-:  output     [31:0]             res_b_22
+//-:   input     [15:0]       wt_actv_data22
 //-:   input     [15:0]      dat_actv_data22
+//-:  output      [7:0]           res_tag_22
 // ---------------- instance : u_mul_23 ---------------
 //-:   input      [1:0]         wt_actv_nz23
+//-:   input     [15:0]      dat_actv_data23
+//-:   input     [15:0]       wt_actv_data23
+//-:   input      [1:0]        dat_actv_nz23
+//-:  output      [7:0]           res_tag_23
 //-:  output     [31:0]             res_b_23
 //-:  output     [31:0]             res_a_23
-//-:   input     [15:0]       wt_actv_data23
-//-:   input     [15:0]      dat_actv_data23
-//-:  output      [7:0]           res_tag_23
-//-:   input      [1:0]        dat_actv_nz23
 // ---------------- instance : u_mul_24 ---------------
 //-:   input     [15:0]      dat_actv_data24
-//-:   input      [1:0]         wt_actv_nz24
 //-:   input      [1:0]        dat_actv_nz24
-//-:   input     [15:0]       wt_actv_data24
+//-:  output     [31:0]             res_b_24
+//-:   input      [1:0]         wt_actv_nz24
 //-:  output      [7:0]           res_tag_24
 //-:  output     [31:0]             res_a_24
-//-:  output     [31:0]             res_b_24
+//-:   input     [15:0]       wt_actv_data24
 // ---------------- instance : u_mul_25 ---------------
-//-:   input      [1:0]        dat_actv_nz25
 //-:   input     [15:0]       wt_actv_data25
-//-:   input     [15:0]      dat_actv_data25
 //-:  output     [31:0]             res_b_25
-//-:  output     [31:0]             res_a_25
+//-:   input      [1:0]        dat_actv_nz25
 //-:   input      [1:0]         wt_actv_nz25
+//-:   input     [15:0]      dat_actv_data25
 //-:  output      [7:0]           res_tag_25
+//-:  output     [31:0]             res_a_25
 // ---------------- instance : u_mul_26 ---------------
 //-:  output     [31:0]             res_a_26
-//-:  output     [31:0]             res_b_26
-//-:   input      [1:0]         wt_actv_nz26
-//-:   input     [15:0]       wt_actv_data26
-//-:  output      [7:0]           res_tag_26
 //-:   input      [1:0]        dat_actv_nz26
 //-:   input     [15:0]      dat_actv_data26
+//-:  output     [31:0]             res_b_26
+//-:   input     [15:0]       wt_actv_data26
+//-:   input      [1:0]         wt_actv_nz26
+//-:  output      [7:0]           res_tag_26
 // ---------------- instance : u_mul_27 ---------------
-//-:  output     [31:0]             res_b_27
-//-:  output     [31:0]             res_a_27
-//-:  output      [7:0]           res_tag_27
 //-:   input      [1:0]         wt_actv_nz27
+//-:   input      [1:0]        dat_actv_nz27
 //-:   input     [15:0]       wt_actv_data27
 //-:   input     [15:0]      dat_actv_data27
-//-:   input      [1:0]        dat_actv_nz27
+//-:  output     [31:0]             res_b_27
+//-:  output      [7:0]           res_tag_27
+//-:  output     [31:0]             res_a_27
 // ---------------- instance : u_mul_28 ---------------
-//-:   input      [1:0]        dat_actv_nz28
-//-:   input     [15:0]      dat_actv_data28
-//-:   input      [1:0]         wt_actv_nz28
-//-:   input     [15:0]       wt_actv_data28
-//-:  output     [31:0]             res_b_28
 //-:  output      [7:0]           res_tag_28
 //-:  output     [31:0]             res_a_28
+//-:   input     [15:0]       wt_actv_data28
+//-:  output     [31:0]             res_b_28
+//-:   input      [1:0]         wt_actv_nz28
+//-:   input     [15:0]      dat_actv_data28
+//-:   input      [1:0]        dat_actv_nz28
 // ---------------- instance : u_mul_29 ---------------
-//-:   input      [1:0]         wt_actv_nz29
-//-:   input     [15:0]      dat_actv_data29
-//-:   input      [1:0]        dat_actv_nz29
-//-:  output     [31:0]             res_b_29
-//-:  output     [31:0]             res_a_29
-//-:   input     [15:0]       wt_actv_data29
 //-:  output      [7:0]           res_tag_29
+//-:   input     [15:0]       wt_actv_data29
+//-:   input      [1:0]        dat_actv_nz29
+//-:   input      [1:0]         wt_actv_nz29
+//-:  output     [31:0]             res_b_29
+//-:   input     [15:0]      dat_actv_data29
+//-:  output     [31:0]             res_a_29
 // ---------------- instance : u_mul_3 ---------------
-//-:   input      [1:0]         dat_actv_nz3
-//-:   input     [15:0]        wt_actv_data3
 //-:   input     [15:0]       dat_actv_data3
-//-:  output     [31:0]             res_b_03
-//-:  output     [31:0]             res_a_03
-//-:   input      [1:0]         wt_actv_nz03
+//-:   input      [1:0]         dat_actv_nz3
 //-:  output      [7:0]            res_tag_3
+//-:  output     [31:0]             res_a_03
+//-:   input     [15:0]        wt_actv_data3
+//-:   input      [1:0]         wt_actv_nz03
+//-:  output     [31:0]             res_b_03
 // ---------------- instance : u_mul_30 ---------------
-//-:  output      [7:0]           res_tag_30
 //-:   input     [15:0]       wt_actv_data30
 //-:   input      [1:0]         wt_actv_nz30
-//-:   input     [15:0]      dat_actv_data30
-//-:  output     [31:0]             res_b_30
 //-:  output     [31:0]             res_a_30
+//-:  output     [31:0]             res_b_30
+//-:  output      [7:0]           res_tag_30
+//-:   input     [15:0]      dat_actv_data30
 //-:   input      [1:0]        dat_actv_nz30
 // ---------------- instance : u_mul_31 ---------------
 //-:  output     [31:0]             res_a_31
-//-:  output     [31:0]             res_b_31
-//-:   input     [15:0]      dat_actv_data31
-//-:  output      [7:0]           res_tag_31
 //-:   input      [1:0]        dat_actv_nz31
+//-:   input     [15:0]      dat_actv_data31
 //-:   input     [15:0]       wt_actv_data31
 //-:   input      [1:0]         wt_actv_nz31
+//-:  output     [31:0]             res_b_31
+//-:  output      [7:0]           res_tag_31
 // ---------------- instance : u_mul_32 ---------------
-//-:   input      [1:0]         wt_actv_nz32
-//-:  output      [7:0]           res_tag_32
+//-:   input     [15:0]       wt_actv_data32
 //-:  output     [31:0]             res_a_32
 //-:  output     [31:0]             res_b_32
-//-:   input     [15:0]      dat_actv_data32
-//-:   input     [15:0]       wt_actv_data32
+//-:   input      [1:0]         wt_actv_nz32
+//-:  output      [7:0]           res_tag_32
 //-:   input      [1:0]        dat_actv_nz32
+//-:   input     [15:0]      dat_actv_data32
 // ---------------- instance : u_mul_33 ---------------
 //-:   input      [1:0]         wt_actv_nz33
-//-:   input     [15:0]       wt_actv_data33
-//-:   input     [15:0]      dat_actv_data33
 //-:   input      [1:0]        dat_actv_nz33
-//-:  output     [31:0]             res_b_33
-//-:  output     [31:0]             res_a_33
+//-:   input     [15:0]       wt_actv_data33
 //-:  output      [7:0]           res_tag_33
+//-:  output     [31:0]             res_a_33
+//-:   input     [15:0]      dat_actv_data33
+//-:  output     [31:0]             res_b_33
 // ---------------- instance : u_mul_34 ---------------
-//-:   input      [1:0]        dat_actv_nz34
-//-:   input     [15:0]       wt_actv_data34
-//-:  output     [31:0]             res_a_34
 //-:  output     [31:0]             res_b_34
-//-:  output      [7:0]           res_tag_34
-//-:   input     [15:0]      dat_actv_data34
+//-:   input      [1:0]        dat_actv_nz34
+//-:  output     [31:0]             res_a_34
 //-:   input      [1:0]         wt_actv_nz34
+//-:   input     [15:0]      dat_actv_data34
+//-:   input     [15:0]       wt_actv_data34
+//-:  output      [7:0]           res_tag_34
 // ---------------- instance : u_mul_35 ---------------
+//-:  output      [7:0]           res_tag_35
+//-:   input      [1:0]         wt_actv_nz35
 //-:   input     [15:0]      dat_actv_data35
 //-:   input      [1:0]        dat_actv_nz35
-//-:   input     [15:0]       wt_actv_data35
 //-:  output     [31:0]             res_a_35
+//-:   input     [15:0]       wt_actv_data35
 //-:  output     [31:0]             res_b_35
-//-:   input      [1:0]         wt_actv_nz35
-//-:  output      [7:0]           res_tag_35
 // ---------------- instance : u_mul_36 ---------------
-//-:  output     [31:0]             res_b_36
-//-:  output     [31:0]             res_a_36
-//-:   input      [1:0]         wt_actv_nz36
-//-:   input      [1:0]        dat_actv_nz36
 //-:   input     [15:0]      dat_actv_data36
-//-:   input     [15:0]       wt_actv_data36
+//-:   input      [1:0]         wt_actv_nz36
+//-:  output     [31:0]             res_a_36
+//-:   input      [1:0]        dat_actv_nz36
 //-:  output      [7:0]           res_tag_36
+//-:   input     [15:0]       wt_actv_data36
+//-:  output     [31:0]             res_b_36
 // ---------------- instance : u_mul_37 ---------------
+//-:  output     [31:0]             res_b_37
 //-:  output     [31:0]             res_a_37
 //-:   input     [15:0]      dat_actv_data37
-//-:  output     [31:0]             res_b_37
-//-:   input      [1:0]        dat_actv_nz37
-//-:  output      [7:0]           res_tag_37
-//-:   input     [15:0]       wt_actv_data37
 //-:   input      [1:0]         wt_actv_nz37
+//-:  output      [7:0]           res_tag_37
+//-:   input      [1:0]        dat_actv_nz37
+//-:   input     [15:0]       wt_actv_data37
 // ---------------- instance : u_mul_38 ---------------
+//-:  output     [31:0]             res_b_38
+//-:   input     [15:0]      dat_actv_data38
 //-:   input      [1:0]        dat_actv_nz38
 //-:  output     [31:0]             res_a_38
-//-:  output     [31:0]             res_b_38
-//-:   input     [15:0]       wt_actv_data38
-//-:   input     [15:0]      dat_actv_data38
 //-:   input      [1:0]         wt_actv_nz38
+//-:   input     [15:0]       wt_actv_data38
 //-:  output      [7:0]           res_tag_38
 // ---------------- instance : u_mul_39 ---------------
-//-:  output      [7:0]           res_tag_39
 //-:   input     [15:0]      dat_actv_data39
+//-:   input      [1:0]        dat_actv_nz39
 //-:   input     [15:0]       wt_actv_data39
 //-:   input      [1:0]         wt_actv_nz39
-//-:   input      [1:0]        dat_actv_nz39
-//-:  output     [31:0]             res_b_39
 //-:  output     [31:0]             res_a_39
+//-:  output     [31:0]             res_b_39
+//-:  output      [7:0]           res_tag_39
 // ---------------- instance : u_mul_4 ---------------
-//-:  output     [31:0]             res_a_04
-//-:  output     [31:0]             res_b_04
 //-:   input      [1:0]         wt_actv_nz04
-//-:   input      [1:0]         dat_actv_nz4
-//-:  output      [7:0]            res_tag_4
 //-:   input     [15:0]        wt_actv_data4
 //-:   input     [15:0]       dat_actv_data4
+//-:  output     [31:0]             res_b_04
+//-:  output     [31:0]             res_a_04
+//-:  output      [7:0]            res_tag_4
+//-:   input      [1:0]         dat_actv_nz4
 // ---------------- instance : u_mul_40 ---------------
-//-:   input     [15:0]       wt_actv_data40
-//-:  output     [31:0]             res_b_40
-//-:  output     [31:0]             res_a_40
 //-:   input      [1:0]         wt_actv_nz40
+//-:  output     [31:0]             res_a_40
 //-:   input     [15:0]      dat_actv_data40
+//-:  output     [31:0]             res_b_40
 //-:   input      [1:0]        dat_actv_nz40
+//-:   input     [15:0]       wt_actv_data40
 //-:  output      [7:0]           res_tag_40
 // ---------------- instance : u_mul_41 ---------------
-//-:   input     [15:0]       wt_actv_data41
-//-:   input      [1:0]        dat_actv_nz41
-//-:   input      [1:0]         wt_actv_nz41
-//-:  output      [7:0]           res_tag_41
-//-:   input     [15:0]      dat_actv_data41
-//-:  output     [31:0]             res_a_41
 //-:  output     [31:0]             res_b_41
+//-:   input      [1:0]         wt_actv_nz41
+//-:   input      [1:0]        dat_actv_nz41
+//-:  output     [31:0]             res_a_41
+//-:   input     [15:0]      dat_actv_data41
+//-:  output      [7:0]           res_tag_41
+//-:   input     [15:0]       wt_actv_data41
 // ---------------- instance : u_mul_42 ---------------
-//-:  output     [31:0]             res_b_42
-//-:  output     [31:0]             res_a_42
+//-:   input     [15:0]       wt_actv_data42
 //-:   input     [15:0]      dat_actv_data42
 //-:   input      [1:0]         wt_actv_nz42
+//-:  output     [31:0]             res_a_42
 //-:  output      [7:0]           res_tag_42
 //-:   input      [1:0]        dat_actv_nz42
-//-:   input     [15:0]       wt_actv_data42
+//-:  output     [31:0]             res_b_42
 // ---------------- instance : u_mul_43 ---------------
-//-:   input     [15:0]       wt_actv_data43
-//-:  output     [31:0]             res_a_43
-//-:  output     [31:0]             res_b_43
-//-:   input      [1:0]        dat_actv_nz43
-//-:   input     [15:0]      dat_actv_data43
 //-:  output      [7:0]           res_tag_43
+//-:   input     [15:0]      dat_actv_data43
+//-:   input     [15:0]       wt_actv_data43
+//-:   input      [1:0]        dat_actv_nz43
+//-:  output     [31:0]             res_b_43
 //-:   input      [1:0]         wt_actv_nz43
+//-:  output     [31:0]             res_a_43
 // ---------------- instance : u_mul_44 ---------------
-//-:  output      [7:0]           res_tag_44
-//-:   input     [15:0]      dat_actv_data44
-//-:   input      [1:0]         wt_actv_nz44
-//-:  output     [31:0]             res_a_44
-//-:  output     [31:0]             res_b_44
 //-:   input      [1:0]        dat_actv_nz44
+//-:   input     [15:0]      dat_actv_data44
+//-:  output     [31:0]             res_b_44
+//-:   input      [1:0]         wt_actv_nz44
+//-:  output      [7:0]           res_tag_44
 //-:   input     [15:0]       wt_actv_data44
+//-:  output     [31:0]             res_a_44
 // ---------------- instance : u_mul_45 ---------------
+//-:   input     [15:0]      dat_actv_data45
+//-:  output     [31:0]             res_b_45
+//-:   input      [1:0]        dat_actv_nz45
+//-:   input      [1:0]         wt_actv_nz45
 //-:  output      [7:0]           res_tag_45
 //-:   input     [15:0]       wt_actv_data45
-//-:   input      [1:0]        dat_actv_nz45
-//-:   input     [15:0]      dat_actv_data45
-//-:   input      [1:0]         wt_actv_nz45
-//-:  output     [31:0]             res_b_45
 //-:  output     [31:0]             res_a_45
 // ---------------- instance : u_mul_46 ---------------
-//-:   input      [1:0]         wt_actv_nz46
-//-:  output      [7:0]           res_tag_46
-//-:  output     [31:0]             res_b_46
-//-:  output     [31:0]             res_a_46
-//-:   input      [1:0]        dat_actv_nz46
 //-:   input     [15:0]      dat_actv_data46
+//-:   input      [1:0]         wt_actv_nz46
+//-:  output     [31:0]             res_b_46
 //-:   input     [15:0]       wt_actv_data46
+//-:  output      [7:0]           res_tag_46
+//-:   input      [1:0]        dat_actv_nz46
+//-:  output     [31:0]             res_a_46
 // ---------------- instance : u_mul_47 ---------------
-//-:   input      [1:0]        dat_actv_nz47
-//-:   input      [1:0]         wt_actv_nz47
-//-:  output      [7:0]           res_tag_47
-//-:   input     [15:0]      dat_actv_data47
 //-:   input     [15:0]       wt_actv_data47
-//-:  output     [31:0]             res_a_47
+//-:  output      [7:0]           res_tag_47
+//-:   input      [1:0]        dat_actv_nz47
+//-:   input     [15:0]      dat_actv_data47
 //-:  output     [31:0]             res_b_47
+//-:   input      [1:0]         wt_actv_nz47
+//-:  output     [31:0]             res_a_47
 // ---------------- instance : u_mul_48 ---------------
-//-:  output     [31:0]             res_b_48
-//-:  output     [31:0]             res_a_48
-//-:   input     [15:0]       wt_actv_data48
-//-:   input     [15:0]      dat_actv_data48
 //-:   input      [1:0]         wt_actv_nz48
+//-:  output     [31:0]             res_a_48
 //-:  output      [7:0]           res_tag_48
+//-:   input     [15:0]       wt_actv_data48
 //-:   input      [1:0]        dat_actv_nz48
+//-:   input     [15:0]      dat_actv_data48
+//-:  output     [31:0]             res_b_48
 // ---------------- instance : u_mul_49 ---------------
+//-:  output     [31:0]             res_b_49
 //-:  output      [7:0]           res_tag_49
+//-:   input      [1:0]         wt_actv_nz49
+//-:  output     [31:0]             res_a_49
 //-:   input     [15:0]      dat_actv_data49
 //-:   input      [1:0]        dat_actv_nz49
-//-:  output     [31:0]             res_b_49
-//-:  output     [31:0]             res_a_49
 //-:   input     [15:0]       wt_actv_data49
-//-:   input      [1:0]         wt_actv_nz49
 // ---------------- instance : u_mul_5 ---------------
-//-:   input     [15:0]       dat_actv_data5
-//-:   input     [15:0]        wt_actv_data5
 //-:   input      [1:0]         dat_actv_nz5
-//-:  output     [31:0]             res_b_05
-//-:  output     [31:0]             res_a_05
+//-:   input     [15:0]        wt_actv_data5
 //-:  output      [7:0]            res_tag_5
+//-:   input     [15:0]       dat_actv_data5
+//-:  output     [31:0]             res_a_05
+//-:  output     [31:0]             res_b_05
 //-:   input      [1:0]         wt_actv_nz05
 // ---------------- instance : u_mul_50 ---------------
-//-:   input     [15:0]      dat_actv_data50
-//-:   input      [1:0]         wt_actv_nz50
 //-:   input      [1:0]        dat_actv_nz50
+//-:   input     [15:0]      dat_actv_data50
+//-:  output      [7:0]           res_tag_50
+//-:   input      [1:0]         wt_actv_nz50
+//-:  output     [31:0]             res_a_50
 //-:   input     [15:0]       wt_actv_data50
 //-:  output     [31:0]             res_b_50
-//-:  output     [31:0]             res_a_50
-//-:  output      [7:0]           res_tag_50
 // ---------------- instance : u_mul_51 ---------------
 //-:   input      [1:0]         wt_actv_nz51
-//-:   input     [15:0]       wt_actv_data51
-//-:   input     [15:0]      dat_actv_data51
-//-:  output      [7:0]           res_tag_51
 //-:  output     [31:0]             res_b_51
 //-:   input      [1:0]        dat_actv_nz51
+//-:   input     [15:0]       wt_actv_data51
+//-:   input     [15:0]      dat_actv_data51
 //-:  output     [31:0]             res_a_51
+//-:  output      [7:0]           res_tag_51
 // ---------------- instance : u_mul_52 ---------------
-//-:   input      [1:0]         wt_actv_nz52
-//-:  output     [31:0]             res_b_52
-//-:  output     [31:0]             res_a_52
-//-:   input      [1:0]        dat_actv_nz52
-//-:   input     [15:0]       wt_actv_data52
 //-:   input     [15:0]      dat_actv_data52
 //-:  output      [7:0]           res_tag_52
+//-:   input     [15:0]       wt_actv_data52
+//-:  output     [31:0]             res_b_52
+//-:   input      [1:0]         wt_actv_nz52
+//-:  output     [31:0]             res_a_52
+//-:   input      [1:0]        dat_actv_nz52
 // ---------------- instance : u_mul_53 ---------------
-//-:  output     [31:0]             res_b_53
-//-:  output     [31:0]             res_a_53
 //-:  output      [7:0]           res_tag_53
+//-:  output     [31:0]             res_a_53
+//-:  output     [31:0]             res_b_53
 //-:   input     [15:0]      dat_actv_data53
-//-:   input      [1:0]        dat_actv_nz53
 //-:   input      [1:0]         wt_actv_nz53
+//-:   input      [1:0]        dat_actv_nz53
 //-:   input     [15:0]       wt_actv_data53
 // ---------------- instance : u_mul_54 ---------------
 //-:   input      [1:0]         wt_actv_nz54
-//-:   input      [1:0]        dat_actv_nz54
-//-:   input     [15:0]       wt_actv_data54
-//-:  output      [7:0]           res_tag_54
-//-:  output     [31:0]             res_b_54
 //-:  output     [31:0]             res_a_54
 //-:   input     [15:0]      dat_actv_data54
+//-:   input      [1:0]        dat_actv_nz54
+//-:  output     [31:0]             res_b_54
+//-:  output      [7:0]           res_tag_54
+//-:   input     [15:0]       wt_actv_data54
 // ---------------- instance : u_mul_55 ---------------
-//-:  output      [7:0]           res_tag_55
 //-:  output     [31:0]             res_a_55
-//-:  output     [31:0]             res_b_55
+//-:   input      [1:0]        dat_actv_nz55
 //-:   input      [1:0]         wt_actv_nz55
 //-:   input     [15:0]      dat_actv_data55
+//-:  output      [7:0]           res_tag_55
+//-:  output     [31:0]             res_b_55
 //-:   input     [15:0]       wt_actv_data55
-//-:   input      [1:0]        dat_actv_nz55
 // ---------------- instance : u_mul_56 ---------------
-//-:   input     [15:0]      dat_actv_data56
-//-:   input      [1:0]        dat_actv_nz56
 //-:  output      [7:0]           res_tag_56
-//-:  output     [31:0]             res_a_56
-//-:  output     [31:0]             res_b_56
 //-:   input      [1:0]         wt_actv_nz56
+//-:   input      [1:0]        dat_actv_nz56
 //-:   input     [15:0]       wt_actv_data56
+//-:  output     [31:0]             res_b_56
+//-:  output     [31:0]             res_a_56
+//-:   input     [15:0]      dat_actv_data56
 // ---------------- instance : u_mul_57 ---------------
-//-:   input      [1:0]        dat_actv_nz57
+//-:  output     [31:0]             res_b_57
 //-:  output      [7:0]           res_tag_57
+//-:  output     [31:0]             res_a_57
+//-:   input      [1:0]        dat_actv_nz57
+//-:   input     [15:0]      dat_actv_data57
 //-:   input     [15:0]       wt_actv_data57
 //-:   input      [1:0]         wt_actv_nz57
-//-:  output     [31:0]             res_b_57
-//-:  output     [31:0]             res_a_57
-//-:   input     [15:0]      dat_actv_data57
 // ---------------- instance : u_mul_58 ---------------
 //-:  output      [7:0]           res_tag_58
 //-:   input      [1:0]         wt_actv_nz58
-//-:  output     [31:0]             res_b_58
-//-:  output     [31:0]             res_a_58
 //-:   input     [15:0]       wt_actv_data58
-//-:   input     [15:0]      dat_actv_data58
 //-:   input      [1:0]        dat_actv_nz58
+//-:  output     [31:0]             res_b_58
+//-:   input     [15:0]      dat_actv_data58
+//-:  output     [31:0]             res_a_58
 // ---------------- instance : u_mul_59 ---------------
-//-:   input     [15:0]       wt_actv_data59
-//-:   input      [1:0]        dat_actv_nz59
-//-:   input     [15:0]      dat_actv_data59
-//-:  output     [31:0]             res_a_59
 //-:  output      [7:0]           res_tag_59
-//-:  output     [31:0]             res_b_59
+//-:   input      [1:0]        dat_actv_nz59
 //-:   input      [1:0]         wt_actv_nz59
+//-:   input     [15:0]       wt_actv_data59
+//-:  output     [31:0]             res_a_59
+//-:   input     [15:0]      dat_actv_data59
+//-:  output     [31:0]             res_b_59
 // ---------------- instance : u_mul_6 ---------------
-//-:   input      [1:0]         wt_actv_nz06
 //-:   input      [1:0]         dat_actv_nz6
-//-:  output      [7:0]            res_tag_6
 //-:   input     [15:0]        wt_actv_data6
-//-:  output     [31:0]             res_b_06
-//-:   input     [15:0]       dat_actv_data6
 //-:  output     [31:0]             res_a_06
+//-:   input      [1:0]         wt_actv_nz06
+//-:  output      [7:0]            res_tag_6
+//-:   input     [15:0]       dat_actv_data6
+//-:  output     [31:0]             res_b_06
 // ---------------- instance : u_mul_60 ---------------
-//-:   input     [15:0]       wt_actv_data60
-//-:   input     [15:0]      dat_actv_data60
-//-:  output      [7:0]           res_tag_60
-//-:  output     [31:0]             res_b_60
 //-:  output     [31:0]             res_a_60
+//-:  output     [31:0]             res_b_60
+//-:  output      [7:0]           res_tag_60
+//-:   input     [15:0]      dat_actv_data60
 //-:   input      [1:0]         wt_actv_nz60
 //-:   input      [1:0]        dat_actv_nz60
+//-:   input     [15:0]       wt_actv_data60
 // ---------------- instance : u_mul_61 ---------------
-//-:   input      [1:0]         wt_actv_nz61
-//-:   input     [15:0]      dat_actv_data61
-//-:  output      [7:0]           res_tag_61
-//-:   input     [15:0]       wt_actv_data61
-//-:   input      [1:0]        dat_actv_nz61
 //-:  output     [31:0]             res_b_61
+//-:   input     [15:0]      dat_actv_data61
+//-:   input      [1:0]         wt_actv_nz61
+//-:   input      [1:0]        dat_actv_nz61
+//-:  output      [7:0]           res_tag_61
 //-:  output     [31:0]             res_a_61
+//-:   input     [15:0]       wt_actv_data61
 // ---------------- instance : u_mul_62 ---------------
-//-:   input     [15:0]       wt_actv_data62
-//-:  output      [7:0]           res_tag_62
-//-:   input      [1:0]        dat_actv_nz62
 //-:  output     [31:0]             res_b_62
+//-:   input     [15:0]       wt_actv_data62
+//-:   input      [1:0]        dat_actv_nz62
 //-:  output     [31:0]             res_a_62
 //-:   input      [1:0]         wt_actv_nz62
+//-:  output      [7:0]           res_tag_62
 //-:   input     [15:0]      dat_actv_data62
 // ---------------- instance : u_mul_63 ---------------
-//-:  output      [7:0]           res_tag_63
-//-:  output     [31:0]             res_b_63
-//-:  output     [31:0]             res_a_63
 //-:   input      [1:0]         wt_actv_nz63
-//-:   input     [15:0]      dat_actv_data63
+//-:  output      [7:0]           res_tag_63
 //-:   input     [15:0]       wt_actv_data63
+//-:  output     [31:0]             res_a_63
+//-:  output     [31:0]             res_b_63
+//-:   input     [15:0]      dat_actv_data63
 //-:   input      [1:0]        dat_actv_nz63
 // ---------------- instance : u_mul_7 ---------------
-//-:   input      [1:0]         wt_actv_nz07
-//-:  output     [31:0]             res_b_07
-//-:  output     [31:0]             res_a_07
-//-:   input     [15:0]       dat_actv_data7
-//-:   input     [15:0]        wt_actv_data7
 //-:   input      [1:0]         dat_actv_nz7
+//-:   input     [15:0]       dat_actv_data7
+//-:  output     [31:0]             res_a_07
 //-:  output      [7:0]            res_tag_7
+//-:  output     [31:0]             res_b_07
+//-:   input      [1:0]         wt_actv_nz07
+//-:   input     [15:0]        wt_actv_data7
 // ---------------- instance : u_mul_8 ---------------
 //-:   input      [1:0]         dat_actv_nz8
-//-:  output      [7:0]            res_tag_8
-//-:  output     [31:0]             res_b_08
+//-:   input     [15:0]       dat_actv_data8
 //-:  output     [31:0]             res_a_08
 //-:   input     [15:0]        wt_actv_data8
+//-:  output      [7:0]            res_tag_8
 //-:   input      [1:0]         wt_actv_nz08
-//-:   input     [15:0]       dat_actv_data8
+//-:  output     [31:0]             res_b_08
 // ---------------- instance : u_mul_9 ---------------
 //-:  output     [31:0]             res_a_09
+//-:   input     [15:0]        wt_actv_data9
+//-:   input      [1:0]         wt_actv_nz09
 //-:  output     [31:0]             res_b_09
+//-:   input     [15:0]       dat_actv_data9
 //-:   input      [1:0]         dat_actv_nz9
 //-:  output      [7:0]            res_tag_9
-//-:   input     [15:0]       dat_actv_data9
-//-:   input      [1:0]         wt_actv_nz09
-//-:   input     [15:0]        wt_actv_data9
 // ---------------- instance : u_nan ---------------
-//-:  output     [10:0]          out_nan_mts
 //-:  output        [1]         out_nan_pvld
+//-:  output     [10:0]          out_nan_mts
 // ---------------- instance : u_test_sys_ctrl_apb_regs ---------------
-//-:   input     [31:0]         PADDR_SUFFIX
-//-:  output      [6:0] sys_ctrl0_mem_repair_done
-//-:  output        [1]        PREADY_SUFFIX
-//-:  output      [1:0] test_reg_test_filed1
-//-:  output      [0:0] sys_ctrl0_pdc_use_arm_ctrl
 //-:   input        [1]        PWRITE_SUFFIX
 //-:  output        [1]       PSLVERR_SUFFIX
 //-:  output      [2:0] sys_ctrl0_l2c_strip_mode
-//-:  output      [0:0] sys_ctrl0_mem_repair_en
+//-:  output      [1:0] test_reg_test_filed1
+//-:  output      [0:0] sys_ctrl0_pdc_use_arm_ctrl
+//-:  output      [6:0] sys_ctrl0_mem_repair_done
+//-:  output        [1]        PREADY_SUFFIX
+//-:   input     [31:0]         PADDR_SUFFIX
+//-:   input        [1]       PRESETN_SUFFIX
 //-:   input        [1]          PSEL_SUFFIX
+//-:  output      [4:0] sys_ctrl0_smmu_mmusid
+//-:   input        [1]       PENABLE_SUFFIX
+//-:  output     [31:0]        PRDATA_SUFFIX
+//-:   input     [31:0]        PWDATA_SUFFIX
 //-:   input        [1]          PCLK_SUFFIX
 //-:  output      [3:0] test_reg_test_field0
-//-:  output      [4:0] sys_ctrl0_smmu_mmusid
-//-:  output     [31:0]        PRDATA_SUFFIX
-//-:   input        [1]       PRESETN_SUFFIX
-//-:   input        [1]       PENABLE_SUFFIX
-//-:   input     [31:0]        PWDATA_SUFFIX
+//-:  output      [0:0] sys_ctrl0_mem_repair_en
 // ======================================================================
 // ==================== End of Unconnected Ports ========================
 // ======================================================================
@@ -3328,26 +3328,26 @@ end
 //| //	&ShowIntf("spi");
 //|  &AddIntfByJson("./cfg/MyIntf.json");
 //|  &PrintIntfPort("-intf spi");
-input                     miso_i          ;
+output                    sck_o           ;
 output                    ss_o            ;
 output                    mosi_o          ;
-output                    sck_o           ;
+input                     miso_i          ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
-reg                       TEST_PREADY     ;
-reg                       TEST_PRESETN    ;
 reg      [31:0]           TEST_PRDATA     ;
-reg                       TEST_PSEL       ;
 reg      [31:0]           TEST_PWDATA     ;
 reg                       TEST_PENABLE    ;
+reg                       TEST_PSEL       ;
+reg                       TEST_PREADY     ;
 reg      [17:0]           TEST_PADDR      ;
-reg                       TEST_PCLK       ;
 reg                       TEST_PWRITE     ;
 reg                       TEST_PSLVERR    ;
+reg                       TEST_PRESETN    ;
+reg                       TEST_PCLK       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3423,13 +3423,13 @@ test_sys_ctrl_apb_regs  u_test_sys_ctrl_apb_regs (
 //|   );
 //|   &AddIntfByHash(\%APB3,"test_APB3");
 //|   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
-output   [31:0]           my_pRDATA       ;
-input    [31:0]           my_pDAT         ;
 output                    my_pSLVERR      ;
-input    [11:0]           my_pADDR        ;
-input                     my_pENABL       ;
-output                    my_pREADY       ;
+input    [31:0]           my_pDAT         ;
+output   [31:0]           my_pRDATA       ;
 input                     my_pSELx        ;
+input                     my_pENABL       ;
+input    [11:0]           my_pADDR        ;
+output                    my_pREADY       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3453,11 +3453,11 @@ input                     my_pSELx        ;
 //| 
 //|     &PrintIntfPort("-intf test_if -up"); 
 //| 
-logic    [12:0]           PORT_A_1        ;
-wire     [1:0]            PORT_A_0        ;
 logic                     PORT_B_1        ;
-wire                      PORT_B_0        ;
+wire     [1:0]            PORT_A_0        ;
 logic                     RST_N           ;
+logic    [12:0]           PORT_A_1        ;
+wire                      PORT_B_0        ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
