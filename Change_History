@@ -1,4 +1,8 @@
 
+2023/01/08  V1.02   Wilson Chen   fix a auto signal width-learning bug
+                                  add missed AsyncIntfGen.pm
+                                  update license date
+
 2022/12/25  V1.01   Wilson Chen   Add AddParam function from an open request
 
 2022/12/12  V1.00   Wilson Chen   fix some typo & format
