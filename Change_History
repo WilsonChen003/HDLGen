@@ -1,5 +1,5 @@
 
-2023/01/08  V1.02   Wilson Chen   fix a auto signal width-learning bug
+2023/01/08  V1.02   Wilson Chen   fix an auto signal width-learning bug
                                   add missed AsyncIntfGen.pm
                                   update license date
 
