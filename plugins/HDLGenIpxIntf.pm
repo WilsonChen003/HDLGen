@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+		
 ##############################################################################################################
 ##############################################################################################################
 ##############################################################################################################
@@ -18,25 +18,24 @@
 ##############################################################################################################
 
 
+
 use strict;
 use XML::Simple;
-use XML::SAX::Expat;
 use JSON;
 use Getopt::Long qw(GetOptions);
 use Text::ParseWords qw(shellwords);
 use Data::Dumper;
 use File::Basename;
-use Spreadsheet::ParseExcel;
 
 our %Our_Intf = ();
+our $Expt_Intf = ();
 my  $MyCorp    = "MyCorp";
 
-###------------------------------------------------------------------------------------------
-###: define ABMA hash for Our_Intf connection
-###------------------------------------------------------------------------------------------
-### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-### NOTE: all AMBA bus default is slave mode £¡£¡£¡
-### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
 $Our_Intf{"APB3"} = {
        'PCLK'   => "input:1",
        'PRESETN'=> "input:1",
@@ -65,7 +64,6 @@ $Our_Intf{"APB4"} = {
        'PPROT'  => "input:3" ### new
    };
 
- ### list AHB bus signals
 $Our_Intf{"AHB2"} = {
        "HCLK"    =>"input:1",
        "HRESETn" => "input:1",
@@ -98,7 +96,6 @@ $Our_Intf{"AHB_Lite"} = {
        "HSIZE"   => "input:3",
        "HBURST"  => "input:3",
        "HPROT"   => "input:4",
-	   #       "HREADY"  => "output:1",
        "HREADYOUT"  => "output:1",
        "HRDATA"  => "output:32",
        "HRESP"   => "output:1",
@@ -124,7 +121,6 @@ $Our_Intf{"AHB5"} = {
        "HMASTLOCK"   => "output:1",
        "HMASTER" => "input:4",
        "HGRANT"  => "input:1",
-	   #"HSPLIT"  => "input:16" ### removed
        "HEXOKAY" => "output:1",
        "HNONSEC" => "input:1",
   };
@@ -172,7 +168,7 @@ $Our_Intf{"AXI3"} = {
        "CACTIVE" => "input",
        "CSYSACK" => "output",
        "CSYSREQ" => "input"
-}; ### end of Our_Intf hash
+};
 
 $Our_Intf{"AXI4"} = {
        "ACLK"    => "input:1",
@@ -189,7 +185,6 @@ $Our_Intf{"AXI4"} = {
        "AWID"    => "input:6",
        "WVALID"  => "input:1",
        "WDATA"   => "input:64",
-	   #"WID"     => "input:6",   ### removed
        "WLAST"   => "input:1",
        "WSTRB"   => "input:4",
        "WREADY"  => "output:1",
@@ -217,17 +212,15 @@ $Our_Intf{"AXI4"} = {
        "ARQOS"   => "input:4",  ### new
        "AWREGION"   => "input:4",  ### new
        "ARREGION"   => "input:4",  ### new
-	   ### rarely used signals
        "AWUSER"   => "input:4",  ### new
        "ARUSER"   => "input:4",  ### new
        "WUSER"   => "input:4",  ### new
        "RUSER"   => "input:4",  ### new
        "BUSER"   => "output:4",  ### new
-       ### special signals, need manual connection
        "CACTIVE" => "input",
        "CSYSACK" => "output",
        "CSYSREQ" => "input"
-}; ### end of Our_Intf hash
+};
 
 $Our_Intf{"AXI_Lite"} = {
        "ACLK" => "input:1",
@@ -236,40 +229,23 @@ $Our_Intf{"AXI_Lite"} = {
        "AWREADY" => "output:1",
        "AWADDR"  => "input:32",
        "AWPROT"  => "input:3",
-	   #"AWSIZE"  => "input:3",   ###  removed
-       #"AWBURST" => "input:4",
-       #"AWLEN"   => "input:4",
-       #"AWCACHE" => "nput:4",
-       #"AWLOCK"  => "input:2",
-	   #"AWID"    => "input:6",
        "WVALID"  => "input:1",
        "WDATA"   => "input:64",
        "WSTRB"   => "input:4",
        "WREADY"  => "output:1",
-	   #"WID"     => "input:6",    ### removed
-       #"WLAST"   => "input:1",
        "ARVALID" => "input:1",
        "ARREADY" => "output:1",
        "ARADDR"  => "input:32",
        "ARPROT"  => "input:3",
-	   #"ARBURST" => "input:4",   ### removed
-	   #"ARCACHE" => "input:4",
-	   #"ARID"    => "input:6",
-	   #"ARLEN"   => "input:4",
-	   #"ARLOCK"  => "input:2",
-	   #"ARSIZE"  => "input:3",
        "RVALID"  => "output:1",
        "RREADY"  => "input:1",
        "RDATA"   => "output:64",
        "RRESP"   => "output:2",
-	   #"RID"     => "output:4",   ### removed
-       #"RLAST"   => "output:1",
        "BVALID"  => "output:1",
        "BREADY"  => "input:1",
-	   #"BID"     => "output:4", ### remove3d
        "BRESP"   => "output:2"
 
-}; ### end of Our_Intf hash
+};
 
 $Our_Intf{"DTI"} = {
        '_valid' => "input:1",
@@ -277,10 +253,8 @@ $Our_Intf{"DTI"} = {
        '_data'  => "input:32" 
    };
 
-###------------------------------------------------------------------------------------------
-### Print an Our_Intf's all ports ####
-###------------------------------------------------------------------------------------------
-# &PrintIntfPort("-intf APB -awd 18 -dwd 32 -pre Test_ -l -port -end ,");
+#============================================================================================================#
+#============================================================================================================#
 sub PrintIntfPort {
   my($SubName)="PrintIntfPort";
   my $args = shift;
@@ -288,7 +262,6 @@ sub PrintIntfPort {
   my $pr_out = "";
   
   #================================
-  # OPTIONS
   #================================
   my $intf_name = "";
   my $master = "";
@@ -300,8 +273,8 @@ sub PrintIntfPort {
   my $upcase = "";
   my $lowcase= "";
   my $wire= "";
-  my $end  = ";"; 
-  my $port = ""; 
+  my $end  = ";";
+  my $port = "";
   GetOptions (
               'intf=s'    => \$intf_name,
               'awd=s'     => \$awd,
@@ -324,7 +297,7 @@ sub PrintIntfPort {
   $portwirereg = 1 if ($wire ne "");
   $portwirereg = 2 if ( ($wire eq "") && ($port eq "") );
   $master = 1 if ($master ne "");
-  $master = 0 if ($slave ne ""); ### NOTE: Slave will override Master !
+  $master = 0 if ($slave ne "");
 
   my $chg_args = "-master $master -portwirereg $portwirereg -uplow $uplow";
   $chg_args .= " -prefix $prefix" if ($prefix ne "");
@@ -332,7 +305,6 @@ sub PrintIntfPort {
   $chg_args .= " -awd $awd" if ($awd ne "");
   $chg_args .= " -dwd $dwd" if ($dwd ne "");
 
-  ### here can NOT use $Our_Intf->{"$intf"} !!!
   if (!exists($Our_Intf{"$intf_name"})) {
       &HDLGenErr($SubName, "!!! NO such interface of $intf_name, pls double check !!!\n");
 	  return;
@@ -364,10 +336,10 @@ sub PrintIntfPort {
 
 }
 
-###------------------------------------------------------------------------------------------
-### Print standard AMBA bus Our_Intf signals ####
-###------------------------------------------------------------------------------------------
-# &PrintAmbaBus("-type APB -awd 18 -dwd 32 -pre Test_ -l -port -end ,");
+
+
+#============================================================================================================#
+#============================================================================================================#
 sub PrintAmbaBus {
    my($SubName)="PrintAmbaBus";
    my $args = shift;
@@ -375,7 +347,6 @@ sub PrintAmbaBus {
    my $pr_out = "";
    
    #================================
-   # OPTIONS
    #================================
    my $type = "AXI";
    my $master = "";
@@ -387,8 +358,8 @@ sub PrintAmbaBus {
    my $upcase = "";
    my $lowcase= "";
    my $wire= "";
-   my $end  = ";"; ### default is signal so end with ";"
-   my $port = ""; ### default is signal(reg), otherwise is Port
+   my $end  = ";";
+   my $port = "";
    GetOptions (
               'type=s'    => \$type,
               'master'    => \$master, ### default is slave
@@ -412,8 +383,8 @@ sub PrintAmbaBus {
   $portwirereg = 1 if ($wire ne "");
   $portwirereg = 2 if ( ($wire eq "") && ($port eq "") );
   $master = 1 if ($master ne "");
-  $master = 0 if ($slave ne ""); 
-  $master = 0 if ($master eq ""); 
+  $master = 0 if ($slave ne "");
+  $master = 0 if ($master eq "");
 
   my $chg_args = "-master $master -portwirereg $portwirereg -uplow $uplow";
   $chg_args .= " -prefix $prefix" if ($prefix ne "");
@@ -436,16 +407,16 @@ sub PrintAmbaBus {
 	  $chg_args .= " -sig $sig -sig_io $p_io -sig_wd $p_w"; 
       ($sig_def, $p_w, $sig)=&ChangeSigName("$chg_args");
 
-	  #write;
    	  my $pr_line = sprintf("%-8s %-16s %-16s%s", $sig_def, $p_w, $sig, $end);  
 	  $pr_out .= "$pr_line\n"; 
   }
-  #$~ = $CUR_OUT;
   push @HDLGen::VOUT, "$pr_out";
 
 }
 
 
+#============================================================================================================#
+#============================================================================================================#
 sub ChangeSigName {
    my($SubName)="PrintAmbaBus";
    my $args = shift;
@@ -460,12 +431,12 @@ sub ChangeSigName {
    my $prefix = "";
    my $suffix = "";
    my $uplow = "";
-   my $portwirereg = ""; 
+   my $portwirereg = "";
    GetOptions (
               'sig=s'     => \$sig,
               'sig_io=s'  => \$sig_io,
               'sig_wd=s'  => \$sig_wd,
-              'master=s'  => \$master, 
+              'master=s'  => \$master, ### default is slave
               'awd=s'     => \$awd,
               'dwd=s'     => \$dwd,
               'prefix=s'  => \$prefix,
@@ -482,7 +453,7 @@ sub ChangeSigName {
 	  }
 
 	  if ( ($sig !~ /CLK/i) and ($sig !~ /RESET/i) ) {
-         if ($master eq "1") {  ### not slave
+         if ($master eq "1") {
 	       if ($sig_io =~ /input/) {
 	     	  $sig_io =~ s/input/output/;
 	       } elsif ($sig_io =~ /output/) {
@@ -519,22 +490,23 @@ sub ChangeSigName {
 	  return($sig_io,$sig_wd,$sig);
 }
 
-###------------------------------------------------------------------------------------------
-### Read IPXACT XML and return a big hash ####
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub ReadIPX {
   my($SubName)="ReadIpXact";
-  my($IPX_in) = $_[0];
+  my($ipx_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($IPX_in);
+  my($temp_xml)=basename($ipx_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if ( !(-e $IPX_in) ) {
-      $IPX_in = &HDLGen::FindFile($IPX_in);
+  if ( -e $ipx_in ) {
+     open(IPX_IN,"<$ipx_in");
+     open(XML_TMP,">$temp_xml");
+  } else {
+	  &HDLGenErr("ReadIPX"," IPXACT file $ipx_in doesn't exist");
+	  exit(1); 
   }
-  open(IPX_IN,"<$IPX_in");
-  open(XML_TMP,">$temp_xml");
 
   while (<IPX_IN>) {
       if ($_ =~ /^\s*<(\w+:)component /) {
@@ -549,7 +521,7 @@ sub ReadIPX {
   system("rm -rf ./$temp_xml");
 
   if ($main::debug) {
-      open(XXML,">.$temp_xml.hash");
+      open(XXML,">.$ipx_in.hash");
       print XXML Dumper($IP_XACT);
       close(XXML);
   }
@@ -571,26 +543,28 @@ sub ReadIPX {
 	          $intf_hash->{"$p_name"} = "$inout: $p_width";
           }
       }
-      &AddInterface($intf, $intf_hash);
+      &AddIntf($intf, $intf_hash);
   }
+
 }
 
-###------------------------------------------------------------------------------------------
-### Read IPXACT XML and return a big hash ####
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub ReadXML {
   my($SubName)="ReadXML";
-  my($IPX_in) = $_[0];
+  my($ipx_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($IPX_in);
+  my($temp_xml)=basename($ipx_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if ( !(-e $IPX_in) ) {
-      $IPX_in = &HDLGen::FindFile($IPX_in);
+  if (-e $ipx_in) {
+	  open(IPX_IN,"<$ipx_in");
+      open(XML_TMP,">$temp_xml");
+  } else {
+	  &HDLGenErr("ReadXML"," IPXACT file $ipx_in doesn't exist");
+	  exit(1);
   }
-  open(IPX_IN,"<$IPX_in");
-  open(XML_TMP,">$temp_xml");
 
   while (<IPX_IN>) {
       if ($_ =~ /^\s*<(\w+:)component /) {
@@ -605,7 +579,7 @@ sub ReadXML {
   system("rm -rf ./$temp_xml");
 
   if ($main::debug) {
-      open(XXML,">.$temp_xml.hash");
+      open(XXML,">.$ipx_in.hash");
       print XXML Dumper($IP_XACT);
       close(XXML);
   }
@@ -613,9 +587,37 @@ sub ReadXML {
   return($IP_XACT);
 }
 
-###------------------------------------------------------------------------------------------
-###------ get Interface hash------#
-###------------------------------------------------------------------------------------------
+
+
+#============================================================================================================#
+#============================================================================================================#
+sub ShowIPXIntf{
+  my $IPX_file = shift;
+
+  print STDOUT BOLD YELLOW " --- Show all interfaces in IPXACT($IPX_file) ---\n";
+  open(IP_F,">$IPX_file.intf");
+  print IP_F "###--- Below are all interfaces defined in $IPX_file ---###\n";
+  my $IP_XACT = &ReadXML($IPX_file);
+
+  my($I) = $IP_XACT->{"busInterfaces"}->{"busInterface"};
+  foreach my $intf (keys(%$I)) {
+	  print IP_F "\"$intf\" =>\n";
+	  print IP_F "    \" ";
+      my @P = $I->{$intf}->{portMaps}->{portMap};
+      foreach my $pp (@P) {
+          foreach my $ppp (@$pp) {
+	         my $pppp = $ppp->{physicalPort};
+	         my $p_name = $pppp->{name};
+			 print IP_F "$p_name, ";
+          }
+      }
+	  print IP_F "\";\n\n";
+  }
+  close(IP_F);
+}
+
+#============================================================================================================#
+#============================================================================================================#
 sub GetIntf {
   my($SubName)="GetIntf";
   my $i_name = "$_[0]";
@@ -631,43 +633,38 @@ sub GetIntf {
 
 }
 
-###------------------------------------------------------------------------------------------
-###------ get Interface hash------#
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub ShowIntf {
   my($SubName)="GetIntf";
   my $i_name = "$_[0]";
  
   if (exists $Our_Intf{"$i_name"}) {
 	  open(INTF,">./$i_name.intf");
-      print STDOUT BOLD YELLOW "   --- Show hash of \"$i_name\"---\n";# if ($main::HDLGEN_DEBUG_MODE);
-	  print INTF "#--- Show interface of \"$i_name\" ---#\n";
-	  print INTF "  \"$i_name\" = (\n";
+      print STDOUT BOLD YELLOW "   --- Show hash of \"$i_name\"---\n";
+	  print INTF "  \"$i_name\" : {\n";
 	  my $i_hash = $Our_Intf{"$i_name"};
 	  foreach my $i_sig (keys(%$i_hash)) {
-			  print INTF "      \"$i_sig\" => \"$i_hash->{$i_sig}\",\n";
+			  print INTF "      \"$i_sig\" : \"$i_hash->{$i_sig}\",\n";
 	  }
-	  print INTF "  );\n";
+	  print INTF "  }\n";
 	  close(INTF);
   } else {
-      &HDLGenErr($SubName, "!!! no Our_Intf hash of \$Our_Intf{$i_name} !!!\n");# if ($main::HDLGEN_DEBUG_MODE);
+      &HDLGenErr($SubName, "!!! no Our_Intf hash of \$Our_Intf{$i_name} !!!\n");
       return("NULL");
       exit;
   }
 
 }
 
-###------------------------------------------------------------------------------------------
-### Add Interface to $Our_Intf hash ####
-###------------------------------------------------------------------------------------------
-# &AddInterface("IntfName", Hash_Addr, <intf_ovr>);, 0 means no change
-sub AddInterface {
-  my $intf_name = shift; ### this is hash name
-  my $intf_addr = shift; ### here is address pls note!
+#============================================================================================================#
+#============================================================================================================#
+sub AddIntf {
+  my $intf_name = shift;
+  my $intf_addr = shift;
   my $intf_ovr  = 0;
-     $intf_ovr =  shift; ### this is optional
-  my $SubName = "AddInterface";
-  #print TSDOUT "intf_ovr = $intf_ovr\n";
+     $intf_ovr =  shift;
+  my $SubName = "AddIntf";
 
   if (exists $Our_Intf{"$intf_name"}) {
       &HDLGenInfo($SubName, " !!! you're updating existing Interface of ($intf_name), please double check this is expected !!!\n") if ($intf_ovr eq "0");
@@ -684,22 +681,22 @@ sub AddInterface {
 
 }
 
-###------------------------------------------------------------------------------------------
-### Read IPXACT XML and return a big hash ####
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub AddIntfByIPX {
   my($SubName)="AddIntfByIPX";
-  my($IPX_in) = $_[0];
+  my($ipx_in) = $_[0];
   my($ipx_v) = "ipxact:";
   my($IP_XACT)=();
-  my($temp_xml)=basename($IPX_in);
+  my($temp_xml)=basename($ipx_in);
   $temp_xml = ".$temp_xml".".modified";
 
-  if ( !(-e $IPX_in) ) {
-      $IPX_in = &HDLGen::FindFile($IPX_in);
+  if (-e $ipx_in) {
+      $IP_XACT = &ReadXML($ipx_in);
+  } else {
+	  &HDLGenErr("AddIntfByIPX"," IPXACT file $ipx_in doesn't exist");
+	  exit(1);
   }
-  open(IPX_IN,"<$IPX_in");
-  open(XML_TMP,">$temp_xml");
 
   my($I) = $IP_XACT->{"busInterfaces"}->{"busInterface"};
   my($P) = $IP_XACT->{"model"}->{"ports"}->{"port"};
@@ -718,43 +715,40 @@ sub AddIntfByIPX {
 	      $intf_hash->{"$p_name"} = "$inout: $p_width";
           }
       }
-      &AddInterface($intf, $intf_hash);
+      &AddIntf($intf, $intf_hash);
   }
 }
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from JSON to $Our_Intf hash ####
-###------------------------------------------------------------------------------------------
-# &AddIntfByJson("IntfName", , <intf_ovr>);
+#============================================================================================================#
+#============================================================================================================#
 sub AddIntfByJson {
-  my $JSON_in = shift; 
+  my $json_file = shift;
   my $json_text = ();
   my $intf_name = "";
   my $intf_hash = "";
   my $SubName = "AddIntfByJson";
 
-  if ( !(-e $JSON_in) ) {
-      $JSON_in = &HDLGen::FindFile($JSON_in);
-  }
-
-  open(JSON, "<$JSON_in") or die "!!! Error: can't find input JSON file of ($JSON_in) \n\n";
-  $json_text = do { local $/; <JSON> };
-  close(JSON);
-  $intf_hash = decode_json($json_text);
-  
-  foreach $intf_name (keys(%$intf_hash)) {
-      &AddInterface($intf_name, $intf_hash->{$intf_name},1);
+  if ( -e $json_file ) {
+      open(JSON, "<$json_file") or die "!!! Error: can't find input JSON file of ($json_file) \n\n";
+      $json_text = do { local $/; <JSON> };
+      close(JSON);
+      $intf_hash = decode_json($json_text);
+      
+      foreach $intf_name (keys(%$intf_hash)) {
+          &AddIntf($intf_name, $intf_hash->{$intf_name},1);
+      }
+  } else {
+	  &HDLGenErr("AddIntfByJson"," JSON file $json_file doesn't exist");
+	  exit(1); 
   }
 }
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from RTL to $Our_Intf hash ####
-###------------------------------------------------------------------------------------------
-# &AddIntfByRTL("RTL_File","intf_name", "key");
+#============================================================================================================#
+#============================================================================================================#
 sub AddIntfByRTL {
   my $rtl_file  = shift;
-  my $intf_name = shift; 
-  my $key_word  = shift; 
+  my $intf_name = shift;
+  my $key_word  = shift;
   my $SubName = "AddIntfByRTL";
 
   my $port_hash = &ParseRtlVlg($rtl_file);
@@ -764,32 +758,29 @@ sub AddIntfByRTL {
              $Our_Intf{"$intf_name"}{"$port"} = $port_hash->{"$port"};
 		 }
 	 }
-  } else { 
+  } else {
      $Our_Intf{"$intf_name"} = $port_hash;
   }
 
 }
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from SV RTL to $Our_Intf hash ####
-###------------------------------------------------------------------------------------------
-# &AddIntfBySV($RTL_multi-line_String);
+#============================================================================================================#
+#============================================================================================================#
 sub AddIntfBySV {
-  my $sv_code = shift; 
+  my $sv_code = shift;
   my $intf_name = "";
   my $intf_hash = "";
   my $SubName = "AddIntfBySV";
 
   $intf_hash = &ParseSVIntf("$sv_code");
   foreach $intf_name (keys(%$intf_hash)) {
-      &AddInterface($intf_name, $intf_hash->{$intf_name},1);
+      &AddIntf($intf_name, $intf_hash->{$intf_name},1);
   }
 }
 
-###------------------------------------------------------------------------------------------
-### remmove a port from Our_Intf->{"$intf_name"} ####
-###------------------------------------------------------------------------------------------
-# &RmIntfPort("port_name", "intf_name");
+#============================================================================================================#
+### remmove a port from Our_Intf->{"$intf_name"}
+#============================================================================================================#
 sub RmIntfPort {
   my $port_name = shift; 
   my $intf_name = shift; 
@@ -806,15 +797,25 @@ sub RmIntfPort {
   }
 }
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from a port list hash with key-word matched ####
-###------------------------------------------------------------------------------------------
-# &AddIntfByHash(\%port_hash, "intf_name", "test_"); ### as regular express key word
+#============================================================================================================#
+#============================================================================================================#
+sub AddIntfByName {
+  my $port_name = shift;
+  my $port_wd   = shift;
+  my $intf_name = shift;
+
+  $Our_Intf{"busInterfaces"}{"$intf_name"}{$port_name} = $port_wd;
+  $Our_Intf{"ports"}{"$port_name"} = $port_wd;
+}
+
+#============================================================================================================#
+#============================================================================================================#
+# &AddIntfByHash(\%port_hash, "intf_name", "test_");
 sub AddIntfByHash {
-  my $port_hash = shift; 
-  my $intf_name = shift; 
+  my $port_hash = shift;
+  my $intf_name = shift;
   my $intf_key  = "";
-     $intf_key  = shift; ### this is port signal key-word
+     $intf_key  = shift;
   my $SubName = "AddIntfByHash";
 
   foreach my $port_name (keys(%$port_hash)) {
@@ -826,43 +827,8 @@ sub AddIntfByHash {
   } 
 }
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from a port name ####
-###------------------------------------------------------------------------------------------
-# &AddIntfByName("clk", "input:1", "intf_name"); 
-sub AddIntfByName {
-  my $port_name = shift; 
-  my $port_wd   = shift; 
-  my $intf_name = shift; 
-
-  $Our_Intf{"busInterfaces"}{"$intf_name"}{$port_name} = $port_wd;
-  $Our_Intf{"ports"}{"$port_name"} = $port_wd;
-}
-
 #============================================================================================================#
-### remmove a port from Our_Intf->{"$intf_name"} ####
 #============================================================================================================#
-# &RmIntfPort("port_name", "intf_name");
-sub RmIntfPort {
-  my $port_name = shift;
-  my $intf_name = shift;
-  my $SubName = "RmIntfPort";
-
-  if (exists($Our_Intf{"$intf_name"})) {
-     if (exists($Our_Intf{"$intf_name"}{"$port_name"})) {
-                 delete($Our_Intf{"$intf_name"}{"$port_name"});
-         } else  {
-         &HDLGenInfo($SubName," --- no such port in interface(\"$intf_name\"): $port_name \n");
-         }
-  } else {
-     &HDLGenInfo($SubName," --- no such interface: $intf_name \n");
-  }
-}
-
-###------------------------------------------------------------------------------------------
-### Parse RTL Verilog file to get all ports   ###
-### return a hash with "input" & "outut" list ###
-###------------------------------------------------------------------------------------------
 sub ParseRtlVlg {
   my $SubName = "ParseRtlVlg";	
   my $rtl_in = shift;
@@ -882,7 +848,7 @@ sub ParseRtlVlg {
     } elsif ( ($_ =~/\);/) && ($module_start eq "1") ) {
         $module_end = "1";
         &HDLGenInfo($SubName, " --- found ); on cur line:$_") if ($main::HDLGEN_DEBUG_MODE);
-    } elsif ( ($_ =~ /^\s*always/) or ($_ =~ /^s*assign/) ) { ### no port define after code begin
+    } elsif ( ($_ =~ /^\s*always/) or ($_ =~ /^s*assign/) ) {
         last; 
     } elsif ($_ =~ /endmodule/ ) {
         $module_end = "2";
@@ -892,7 +858,7 @@ sub ParseRtlVlg {
     if ($_ =~ /^\s*,?input/) {
        my($i_sig,$p_width)=&ParsePorts("$_");
        &HDLGenInfo($SubName, " --- find input as: $i_sig, $p_width \n") if ($main::HDLGEN_DEBUG_MODE);
-       if ($i_sig =~ /,/) { 
+       if ($i_sig =~ /,/) {
           my @p_array = split(",",$i_sig);
           foreach my $pp (@p_array) {
               $port_hash->{"$pp"} = "input:$p_width";
@@ -903,7 +869,7 @@ sub ParseRtlVlg {
     } elsif ($_ =~ /^\s*,?output/) {
        my($o_sig,$p_width)=&ParsePorts("$_");
        &HDLGenInfo($SubName, " --- find output as: $o_sig, $p_width \n") if ($main::HDLGEN_DEBUG_MODE);
-       if ($o_sig =~ /,/) { 
+       if ($o_sig =~ /,/) {
           my @p_array = split(",",$o_sig);
           foreach my $pp (@p_array) {
               $port_hash->{"$pp"} = "output:$p_width";
@@ -911,17 +877,16 @@ sub ParseRtlVlg {
        } else {
           $port_hash->{"$o_sig"} = "output:$p_width";
        }
-    } 
-  } 
+    }
+  }
   close(RTL_IN);
 
   return($port_hash);
 
 }
 
-###------------------------------------------------------------------------------------------
-#------ Pasre Verilog inputs & output------#
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub ParsePorts {
     my($SubName)="ParsePorts";
     my($p_line)=shift;
@@ -930,30 +895,30 @@ sub ParsePorts {
 
     $p_line =~ s/wire //;
     $p_line =~ s/reg //;
+    $p_line =~ s/logic //;
+    $p_line =~ s/bit //;
     $p_line =~ s/\s*\/\/.*$//g;
     $p_line =~ s/(,|;)$//g;
-    $p_line =~ s/^,|;//g; 
+    $p_line =~ s/^,|;//g;
     $p_line =~ s/,\s*//g;
 
     &HDLGenInfo($SubName," --- port line  is:  $p_line") if ($main::HDLGEN_DEBUG_MODE);
-    if ($p_line !~ /\[/) { 
-	    $p_line =~ /(in|out)put\s+(\w+)/;
-        return($2,1);
+    if ($p_line !~ /\[/) {
+	    $p_line =~ /(input|output|inout)\s+(\w+)/;
+        return($2,1,$1);
     } else {
-	    if ($p_line =~ /\[(.*)\]\s+(\w+)/) { 
+	    if ($p_line =~ /\[(.*)\]\s+(\w+)/) {
 			return($2,$1);
         } else {
-           &HDLGenErr($SubName," port define is wrong:$p_line, $2 $1");# if ($main::HDLGEN_DEBUG_MODE);
+           &HDLGenErr($SubName," port define is wrong:$p_line, $2 $1");
 	 }
     }
-} ### end of sub ParsePorts
+}
 
-###------------------------------------------------------------------------------------------
-### Add Our_Intf from SV RTL to $Our_Intf hash ####
-###------------------------------------------------------------------------------------------
-# &ParseSVIntf($RTL_multi-line_String);
+#============================================================================================================#
+#============================================================================================================#
 sub ParseSVIntf {
-  my $sv_code = shift; ### this is json file
+  my $sv_code = shift;
   my @sv_code = split("\n",$sv_code);
   my $intf_name = "";
   my $intf_hash ; 
@@ -980,9 +945,8 @@ sub ParseSVIntf {
 
 }
 
-###------------------------------------------------------------------------------------------
-#------ Pasre Verilog inputs & output------#
-###------------------------------------------------------------------------------------------
+#============================================================================================================#
+#============================================================================================================#
 sub ParseSVIntfLine {
     my($SubName)="ParseSVIntfLine";
     my($p_line)=shift;
@@ -991,75 +955,112 @@ sub ParseSVIntfLine {
 
     $p_line =~ s/\s*\/\/.*$//g;
     $p_line =~ s/[;|,]\s*$//g;
-    $p_line =~ s/^,|;//g; 
+    $p_line =~ s/^,|;//g;
     $p_line =~ s/,\s*/,/g;
 
     &HDLGenInfo($SubName," --- port line  is:  $p_line") if ($main::HDLGEN_DEBUG_MODE);
-    if ($p_line !~ /\[/) { 
-	    $p_line =~ /(input|output|logic|wire)\s+(\w+)/; 
+    if ($p_line !~ /\[/) {
+	    $p_line =~ /(input|output|logic|wire)\s+(\w+)/;
         return($1,$2,1);
-    } else { 
-	    if ($p_line =~ /(input|output|logic|wire)\s+\[(.*)\]\s+(\w+)/) { 
+    } else {
+	    if ($p_line =~ /(input|output|logic|wire)\s+\[(.*)\]\s+(\w+)/) {
 	       return($1,$3,$2);
         } else {
-           &HDLGenErr($SubName," port define is wrong:$p_line, $2 $1");# if ($main::HDLGEN_DEBUG_MODE);
+           &HDLGenErr($SubName," port define is wrong:$p_line, $2 $1");
 	 }
     }
-} ### end of sub ParsePorts
-
-###------------------------------------------------------------------------------------------
-### print IPXACT XML from hash ####
-###------------------------------------------------------------------------------------------
-# &ShowIPX("IPX_design.xml"); 
-sub ShowIPX {
-  my $IPX_in = shift;
-  my $ipx_file = $IPX_in;
-
-  if ( !(-e $IPX_in) ) {
-      $IPX_in = &HDLGen::FindFile($IPX_in);
-  }
-  $ipx_file = basename($IPX_in);
-  print STDOUT BOLD YELLOW " --- Show all interfaces in IPXACT($IPX_in) ---\n";
-
-  open(IP_F,">$ipx_file.intf");
-  print IP_F "###--- Below are all interfaces defined in $IPX_in ---###\n";
-  my $IP_XACT = &ReadXML($IPX_in);
-
-  my($I) = $IP_XACT->{"busInterfaces"}->{"busInterface"};
-  foreach my $intf (keys(%$I)) {
-	  print IP_F "\"$intf\" =>\n";
-	  print IP_F "    \" ";
-      my @P = $I->{$intf}->{portMaps}->{portMap};
-      foreach my $pp (@P) {
-          foreach my $ppp (@$pp) {
-	         my $pppp = $ppp->{physicalPort};
-	         my $p_name = $pppp->{name};
-			 print IP_F "$p_name, ";
-          }
-      }
-	  print IP_F "\";\n\n";
-  }
-  close(IP_F);
 }
-###------------------------------------------------------------------------------------------
-### print IPXACT XML from hash ####
-###------------------------------------------------------------------------------------------
-# &GenIPX("IP_design", "MyCorp"); 
-sub GenIPX {
-    #================================
 
-        vprintl("\n//| =========================================================\n");
-        vprintl("//| GenIPX function is still underconstruction, need more time\n");
-        vprintl("//| any suggestion or solotion or contribution is reall welcome!\n");
-        vprintl("\n//| =========================================================\n\n");
 
-    #================================
-}	
+#============================================================================================================#
+#============================================================================================================#
+sub ExptIntf {
+  my $args = shift;
+  @ARGV = shellwords($args);
+  my $SubName = "ExptIntf";
 
-### ====================================================================== ###
-### ========== for DTI(Data Transder Interface) Valid,Ready,Data interface ========
-### ====================================================================== ###
-### &DTIWire("prefix", "data_width");
+  my $intf_name = "";
+  my $name_expt = "";
+  my $up        = "";
+  my $low       = "";
+  my $prefix    = "";
+  my $suffix    = "";
+  my $master    = "0";
+  my $slave     = "";
+
+  GetOptions (
+              'intf_name=s' => \$intf_name,
+              'name_expt=s' => \$name_expt,
+              'upcase'      => \$up,
+              'lowcase'     => \$low,
+              'prefix=s'    => \$prefix,
+              'suffix=s'    => \$suffix,
+              'master'      => \$master,
+              'slave'       => \$slave,
+              )  or die "Unrecognized options @ARGV";
+
+
+  my $intf_addr;
+  if (exists($Our_Intf{"$intf_name"})) {			  
+     $intf_addr = &GetIntf("$intf_name"); 
+  } else {
+      &HDLGenErr($SubName, "!!! NO such Our_Intf of $intf_name, pls double check !!!\n");
+	  return;
+  }
+  foreach my $port_name (keys(%$intf_addr)) {
+      my $expt_port = "$prefix"."$port_name"."$suffix";
+	  if ($up) {
+		  $expt_port = uc($expt_port);
+	  } elsif ($low) {
+		  $expt_port = lc($expt_port);
+	  }
+	  my $port_line = $intf_addr->{$port_name};
+	  if ( ($port_name !~ /CLK/i) and ($port_name !~ /RESET/i) ) {
+        if ($master ne "") {
+		  if ($port_line =~ /input/) {
+			  $port_line =~ s/input/output/;
+		  } elsif ($port_line =~ /output/) {
+		      $port_line =~ s/output/input/;
+		  }
+	    }
+      }
+      $Expt_Intf->{"busInterfaces"}->{"$name_expt"}->{"$expt_port"} = $port_line;
+  }
+}
+
+#============================================================================================================#
+#============================================================================================================#
+sub ExptPort {
+  my $port_name = shift;
+  my $port_dir  = shift;
+  my $port_wd   = shift;
+
+  &HDLGenInfo("ExptPort"," --- adding port: $port_name \n") if ($main::HDLGEN_DEBUG_MODE);
+
+  $Expt_Intf->{"ports"}->{"$port_name"} = "$port_dir : $port_wd";
+}
+
+#============================================================================================================#
+#============================================================================================================#
+sub RmPort {
+  my $port_name = shift;
+
+  &HDLGenInfo("RmPort"," --- removing port: $port_name \n") if ($main::HDLGEN_DEBUG_MODE);
+
+  my $intf_expt = $Expt_Intf->{"busInterfaces"};
+  foreach my $intf_name (keys(%$intf_expt)) {
+	  my $intf_hash = $Expt_Intf->{"busInterfaces"}->{"$intf_name"};
+	  if (exists($intf_hash->{"$port_name"})) {
+         delete($intf_hash->{"$port_name"});
+	  }
+  }
+  delete($Expt_Intf->{"ports"}->{"$port_name"});
+
+}
+
+
+#============================================================================================================#
+#============================================================================================================#
 sub DTIWire {
 	my $prefix = shift;
 	my $data_width = shift;
@@ -1079,7 +1080,8 @@ sub DTIWire {
     push @HDLGen::VOUT, "wire [$data_width-1:0] ${prefix}_data;\n";
 }
 
-### &DTISlave("prefix", "data_width");
+#============================================================================================================#
+#============================================================================================================#
 sub DTISlave {
 	my $prefix = shift;
 	my $data_width = shift;
@@ -1100,7 +1102,8 @@ sub DTISlave {
 
 }
 
-### &DTIMaster("prefix", "data_width");
+#============================================================================================================#
+#============================================================================================================#
 sub DTIMaster {
 	my $prefix = shift;
 	my $data_width = shift;
@@ -1121,9 +1124,24 @@ sub DTIMaster {
 
 }
 
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
+#============================================================================================================#
 
-### ====================================================================== ###
-### ========== End of Package ========
-### ====================================================================== ###
+
+sub GenModIPX {
+  #my $IP_name = shift;
+  #my $corp_name = shift;
+  #$corp_name = "MY_CORP" if ($corp_name eq "");
+
+  &HDLGen::HDLGenInfo("GenModIPX", " !!!--- IPXACT exporting is not supported ---!!! \n");
+
+}
+
+
 1;
 

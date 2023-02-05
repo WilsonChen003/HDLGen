@@ -86,11 +86,9 @@ if ($usage) {
 sub Version {
 	print BOLD BLUE <<EOF;
 
-
-                                    *********************************************
-                                    ****** Current HDLGen Version is V1.02 ******
-                                    *********************************************
-
+         *********************************************
+         ****** Current HDLGen Version is V1.10 ******
+         *********************************************
 EOF
 
 }
@@ -101,11 +99,8 @@ sub Usage {
        print <<EOF;
        --------------------------------------------------------------------------------------------------------------
        --------------------------------------------------------------------------------------------------------------
-       --- This is a script to read in HDL design file with emdedded Functions,                                   ---
-       --- and support embedded Perl/Python scripts for any operation,                                            ---
-       --- finally generate pure HDL file with all Functions & Scripts parsed & executed                          ---
-       --- This tool is a plus version of Emacs Verilog-Mode with a few more functions added                      ---
-       --------------------------------------------------------------------------------------------------------------
+       --- This is a script to read in HDL design file with emdedded Perl/Python scripts in
+       --- and generate final HDL files with Perl/Python scripts parsed & executed
        EX:
 EOF
     
@@ -127,8 +122,7 @@ EOF
 EOF
     
        print GREEN <<EOF;
-                                                   assign wire_sig[m:n]  = left_sig<[q:p]>
-                                                   assign {sig0,sig1...} = {left_sig0<[q:p]>,left_sig1<[x:y]...}
+                                                   assign wire_sig[m:n] = left_sig<[q:p]>
 EOF
     
        RESET;

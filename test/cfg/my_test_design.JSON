@@ -1,0 +1,40 @@
+{
+    "module" : "my_test_design",
+
+    "busInterfaces" : {
+        "my_APB3" : {
+           "PRE_PSLVERR_SUF" : "input:1" ,
+           "PRE_PSELX_SUF" : "input:1" ,
+           "PRE_PRDATA_SUF" : "input:32" ,
+           "PRE_PREADY_SUF" : "output:1" ,
+           "PRE_PADDR_SUF" : "input:32" ,
+           "PRE_PENABL_SUF" : "input:1" ,
+           "PRE_PDAT_SUF" : "input:32" 
+        },
+        "my_spi" : {
+           "ss_o" : "input: 1" ,
+           "miso_i" : "output: 1" ,
+           "sck_o" : "input: 1" ,
+           "mosi_o" : "input: 1" 
+        }
+    },
+
+    "ports" : {
+           "PRE_PSLVERR_SUF" : "input:1" ,
+           "PRE_PSELX_SUF" : "input:1" ,
+           "PRE_PRDATA_SUF" : "input:32" ,
+           "PRE_PREADY_SUF" : "output:1" ,
+           "PRE_PADDR_SUF" : "input:32" ,
+           "PRE_PENABL_SUF" : "input:1" ,
+           "PRE_PDAT_SUF" : "input:32" ,
+
+           "ss_o" : "input: 1" ,
+           "miso_i" : "output: 1" ,
+           "sck_o" : "input: 1" ,
+           "mosi_o" : "input: 1" ,
+           "reset" : "input : 1" ,
+           "clk" : "input : 1" 
+
+    }
+
+}
