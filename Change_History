@@ -1,4 +1,5 @@
 
+
 2023/02/05  V1.10   Wilson Chen   Decide to use JSON file as Hierarchy Integration solution, but NOT IPXACT!
                                   Add TransIPX to translate IPXACT to JSON for easy understanding
                                   Add GenModJson to export Modules' name & interfaces & ports to JSON file
@@ -8,7 +9,7 @@
 2023/01/26  V1.05   Wilson Chen   Add functions to export Interfaces & Ports for Hierarchy Integration
                                       need to update: export Interfaces & Ports to IPXACT file
 
-2023/01/08  V1.02   Wilson Chen   fix a auto signal width-learning bug
+2023/01/08  V1.02   Wilson Chen   fix an auto signal width-learning bug
                                   add missed AsyncIntfGen.pm
                                   update license date
 

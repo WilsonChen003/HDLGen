@@ -7,7 +7,7 @@
   HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
 
 ## License 
-                         Copyright 2022 Wilson Chen                                                     
+                         Copyright 2022~2023 Wilson Chen                                                     
             Licensed under the Apache License, Version 2.0 (the "License");                            
             You may not use this file except in compliance with the License.                          
             You may obtain a copy of the License at                                                  
@@ -61,6 +61,7 @@ Function generation
     ├── HDLGen.bin                # Tool binary for easy adopt
     ├── HDLGen.pl                 # Tool source code
     ├── plugins                   # Tool plugin funcitons in Perl module
+        ├── Design_Template         # custom module design template files
     ├── test                      # Source design code for testing
 	    ├── cfg                     # JSON and XML for config
 	    ├── incr                    # necessary design files
@@ -79,7 +80,7 @@ Function generation
 ### NOTE: 
 * Verilog-mode for EMACS or VIM is very powerful to do AUTO Port,Reg/Wire, and Instance, but it has some limitations or inconvenient things:<br>
              --- mostly used in GUI mode but no batch mode -- ***seems NOT TURE*** <br>
-	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted***<br>
+	     --- Instance port/wire name change is manual hard mapping but no Regular Express --- ***NOT TRUE, RE is supproted but need 3rd file***<br>
 	     --- No Warning for unconnected instance signals<br>
 	     --- No Interface a/o IPXACT support<br>
 	     --- No embedded Perl/Python support<br>
@@ -92,6 +93,7 @@ Function generation
 			Text::Template<br>
                         File::Basename<br>
                         File::Find<br>
+			Verilog::Netlist<br>
                         XML::Simple<br>
                         XML::SAX::Expat; *#this is strange as not used at all, but pp need it*<br>
                         Dumper<br>
