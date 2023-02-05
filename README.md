@@ -24,7 +24,7 @@
    
 ## What you can do with HDLGen 
 RTL stitch
-   * Instance module from RTL or IPXACT file as what Verilog does
+   * Instance module from RTL or IPXACT or JSON file as what Verilog does
    * Connect  module's port to wires with native regular express
    * Automatically generate instance's wires definitions
    * Automatically generate reg or wire definictions(not perfect but really helpful) 
@@ -40,9 +40,12 @@ Interface manipulate
 IPXACT manipulate
    * Read in IPXACT and add all interfaces
    * Show all interfaces defined in IPXACT ( for debug )
-   * Export interface to IPXACT by name ( in development )
-   * Export port to IPXACT by name ( in development )
-   * Export standard IPXACT for current top module ( in development )
+   * Translate IPXACT into JSON file ( for debug & integration)
+   * Export Interface to JSON with name changing
+   * Export port or remove port to/from JSON file
+   * Export interface to IPXACT by name ( **abolished** )
+   * Export port to IPXACT by name ( **abolished** )
+   * Export standard IPXACT for current top module ( **abolished** )
  
 Function generation
    * Use embedded functions to generate differnt module or loigc you want
