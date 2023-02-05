@@ -1,4 +1,13 @@
 
+2023/02/05  V1.10   Wilson Chen   Decide to use JSON file as Hierarchy Integration solution, but NOT IPXACT!
+                                  Add TransIPX to translate IPXACT to JSON for easy understanding
+                                  Add GenModJson to export Modules' name & interfaces & ports to JSON file
+                                  Update Instance function to instance from JSON file with interfaces & ports
+                                  Change HDLGenIpxIntf.pm to real package
+
+2023/01/26  V1.05   Wilson Chen   Add functions to export Interfaces & Ports for Hierarchy Integration
+                                      need to update: export Interfaces & Ports to IPXACT file
+
 2023/01/08  V1.02   Wilson Chen   fix a auto signal width-learning bug
                                   add missed AsyncIntfGen.pm
                                   update license date
@@ -10,7 +19,7 @@
 
 2022/11/30  V0.99   Wilson Chen   support inhouse function module generation:
                                       use JSON file for paramaters
-		 		                              use ePerl Template file for custom design
+		 		      use ePerl Template file for custom design
 
 2022/11/26  V0.94   Wilson Chen   fix AutoWarning function
                                   support PARAMETER & DEFINE on auto signal declare
@@ -19,14 +28,14 @@
 2022/11/18  V0.93   Wilson Chen   fix LHS multi-signal: handle {wire0,wire1...} = {sig0[...], sig1[...] ...}
 
 2022/11/14  V0.92   Wilson Chen   update AutoInstSigs to do width-learning from all Instance & Assignments
-	                                need to update: handle assign LHS multi-signal (FIXME)
+	                              need to update: handle assign LHS multi-signal (FIXME)
 
 2022/11/12  V0.91   Wilson Chen   add AutoWarning feature, but not perfect yet (FIXME)
 
 2022/11/10  V0.90   Wilson Chen   add Instance inputs & outputs no connection warnings
 
 2022/11/08  V0.86   Wilson Chen   use Verilog::Netlist to handle Assignments
-	                                change "AutoInstWire" to "AutoInstSig" as "reg" is possible for Instance's port connection
+	                              change "AutoInstWire" to "AutoInstSig" as "reg" is possible for Instance's port connection
                                       "reg" is not perfect but should work in most case
 
 2022/10/14  V0.85   Wilson Chen	  add ShowIntf & ShowIPX function
@@ -38,7 +47,7 @@
                                   update Instance for multi-parameter support
                                   fix Instance function bug($C_done)£»
 
-2022/10/08  V0.82    Wilson Chen	change ExptIPX function name (remove IPX)
+2022/10/08  V0.82    Wilson Chen  change ExptIPX function name (remove IPX)
                                   add RmIntfPort function & usage
                                   add CallCmd function & usage
                                   add 3 DTI(Data Transfer Interface) function & usage

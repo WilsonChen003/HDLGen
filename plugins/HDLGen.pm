@@ -27,7 +27,6 @@ package HDLGen;
 #============================================================================================================#
 #============================================================================================================#
 #============================================================================================================#
-#use strict;
 use File::Basename;
 use File::Find;
 use Cwd qw/abs_path/;
@@ -59,17 +58,22 @@ our(@SRC_PATH)= ("./");
 #============================================================================================================#
 our $CurMod_Top=();
 our $CurInst ="";
+our $CurIPX = ();
 our @VOUT=();
 our $AutoWires = ();
 our $AutoRegs  = ();
 our $AutoWarnings = ();
 our $AutoInstSigs =();
+our $vout_autoportlist = 0;
+our $vout_autoportdecl = 0;
 our $vout_autowirereg  = 0;
 our $vout_autoinstwire = 0;
 our $vout_autoinst_warning = 0;
+our $verilog2001  = 0;
 
 our $AUTO_DEF  = "";
 our $AUTO_INST = "";
+our $AUTO_DONE = 0;
 
 
 my($escript_n)   = 0;
@@ -125,17 +129,20 @@ sub Initial {
 
     $CurMod_Top =();
     $CurInst    ="";
+    $CurIPX     =();
     @VOUT       =();
+    $AutoWarnings  =();
     $AutoWires  =();
     $AutoRegs   =();
     $AutoInstSigs  =();
-    $AutoWarnings  =();
+    $vout_autoportlist     = 0;
     $vout_autowirereg  = 0;
     $vout_autoinstwire = 0;
     $vout_autoinst_warning = 0;
 
     $AUTO_DEF  = "";
     $AUTO_INST = "";
+    $AUTO_DONE = "0";
 
     $escript_n   = 0;
     $epython_num = 0;
@@ -144,6 +151,8 @@ sub Initial {
     $PythonBegin = 0;
 
     @SRC_PATH= ("./"); 
+	$Expt_Intf = ();
+
 }
 
 #============================================================================================================#
@@ -174,10 +183,14 @@ sub ProcessOneFile {
     #============================================================================================================#
     #============================================================================================================#
     while (<V_IN>) {
-	  if ($_ =~ /^\s*\/\/:\s*&?AutoDef/) {
+      if ($_ =~ /^\s*module \s*(\S*)/) {
+		  $CurMod_Top->{"module"}=$1;
+    	  push @VOUT, "$_";
+	  } elsif ($_ =~ /^\s*\/\/:\s*&?AutoDef/) {
     	  $AUTO_DEF = "AutoDef";
       	  push @VOUT, "//|: &AutoDef;\n";
     	  $vout_autowirereg = 1;
+		  $port_psr_done = 1;
       } elsif ($_ =~ /^\s*\/\/:\s*&?AutoInstSig/) {
     	  $AUTO_INST = "AutoInstSig";
       	  push @VOUT, "//|: &AutoInstSig;\n";
@@ -207,6 +220,13 @@ sub ProcessOneFile {
       } elsif ($_ =~ /^\s*&?Instance \s*(.*)\s*/) {
          &PerlGen($_,$escript_n);
       } else {
+		  if ($port_psr_done eq "0") {
+		      if ($_ =~ /^\s*,?(input|output|inout)/) {
+		          $verilog2001 = 1 if ($_ =~ / (wire|reg|logic|bit)/);
+		    	  $port_psr_done = 1;
+		      }
+		  }
+
     	  if ( ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) ) {
                 &ParseWireReg($_);
     	  }
@@ -315,9 +335,9 @@ sub PerlGen {
      }
      
      push @VOUT, "//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---\n" ;
-     foreach $eperl (@eperl) {
-         push @VOUT, "//| $eperl";
-     }
+        foreach $eperl (@eperl) {
+            push @VOUT, "//| $eperl";
+        }
      my @ePerl_out= &EvalEperl($eperl_script);
      push @VOUT, "//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---\n\n" ;
 	 &RplcLine($exa_line);
@@ -346,6 +366,8 @@ sub EvalEperl {
 }
 
 #================================================================================#
+#------ if Verilog line contain ${var} then need to replace ------#
+#------ NOTE: such ${var} must be defined as "our" type!    ------#
 #================================================================================#
 sub RplcLine {
   my ($line) = shift;
@@ -365,10 +387,10 @@ sub RplcLine {
 			  $parm_val =~ s/$pm/$pm_val/g;
 		  }
 		  $parm_val =eval($parm_val);
-          $CurMod_Top->{"parameter"}->{"$parm"}="$parm_val";
+      $CurMod_Top->{"parameter"}->{"$parm"}="$parm_val";
 	  }
       push @VOUT, "$line";
-  } elsif ($line =~ /\$\{\w+\}/) {
+  }elsif ($line =~ /\$\{\w+\}/) {
 	  $line =~ s/\\n/\\\\n/g;
       $line =~ s/\$$/\\\$/;
 	  my $p_line = "vprintl(\"$line\");";
@@ -379,6 +401,7 @@ sub RplcLine {
 }
 
 #================================================================================#
+#------ change print to push into OUT array ------#
 #================================================================================#
 sub vprintl {
   my @list = @_;
@@ -391,6 +414,7 @@ sub vprintl {
   } 
 } 
 #================================================================================#
+#------ change print to push into OUT array ------#
 #================================================================================#
 sub vprinti {
   my @list = @_;
@@ -409,6 +433,7 @@ sub vprinti {
 }
 
 #================================================================================#
+#------ a way to call any shell/perl/python script ------#
 #================================================================================#
 sub CallCmd {
   my $call_cmd = shift;
@@ -416,7 +441,7 @@ sub CallCmd {
   if ( $call_cmd =~ /\.p[l|m]/) {
       system("perl $call_cmd");
   } elsif ( $call_cmd =~ /\.py/) {
-      system("$call_cmd");
+      system("python $call_cmd");
   } else {
       system("$call_cmd");
   }
@@ -426,6 +451,7 @@ sub CallCmd {
 }
 
 #================================================================================#
+#------ eval Perl Script and return an array ------#
 #================================================================================#
 sub EvalEpython {
   my ($ePython) = shift;
@@ -437,7 +463,7 @@ sub EvalEpython {
   system("chmod +x $epython_f");
   close(EPYTHON);
 
-  my $CmdErr= system("$epython_f > .epython.out");### FIXME: temp ugly fix
+  my $CmdErr= system("$epython_f > .epython.out");
   print STDOUT " !!!ePython Error when run script:\n $ePython\n CmdErr:\n  $CmdErr\n" if ($CmdErr);
 
   open(POUT,"<.epython.out");
@@ -509,9 +535,9 @@ sub PythonGen {
    }
 
    push @VOUT, "//|# ePython generated code Begin (DO NOT EDIT BELOW!)\n" ;
-   foreach $epython (@epython) {
-       push @VOUT, "//#$epython";
-   }
+      foreach $epython (@epython) {
+          push @VOUT, "//#$epython";
+      }
    my $ePython_out= &EvalEpython($epython_script);
    push @VOUT, $ePython_out;
    push @VOUT, "//|# ePython generated code End (DO NOT EDIT ABOVE!)\n\n" ;
@@ -521,6 +547,7 @@ sub PythonGen {
 #================================================================================#
 	
 #============================================================================================================#
+#------ Parse Verilog Wire/Reg define ------#
 #============================================================================================================#
 sub ParseWireReg {
    my($SubName)="ParseWireReg";
@@ -532,9 +559,6 @@ sub ParseWireReg {
 
 }
 
-
-#============================================================================================================#
-#============================================================================================================#
 sub ParseReg {
    my($vlg_line) = shift;
       if ( ($vlg_line =~ /(\w*)\s*<=\s*(\d+)\'/) or ($vlg_line =~ /(\w*)\s*<=\s*\{?(\d+)\{/) ) {
@@ -544,7 +568,7 @@ sub ParseReg {
  	    return if (exists($AutoRegs->{"$reg_sig"}->{"done"}));
  	    if ( $reg_wd eq "0" ) {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "1";
-	    } elsif ($width =~ /:/) {
+	   } elsif ($reg_wd =~ /:/) {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "$reg_wd";
  	    } else {
  	       $AutoRegs->{"$reg_sig"}->{"width"} = "$reg_wd:0";
@@ -590,9 +614,10 @@ sub ParseReg {
 	    return;
       }
 }
-#============================================================================================================#
+
 
 #============================================================================================================#
+#------ Instance args Handler ------#
 #============================================================================================================#
 sub InstanceParser {
   my $SubName = "InstanceParser";
@@ -637,7 +662,7 @@ sub InstanceParser {
       } elsif ($_ =~ /^\s*&?Connect \s*(.*)\s*;/) {
 		 my $call_arg = $1; 
          $eline = "&Connect(\"$call_arg\");\n";
-	  } elsif ($_ =~ /^\s*&?AddParam \s*(.*)\s*;/) {
+      } elsif ($_ =~ /^\s*&?AddParam \s*(.*)\s*;/) {
 		 my $call_arg = $1; 
          $eline = "&AddParam(\"$call_arg\");\n";
       } elsif ($_ =~ /^\s*(#|\/\/)/) {
@@ -650,7 +675,6 @@ sub InstanceParser {
 	     $C_done =1;
 	     last;
       } elsif ( $_ =~ /^\s*\}/) {
-		 print STDOUT " --- find end for(}) = $_ ---\n";
 	     $eline = "$_";
       } else {
          $eline = "&ConnectDone();\n";
@@ -672,6 +696,7 @@ sub InstanceParser {
 #============================================================================================================#
 
 #============================================================================================================#
+#------ Module Instance Handler ------#
 #============================================================================================================#
 sub Instance {
   my($inst_line) = shift;
@@ -680,6 +705,7 @@ sub Instance {
   my $mod_inst = "";
   my $mod_parm = "";
   my $ipx_file = "";
+  my $js_file = "";
   my $SubName = "Instance";
 
   if ( $inst_line =~ /\n/ ) {
@@ -708,19 +734,29 @@ sub Instance {
   if ($mod_name =~ /\.xml/) {
 	  $ipx_file = $mod_name;
 	  $mod_name =~ s/\.xml//;
+  } elsif ($mod_name =~ /\.json/i) {
+	  $js_file = $mod_name;
+	  $mod_name =~ s/\.json|\.JSON//;
   }
+	  
   $mod_inst = "u_$mod_name" if ($mod_inst eq ""); 
 
   $CurInst = $mod_inst;
-  &HDLGenInfo($SubName," --- mod_name==$mod_name, mod_parm==$mod_parm, CurInst==$CurInst \n") if ($main::HDLGEN_DEBUG_MODE);
   if ($ipx_file ne "") {
      $mod_name=&ParseInstIPX($mod_inst,$mod_parm,$ipx_file);
+     $mod_name .= "\n" if ($mod_parm ne "");
+     $mod_parm .= "\n" if ($mod_parm ne "");
+  } elsif ($js_file ne "") {
+     $mod_name=&ParseInstJSON($mod_inst,$mod_parm,$js_file);
      $mod_name .= "\n" if ($mod_parm ne "");
      $mod_parm .= "\n" if ($mod_parm ne "");
   } else {
      &ParseInstVlg($mod_inst,$mod_parm,$mod_name);
   }
+  &HDLGenInfo($SubName," --- mod_name==$mod_name, mod_parm==$mod_parm, CurInst==$CurInst \n") if ($main::HDLGEN_DEBUG_MODE);
+
   $CurMod_Top->{"inst"}->{"$CurInst"}->{"connect_list"}=0;
+
   $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
   $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
   $CurMod_Top->{"inst"}->{"$mod_inst"}->{"instance"}="$mod_inst";
@@ -729,6 +765,7 @@ sub Instance {
 #============================================================================================================#
 
 #============================================================================================================#
+#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindVlg {
     my($VlgName)=$_[0];
@@ -749,6 +786,7 @@ sub FindVlg {
 }
 
 #============================================================================================================#
+#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub FindFile {
     my($FName)=$_[0];
@@ -770,6 +808,7 @@ sub FindFile {
 #============================================================================================================#
 
 #============================================================================================================#
+#------ Pasre Verilog source file and get all inputs & outputs------#
 #============================================================================================================#
 sub ParseInstVlg{
     my($SubName)="ParseInstVlg";
@@ -777,8 +816,6 @@ sub ParseInstVlg{
     my($mod_parm)=shift;
     my($mod_name)=shift;
 
-    $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
-    $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
 
     my($in_vlg)="";
     $in_vlg = &FindVlg($mod_name); 
@@ -832,6 +869,7 @@ sub ParseInstVlg{
 #============================================================================================================#
 	       
 #============================================================================================================#
+#------ Pasre IPXACT source file and get all inputs & outputs & interfaces------#
 #============================================================================================================#
 sub ParseInstIPX{
     my($SubName)="ParseInstIPX";
@@ -839,13 +877,44 @@ sub ParseInstIPX{
 	chomp($mod_inst);
     my($mod_parm)=shift;
     my($ipx_file)=shift;
-	my($mod_name)=$ipx_file;
-	&HDLGenInfo($SubName, " --- mod_inst=$mod_inst, mod_parm=$mod_parm, ipx_file=$ipx_file\n") if ($main::HDLGEN_DEBUG_MODE);
 
+	my $mod_name = &ParseIPX($ipx_file);
+    my $IPX_intf = $CurIPX->{"$mod_name"}->{"busInterfaces"};
+	foreach my $intf (keys(%$IPX_intf)) {
+		my $intf_hash = $IPX_intf->{"$intf"};
+        &AddIntf($intf, $intf_hash);
+	}
+
+	&HDLGenInfo($SubName, " --- mod_name=$mod_name, mod_inst=$mod_inst, mod_parm=$mod_parm\n") if ($main::HDLGEN_DEBUG_MODE);
+
+    my $IPX_port = $CurIPX->{"$mod_name"}->{"ports"};
+	foreach my $port (keys(%$IPX_port)) {
+        my $port_sig = $IPX_port->{"$port"};
+	    my @p_sig = split(":",$port_sig);
+	    if ($p_sig[0] =~ /input/) {
+	        $CurMod_Top->{"inst"}->{"$mod_inst"}->{"input"}->{"$port"}->{"width"}="$p_sig[1]";
+	    } elsif ($p_sig[0] =~ /output/) {
+	        $CurMod_Top->{"inst"}->{"$mod_inst"}->{"output"}->{"$port"}->{"width"}="$p_sig[1]";
+	    }
+   }
+
+   $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
+   $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
+
+   return($mod_name);
+}
+
+#============================================================================================================#
+#------ Pasre IPXACT source file and get all inputs & outputs & interfaces------#
+#============================================================================================================#
+sub ParseIPX {
+    my($ipx_file)=shift;
+	my $mod_name = basename($ipx_file);
 
 	$ipx_file = &FindFile($ipx_file);
     my $IP_XACT = &ReadXML($ipx_file);
-	$mod_name = $IP_XACT->{"name"};
+	$mod_name = $IP_XACT->{"name"} if (exists($IP_XACT->{"name"}));
+	&HDLGenInfo("ParseIPX", " --- mod_name=$mod_name\n") if ($main::HDLGEN_DEBUG_MODE);
 
     if ($main::debug) {
         open(XXML,">.$ipx_file.hash");
@@ -870,7 +939,7 @@ sub ParseInstIPX{
             $intf_hash->{"$p_name"} = "$inout: $p_width";
             }
         }
-        &AddInterface($intf, $intf_hash);
+        $CurIPX->{"$mod_name"}->{"busInterfaces"}->{"$intf"} = $intf_hash;
     }
 
 	foreach my $port (keys(%$P)) {
@@ -890,23 +959,78 @@ sub ParseInstIPX{
 		      }
 		   }
            $p_width = $left - $right + 1;
-	   } else {
+	    } else {
 		   $p_width = "1";
-	   }
+	    }
+
 		if ($port_hash->{"direction"} =~ /in/) {
-	       $CurMod_Top->{"inst"}->{"$mod_inst"}->{"input"}->{"$port"}->{"width"}="$p_width";
+	       $CurIPX->{"$mod_name"}->{"ports"}->{"$port"}="input:$p_width";
 	   } elsif ($port_hash->{"direction"} =~ /out/) {
-	       $CurMod_Top->{"inst"}->{"$mod_inst"}->{"output"}->{"$port"}->{"width"}="$p_width";
+	       $CurIPX->{"$mod_name"}->{"ports"}->{"$port"}="output:$p_width";
+	   } else {
+	       $CurIPX->{"$mod_name"}->{"ports"}->{"$port"}="wire:$p_width";
 	   }
 	}
 
-    $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
-    $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
 	return($mod_name);
 }
-#============================================================================================================#
+
 
 #============================================================================================================#
+#------ Pasre JSON source file and get all inputs & outputs & interfaces------#
+#============================================================================================================#
+sub ParseInstJSON {
+  my $SubName = "ParseInstJSON";
+  my($mod_inst)=shift;
+  chomp($mod_inst);
+  my($mod_parm)=shift;
+  my($json_file)=shift;
+
+  my $json_text = ();
+  my $intf_name = "";
+  my $JSON_hash = "";
+  my $mod_name  = "";
+  my $intf_hash = ();
+  my $port_hash = ();
+
+  $json_file = &FindFile($json_file);
+  if ( -e $json_file ) {
+      open(JSON, "<$json_file") or die "!!! Error: can't find input JSON file of ($json_file) \n\n";
+      $json_text = do { local $/; <JSON> };
+      close(JSON);
+      $JSON_hash = decode_json($json_text);
+      
+	  $mod_name = $JSON_hash->{"module"} if (exists($JSON_hash->{"module"}));
+
+	  $intf_hash = $JSON_hash->{"busInterfaces"};
+      foreach $intf_name (keys(%$intf_hash)) {
+          &AddIntf($intf_name, $intf_hash->{$intf_name},1);
+      }
+
+	  $port_hash = $JSON_hash->{"ports"};
+      foreach my $port (keys(%$port_hash)) {
+		my $port_sig = $port_hash->{"$port"};
+	    my @p_sig = split(":",$port_sig);
+	    if ($p_sig[0] =~ /input/) {
+	        $CurMod_Top->{"inst"}->{"$mod_inst"}->{"input"}->{"$port"}->{"width"}="$p_sig[1]";
+	    } elsif ($p_sig[0] =~ /output/) {
+	        $CurMod_Top->{"inst"}->{"$mod_inst"}->{"output"}->{"$port"}->{"width"}="$p_sig[1]";
+	    }
+      }
+  } else {
+	  &HDLGenErr("ParseInstJSON"," JSON file $json_file doesn't exist");
+	  exit(1); 
+  }
+
+  $CurMod_Top->{"inst"}->{"$mod_inst"}->{"module"}="$mod_name";
+  $CurMod_Top->{"inst"}->{"$mod_inst"}->{"parameter"}="$mod_parm";
+  return($mod_name);
+
+}
+
+
+#============================================================================================================#
+#------ Module Instance Handler ------#
 #============================================================================================================#
 sub Connect {
   my($SubName)="Connect";
@@ -967,19 +1091,16 @@ sub Connect {
 
 }
 #============================================================================================================#
-
-
 #============================================================================================================#
-#------ Placehold for AddParam as a new opened issue ------#
+#------ AddParam as a new opened issue for paramater instance------#
 #============================================================================================================#
-#--- &AddParam  A A_PARAM ;
 sub AddParam {
   my($SubName)="AddParam";
   my ($call) = join (" ", @_);
   &HDLGenInfo($SubName,"--- \$call args==$call\n") if ($main::HDLGEN_DEBUG_MODE);
 
-  my ($param)  = ""; ### input/output/interface
-  my ($pm_val) = ""; ### search source expr
+  my ($param)  = "";
+  my ($pm_val) = "";
 
   if ($call =~ /(\w+) \s*(.*)\s*$/) {
 	  $param  = $1;
@@ -990,6 +1111,7 @@ sub AddParam {
 }
 
 #============================================================================================================#
+#------ Call Connect by update Hash------#
 #============================================================================================================#
 sub ConnectDone {
   my($SubName)="ConnectDone";
@@ -1066,12 +1188,12 @@ sub ConnectDone {
      close(INST_HASH);
   }
 
-  if (exists($CurMod_Top->{"inst"}->{"$CurInst"}->{"param"})) { ### has AddParam functions
+  if (exists($CurMod_Top->{"inst"}->{"$CurInst"}->{"param"})) {
 	 my $mod_name = $CurMod_Top->{"inst"}->{"$CurInst"}->{"module"};
 	 my $mod_inst = $CurMod_Top->{"inst"}->{"$CurInst"}->{"instance"};
      push @VOUT, "$mod_name\n";
      &PrintParam();
-	 push @VOUT, "  $mod_inst (\n";
+     push @VOUT, "  $mod_inst (\n";
   } else {
 	 my $mod_name = $CurMod_Top->{"inst"}->{"$CurInst"}->{"module"};
 	 my $mod_parm = $CurMod_Top->{"inst"}->{"$CurInst"}->{"parameter"};
@@ -1105,9 +1227,10 @@ sub PrintParam {
   push @VOUT,"\n    )\n";
 
 }
-
+#============================================================================================================#
 
 #============================================================================================================#
+#------ Real Print Connections ------#
 #============================================================================================================#
 sub PrintConnect {
   my($SubName)="PrintConnect";
@@ -1115,6 +1238,11 @@ sub PrintConnect {
   my($type)="";
   my @wire_array = ();
   my $first_line = 1;
+
+  if ( $AUTO_INST eq "" ) {
+     my($inst_w_file)=".$CurInst.wires";
+     open(INST_WIRE, ">$inst_w_file") or die " !!! (PrintConnect: file ($inst_w_file) cannot be created!!! \n";
+  }
 
   my $port_length=0;
   my $conn_length=0;
@@ -1370,6 +1498,9 @@ sub PrintConnect {
 }
 
 
+#============================================================================================================#
+#------ parse all assignments which provided by Verilog::Netlist ------#
+#============================================================================================================#
 sub ParseContAssign {
    my($LHS) = shift;
    my($RHS) = shift;
@@ -1405,7 +1536,8 @@ sub ParseContAssign {
           my $cur_width = &ParseAutoWidth($RHS,"wire");
 		  $width = $cur_width;
 	   }
-       $width-- if ($width > 1); 
+	   $width-- if ($width > 1);
+
        if ( !exists($AutoWires->{"$name"}->{"done"}) ) {
 		   if ( ($width ne "0") and ($width ne "1") ) {
               if ($width =~ /:/) {
@@ -1419,10 +1551,10 @@ sub ParseContAssign {
 	   }
    }
 }
-#============================================================================================================#
 
 
 #============================================================================================================#
+#------ Parse 1 single signal which may have [...] or not, can accumulate bit-width ------#
 #============================================================================================================#
 sub ParseAutoWidth {
 	my($wire) = shift;
@@ -1483,7 +1615,7 @@ sub ParseAutoWidth {
 		  $cur_width = 1;
 	   }
 
-       if ( !exists($SigHash->{"$name"}) ) {
+       if ( !exists($AutoHash->{"$name"}) ) {
           $AutoHash->{"$name"}->{"width"} = "$width";
        } else {
           my $width_exist = $AutoHash->{"$name"}->{"width"};
@@ -1505,62 +1637,37 @@ sub ParseAutoWidth {
 	 return($cur_width);
 }
 
-#============================================================================================================#
-#============================================================================================================#
-sub UpdateAutoWarning {
-   my($SubName)="UpdateAutoWarning";
 
-   my $Inputs  = $CurMod_Top->{"connections"}->{"input"};
-   my $Outputs = $CurMod_Top->{"connections"}->{"output"};
-   foreach my $in (keys(%$Inputs)) {
-   	  $Inputs->{"$in"} = 1 if (exists($Outputs->{"$in"}));
-   }
-   foreach my $out (keys(%$Outputs)) {
-   	  $Outputs->{"$out"} = 1 if (exists($Inputs->{"$out"}));
-   }
-
-   for my $sig (keys(%$AutoInstSigs)) {
-	   next if ($CurMod_Top->{"ports"}->{"input"}->{"$sig"});
-	   next if ($CurMod_Top->{"ports"}->{"output"}->{"$sig"});
-	   next if ($CurMod_Top->{"connections"}->{"input"}->{"$sig"} eq 1);
-	   next if ($CurMod_Top->{"connections"}->{"output"}->{"$sig"} eq 1);
-	   next if ($CurMod_Top->{"regs"}->{"$sig"});
-	   next if ($CurMod_Top->{"wires"}->{"$sig"});
-	   next if ($AutoRegs->{"$sig"});
-	   next if ($AutoWires->{"$sig"});
-	   my $inst = $AutoInstSigs->{"$sig"}->{"inst"};
-	   $AutoWarnings->{"$inst"}->{"$sig"}->{"direction"} = $AutoInstSigs->{"$sig"}->{"direction"};
-       my $width = $AutoInstSigs->{"$sig"}->{"width"};
-	   if (exists($AutoInstSigs->{$sig}->{"auto_width"})) {
-              $width = $AutoInstSigs->{$sig}->{"auto_width"};
-	   }
-	   $AutoWarnings->{"$inst"}->{"$sig"}->{"width"} = $width;
-   }
-
-}
-#============================================================================================================#
 
 #============================================================================================================#
 #------ Placehold for Always block ------#
 #============================================================================================================#
 #sub ProcessAlways {
-#}
-
+#  my $line = shift;
+#
+#  my $begin = 0;
+#  my $end   = 0;
+#  if ($line =~ /^\s*always/) {
+#	  if ($line =~ /begin/) {
+#		  $begin++;
+#	  }
+#
 
 #============================================================================================================#
+#------ Update All Auto Port/Reg/Wire/InstSig hash ------#
 #============================================================================================================#
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
-		open(V_SRC,">temp.v");
+		open(V_SRC,">.temp.v");
 	    foreach my $line (@VOUT) {
 			print V_SRC "$line";
 		}
 		close(V_SRC);
 		my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
         $nl->read_libraries();
-        $nl->read_file (filename=>"./temp.v");
+        $nl->read_file (filename=>"./.temp.v");
         $nl->link();
-        system("rm ./temp.v");
+		system("rm ./.temp.v");
         foreach my $mod ($nl->top_modules_sorted) {
 			my ($name, $type, $width) = ("","","");
 	        foreach my $net ($mod->nets_sorted) {
@@ -1605,11 +1712,24 @@ sub UpdateAutos {
 
 		foreach my $reg (keys(%$AutoRegs)) {
 			delete($AutoRegs->{"$reg"}) if (exists($CurMod_Top->{"regs"}->{"$reg"}));
+			if ($verilog2001 eq "1") {
+			   delete($AutoRegs->{"$reg"}) if (exists($CurMod_Top->{"ports"}->{"input"}->{"$reg"}));
+			   delete($AutoRegs->{"$reg"}) if (exists($CurMod_Top->{"ports"}->{"output"}->{"$reg"}));
+			}
 		}
 		foreach my $wire (keys(%$AutoWires)) {
 			delete($AutoWires->{"$wire"}) if (exists($CurMod_Top->{"wires"}->{"$wire"}));
+			if ($verilog2001 eq "1") {
+			   delete($AutoWires->{"$wire"}) if (exists($CurMod_Top->{"ports"}->{"input"}->{"$wire"}));
+			   delete($AutoWires->{"$wire"}) if (exists($CurMod_Top->{"ports"}->{"output"}->{"$wire"}));
+			}
 		}
         foreach my $sig (keys(%$AutoInstSigs)) {
+			if ($verilog2001 eq "1") {
+			   delete($AutoInstSigs->{"$sig"}) if (exists($CurMod_Top->{"ports"}->{"input"}->{"$sig"}));
+			   delete($AutoInstSigs->{"$sig"}) if (exists($CurMod_Top->{"ports"}->{"output"}->{"$sig"}));
+			   next;
+			}
 			if (exists($CurMod_Top->{"wires"}->{"$sig"})) {
 			   delete($AutoInstSigs->{"$sig"});
 			   next;
@@ -1631,10 +1751,52 @@ sub UpdateAutos {
 
     &UpdateAutoWarning();
 
+	$AUTO_DONE = 1;
+
 }
 #============================================================================================================#
 
+
 #============================================================================================================#
+#------ Update Auto Port hash ------#
+#============================================================================================================#
+sub UpdateAutoWarning {
+   my($SubName)="UpdateAutoWarning";
+
+   my $Inputs  = $CurMod_Top->{"connections"}->{"input"};
+   my $Outputs = $CurMod_Top->{"connections"}->{"output"};
+   foreach my $in (keys(%$Inputs)) {
+   	  $Inputs->{"$in"} = 1 if (exists($Outputs->{"$in"}));
+   }
+   foreach my $out (keys(%$Outputs)) {
+   	  $Outputs->{"$out"} = 1 if (exists($Inputs->{"$out"}));
+   }
+
+   for my $sig (keys(%$AutoInstSigs)) {
+	   next if ($CurMod_Top->{"ports"}->{"input"}->{"$sig"});
+	   next if ($CurMod_Top->{"ports"}->{"output"}->{"$sig"});
+	   next if ($CurMod_Top->{"connections"}->{"input"}->{"$sig"} eq 1);
+	   next if ($CurMod_Top->{"connections"}->{"output"}->{"$sig"} eq 1);
+	   next if ($CurMod_Top->{"regs"}->{"$sig"});
+	   next if ($CurMod_Top->{"wires"}->{"$sig"});
+	   next if ($AutoRegs->{"$sig"});
+	   next if ($AutoWires->{"$sig"});
+	   my $inst = $AutoInstSigs->{"$sig"}->{"inst"};
+	   $AutoWarnings->{"$inst"}->{"$sig"}->{"direction"} = $AutoInstSigs->{"$sig"}->{"direction"};
+       my $width = $AutoInstSigs->{"$sig"}->{"width"};
+	   if (exists($AutoInstSigs->{$sig}->{"auto_width"})) {
+              $width = $AutoInstSigs->{$sig}->{"auto_width"};
+	   }
+	   $AutoWarnings->{"$inst"}->{"$sig"}->{"width"} = $width;
+   }
+
+}
+#============================================================================================================#
+
+
+#============================================================================================================#
+#------ Print auto wire & reg defines ------#
+#------ FIXME: unmature or unperfect yet, has bugs so far by 2023/01 ! ------#
 #============================================================================================================#
 sub  PrintAutoSigs {
    my($SubName)="PrintAutoSigs";
@@ -1677,6 +1839,7 @@ sub  PrintAutoSigs {
 
 
 #============================================================================================================#
+#------ Print All &Instance module's wire defines, NO duplication ------#
 #============================================================================================================#
 sub  PrintAutoInstSigs {
    my($SubName)="PrintAutoInstSigs";
@@ -1707,7 +1870,7 @@ sub  PrintAutoInstSigs {
                    $width = "";
            } elsif ( $width =~ /:/) {
                $width = "[${width}]";
-		   } else {
+		   }else {
                $width = "[${width}:0]";
            }
            my $line_pt = sprintf("%-12s %-${sig_length}s", $width, $sig_name);
@@ -1731,6 +1894,7 @@ sub  PrintAutoInstSigs {
 #============================================================================================================#
 
 #============================================================================================================#
+#------ Print All Instance ports which has no Source or Sink as Warning ------#
 #============================================================================================================#
 sub PrintAutoWarning {
 	if (%$AutoWarnings) {
@@ -1753,11 +1917,10 @@ sub PrintAutoWarning {
 	    print "// ======================================================================\n\n";
         $vout_autoinst_warning = 1;
 	    print STDOUT BOLD RED " !!! Be carefully: some Instance's port has NO source or sink !!!\n";
-	    print STDOUT BOLD RED " !!!       Please search & check \"Warning\" in output RTL     !!!\n";
+	    print STDOUT BOLD RED " !!!       Please search & check \"Warninng\" in output RTL     !!!\n";
 	}
 }
 
-#============================================================================================================#
 #============================================================================================================#
 sub PrintRTLHdr {
   print "// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
@@ -1770,10 +1933,9 @@ sub PrintRTLHdr {
 }
 
 #============================================================================================================#
-#============================================================================================================#
 sub PrintVOUT {
 
-	&UpdateAutos();
+	&UpdateAutos() if ($AUTO_DONE eq "0");
 
 	select(V_OUT);
 	&PrintRTLHdr() ;
@@ -1803,7 +1965,8 @@ sub PrintVOUT {
                &PrintAutoInstSigs();
   	           print "//| ========================= End of Instance Wires/Regs ===============================\n";
   	           print "//| ====================================================================================\n\n";
-			   &PrintAutoWarning();
+		       &PrintAutoWarning();
+			
 		     } else {
 		         print("$line");
 		     }
@@ -1812,6 +1975,218 @@ sub PrintVOUT {
 		 }
     }
 }
+#============================================================================================================#
+
+
+#============================================================================================================#
+#------ Translate IPXACT file's module name, ports, interfaces into JSON, for integration & debug ------#
+#============================================================================================================#
+sub TransIPX {
+  my $IPX_file = shift;
+
+  my $mod_name = &ParseIPX($IPX_file);
+
+
+  my $JS_file = $mod_name.".IPX.JSON";
+  open JS_F,">","$JS_file";
+
+  print JS_F "{\n";
+  print JS_F "    \"module\" : \"$mod_name\",\n\n";
+
+  my $first_intf = 1;
+
+  if (exists($CurIPX->{"$mod_name"}->{"busInterfaces"})) {
+     print JS_F "    \"busInterfaces\" : {\n";
+     my $intf_hash = $CurIPX->{"$mod_name"}->{"busInterfaces"};
+     foreach my $intf_name (keys(%$intf_hash)) {
+		if ($first_intf) {
+	        print JS_F "        \"$intf_name\" : {\n";
+			$first_intf = 0;
+	    } else {
+	        print JS_F ",\n        \"$intf_name\" : {\n";
+		}
+
+        my $first_line = 1;
+       	my $Out_Intf = $intf_hash->{"$intf_name"};
+        foreach my $sig (keys(%$Out_Intf)) {
+            my $port = $Out_Intf->{"$sig"};
+            if ($first_line) {
+               print JS_F "           \"$sig\" : \"$port\" ";
+          	   $first_line = 0;
+            } else {
+               print JS_F ",\n           \"$sig\" : \"$port\" ";
+            }
+        }
+        print JS_F "\n        }";
+     }
+     print JS_F "\n    },\n\n";
+  }
+
+  print JS_F "    \"ports\" : {\n";
+
+  my $IPX_port = $CurIPX->{"$mod_name"}->{"ports"};
+  my $first_line = 1;
+  foreach my $port (keys(%$IPX_port)) {
+	 my $sig = $IPX_port->{"$port"};
+     if ($first_line) {
+        print JS_F "           \"$port\" : \"$sig\" ";
+        $first_line = 0;
+     } else {
+        print JS_F ",\n           \"$port\" : \"$sig\" ";
+     }
+  }
+  print JS_F "\n    }\n\n";
+
+  print JS_F "}";
+
+  print STDOUT " ---<<< TOP JSON file of \"$mod_name\" is translated >>>---\n";
+}
+#============================================================================================================#
+
+#============================================================================================================#
+#------  print out current Moduloe's name/port/interface into JSON file ------#
+#============================================================================================================#
+sub GenModJson {
+  my $Mod_name = shift;
+  $Mod_name = $CurMod_Top->{"module"} if ($Mod_name eq "");
+
+  my $JS_file = $Mod_name.".JSON";
+  open JS_F,">","$JS_file";
+
+  my $pt_line = "";
+  my $intf_hash = ();
+
+  print JS_F <<EOF;
+{
+    "module" : "$Mod_name",
+EOF
+
+  if (exists($Expt_Intf->{"busInterfaces"})) {
+      print JS_F <<EOF;
+
+    "busInterfaces" : {
+EOF
+
+      my $first_intf = 1;
+      $intf_hash = $Expt_Intf->{"busInterfaces"};
+      foreach my $intf_name (keys(%$intf_hash)) {
+            if ($first_intf) {
+                print JS_F "        \"$intf_name\" : {\n";
+        		$first_intf = 0;
+            } else {
+                print JS_F ",\n        \"$intf_name\" : {\n";
+        	}
+            my $first_line = 1;
+        	my $Out_Intf = $intf_hash->{"$intf_name"};
+            foreach my $sig (keys(%$Out_Intf)) {
+				if ( (exists($CurMod_Top->{"ports"}->{"input"}->{"$sig"})) or (exists($CurMod_Top->{"ports"}->{"input"}->{"$sig"})) ) {
+                    my $port = $Out_Intf->{"$sig"};
+                    if ($first_line) {
+        		       $pt_line = sprintf("           \"%-16s\" : \"%s\"", $sig, $port);
+              	       $first_line = 0;
+                    } else {
+        		       $pt_line = sprintf(",\n           \"%-16s\" : \"%s\"", $sig, $port);
+                    }
+        		    print JS_F "$pt_line";
+			    } else {
+					print STDOUT BOLD YELLOW " !!!--- port(\"$sig\") of interface(\"$intf_name\") not on module top, please double check ---!!!\n";
+				}
+            }
+            print JS_F "\n        }";
+      } 
+      print JS_F "\n    },\n\n";
+
+      print JS_F "    \"ports\" : {\n";
+      foreach my $intf_name (keys(%$intf_hash)) {
+         my $first_line = 1;
+         my $pt_done = 0;
+         my $Out_Intf = $intf_hash->{"$intf_name"};
+         foreach my $sig (keys(%$Out_Intf)) {
+			 if ( (exists($CurMod_Top->{"ports"}->{"input"}->{"$sig"})) or (exists($CurMod_Top->{"ports"}->{"input"}->{"$sig"})) ) {
+                 my $port = $Out_Intf->{"$sig"};
+                 if ($first_line) {
+        	         $pt_line = sprintf("           \"%-16s\" : \"%s\"", $sig, $port);
+           	         $first_line = 0;
+                 } else {
+        	         $pt_line = sprintf(",\n           \"%-16s\" : \"%s\"", $sig, $port);
+                 }
+        	     print JS_F "$pt_line";
+				 $pt_done = 1;
+			 }
+         }
+         print JS_F ",\n\n" if ($pt_done eq "1");
+      }
+  } else {
+      print JS_F "    \"ports\" : {\n";
+  }
+
+  &UpdateAutos() if ($AUTO_DONE eq "0");
+  my $CurPorts=$CurMod_Top->{"ports"}->{"input"};
+  my $first_line = 1;
+  foreach my $port (keys(%$CurPorts)) {
+	  next if (exists($Expt_Intf->{"ports"}->{"$port"}));
+	  my $width = $CurPorts->{"$port"};
+	  if ($width =~ /(.*):/) {
+		  $width = $1;
+		  if ($width !~ /[a-zA-Z]/) {
+		     $width +=1;
+		  } else {
+             &HDLGenInfo("GenModJson", " --- find PARAMETER($width) in JSON, please double check \n");
+		  }
+	  }
+      if ($first_line) {
+		 $pt_line = sprintf("           \"%-16s\" : \"input:%s\"", $port, $width);
+         $first_line = 0;
+      } else {
+		 $pt_line = sprintf(",\n           \"%-16s\" : \"input:%s\"", $port, $width);
+      }
+	  print JS_F "$pt_line";
+  }
+  $first_line = 1;
+  $CurPorts=$CurMod_Top->{"ports"}->{"output"};
+  foreach my $port (keys(%$CurPorts)) {
+	  next if (exists($Expt_Intf->{"ports"}->{"$port"}));
+	  my $width = $CurPorts->{"$port"};
+	  if ($width =~ /(.*):/) {
+		  $width = $1;
+		  if ($width !~ /[a-zA-Z]/) {
+		     $width +=1;
+		  } else {
+             &HDLGenInfo("GenModJson", " --- find PARAMETER($width) in JSON, please double check \n");
+		  }
+	  }
+      if ($first_line) {
+		 $pt_line = sprintf(",\n\n           \"%-16s\" : \"output:%s\"", $port, $width);
+         $first_line = 0;
+      } else {
+		 $pt_line = sprintf(",\n           \"%-16s\" : \"output:%s\"", $port, $width);
+      }
+	  print JS_F "$pt_line";
+  }
+
+  $first_line = 1;
+  $intf_hash = $Expt_Intf->{"ports"};
+  foreach my $sig (keys(%$intf_hash)) {
+		my $port = $intf_hash->{"$sig"};
+        if ($first_line) {
+           $pt_line = sprintf(",\n\n           \"%-16s\" : \"%s\"", $sig, $port );
+           $first_line = 0;
+        } else {
+           $pt_line = sprintf(",\n           \"%-16s\" : \"%s\"", $sig, $port );
+        }
+        print JS_F "$pt_line";
+  }
+
+
+  print JS_F "\n    }\n\n";
+  print JS_F "}";
+
+  print STDOUT " ---<<< TOP JSON file of \"$Mod_name\" is generated >>>---\n";
+}
+#============================================================================================================#
+
+
+
 
 #============================================================================================================#
 #============================================================================================================#

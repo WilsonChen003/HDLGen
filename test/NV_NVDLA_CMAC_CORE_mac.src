@@ -32,13 +32,13 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
   ,wt_actv_pvld       //|< i
-  //test for Auto Warnning
+  //test for Auto Port/Wire/Warnning
   //,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
   ,mac_out_data       //|> o
   ,mac_out_nan        //|> o
-  ,mac_out_pvld      //|> o
+  ,mac_out_pvld,      //|> o
   );
 
  parameter NUM_INT  =    24;
@@ -47,6 +47,8 @@ module NV_NVDLA_CMAC_CORE_mac (
 
 //: our $NUM_INT_VAR = 240;
 
+// ========================================================================================
+// ========================================================================================
 input           nvdla_core_clk;
 input           nvdla_wg_clk;
 input           nvdla_core_rstn;
@@ -85,9 +87,15 @@ reg     [65:0] dbg_sign;
 reg      [3:0] exp_max;
 reg            exp_pvld;
 
+// ========================================================================================
+//// Sample to update search path for config & design files
 //: SRC ./incr
 //: &SRC ./cfg
+// ========================================================================================
 
+// ========================================================================================
+// Sample for single line script
+// ========================================================================================
 // wire      [3:0] exp_sft_00;
 // ..
 //: for my $i (0..63) {
@@ -96,7 +104,9 @@ reg            exp_pvld;
 // wire      [3:0] exp_sft_63;
 //
 
-// ...
+// ========================================================================================
+// Sample for multi-line script
+// ========================================================================================
 //:Begin
     for my $i (0..3) {
        print("wire [15:0] test_data$i;\n");
@@ -105,9 +115,9 @@ reg            exp_pvld;
 //:End
 
 
-//reg      [15:0] test_data$;
-//reg      [15:0] test_data$;
-
+// ========================================================================================
+// Sample for multi-line script
+// ========================================================================================
 //:Begin
   for my $i (0..5) {
       for my $j (0..9) {
@@ -117,6 +127,9 @@ reg            exp_pvld;
   }
 //:End
 
+// ========================================================================================
+// Sample for DTI interface generation
+// ========================================================================================
 //:&DTIWire("top2dp", 512);
 
 
@@ -132,7 +145,8 @@ wire [63:0] res_tag_b7;
 
 
 // ========================================================================================
-// ============= for Python Script ==============
+// Sample for Python script
+// ========================================================================================
 //#Begin
     for i in [0,1,2,3,4,5,6,7]:
        print("wire [63:0] test_PY_data%d;" % i )
@@ -154,12 +168,16 @@ wire [63:0] res_tag_b7;
 //==============================================================================
 
 
+// ========================================================================================
+// Sample for Instance function
 //==========================================================
 // Sub unit to handle fp16 NaN 
 //==========================================================
 &Instance NV_NVDLA_CMAC_CORE_MAC_nan u_nan;
 
 
+// ========================================================================================
+// Sample for Instance function
 //==========================================================
 // Fp16 exponent pre-calculaiton instant
 //==========================================================
@@ -177,10 +195,13 @@ always @(
     {wt_actv_data63, wt_actv_data62, wt_actv_data61, wt_actv_data60, wt_actv_data59, wt_actv_data58, wt_actv_data57, wt_actv_data56, wt_actv_data55, wt_actv_data54, wt_actv_data53, wt_actv_data52, wt_actv_data51, wt_actv_data50, wt_actv_data49, wt_actv_data48, wt_actv_data47, wt_actv_data46, wt_actv_data45, wt_actv_data44, wt_actv_data43, wt_actv_data42, wt_actv_data41, wt_actv_data40, wt_actv_data39, wt_actv_data38, wt_actv_data37, wt_actv_data36, wt_actv_data35, wt_actv_data34, wt_actv_data33, wt_actv_data32, wt_actv_data31, wt_actv_data30, wt_actv_data29, wt_actv_data28, wt_actv_data27, wt_actv_data26, wt_actv_data25, wt_actv_data24, wt_actv_data23, wt_actv_data22, wt_actv_data21, wt_actv_data20, wt_actv_data19, wt_actv_data18, wt_actv_data17, wt_actv_data16, wt_actv_data15, wt_actv_data14, wt_actv_data13, wt_actv_data12, wt_actv_data11, wt_actv_data10, wt_actv_data9, wt_actv_data8, wt_actv_data7, wt_actv_data6, wt_actv_data5, wt_actv_data4, wt_actv_data3, wt_actv_data2, wt_actv_data1, wt_actv_data0} = wt_actv_data;
 end
 
+// ========================================================================================
+// Sample for script with for loop and structural connections
+// ========================================================================================
 //:Begin
     for my $i (0..63) {
-		my $ii = sprintf("%02d",$i);
-	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
+	my $ii = sprintf("%02d",$i);
+	&Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
           &Connect exp_sft      exp_sft_$ii;
            Connect op_a_dat     wt_actv_data${i};
            Connect op_a_nz      wt_actv_nz${ii};
@@ -220,6 +241,9 @@ end
 //////////////// CSA tree level 0: 64->16 ////////////////
 //////////////////////////////////////////////////////////
 
+// ========================================================================================
+// Sample for script with bulk lines printing
+// ========================================================================================
 //:Begin
     for my $i (0..9) {
 		### for bulk print
@@ -308,6 +332,9 @@ begin
   MOSI_O_IPX = my_mosi;
 end
 
+//==========================================================
+//// Sample for IPXACT instance with AddParam function
+//==========================================================
 //:Begin
  &Instance simple_spi.xml my_spi_Param;
   AddParam PARM0 A0;
@@ -317,16 +344,27 @@ end
   Connect /(rst.*)/ IPX_\${1};
 //:End
 
-
+//==========================================================
+//// Sample for IPXACT instance with multi-paramaters
+//==========================================================
  &Instance simple_spi.xml
      #( .parm0(0),
 		 .param1(1),
 		 .param2(2)
 	 )
-	 my_spi;
-  Connect -final -interface spi  -up \${1}_IPX ;
-  Connect /(clk.*)/ IPX_\${1};
-  Connect /(rst.*)/ IPX_\${1};
+  my_spi;
+    Connect -final -interface spi  -up \${1}_IPX ;
+    Connect /(clk.*)/ IPX_\${1};
+    Connect /(rst.*)/ IPX_\${1};
+
+
+//==========================================================
+//// Sample for JSON instance 
+//==========================================================
+   &Instance my_test_design.JSON;
+     Connect -final -interface my_spi  My_\${1} ;
+     Connect /(clk.*)/ My_\${1};
+     Connect /(reset.*)/ My_\${1};
 
 //==========================================================
 // Final register for MAC output
@@ -341,20 +379,41 @@ always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
 end
 
 
-//=========================================================================================
-//====== test for IPX & JSON ======
-//=========================================================================================
+//==========================================================
+//// Sample for Interface add & print
+//==========================================================
 //: &AddIntfByIPX("./cfg/simple_spi.xml");
-////:	&ShowIntf("spi");
 //: &AddIntfByJson("./cfg/MyIntf.json");
 //: &PrintIntfPort("-intf spi");
 
+//==========================================================
+//// Sample of adding interface by SystemVerilog interface code
+//==========================================================
+//:Begin
+  my $sv = "
+  interface test_if(input clk);
+    logic rst_n,
+    wire  [1:0] port_a_0 ;
+    logic [12:0] port_a_1 ;
+    wire port_b_0 ;
+    logic port_b_1 ;
+   endinterface	
+";
+	&AddIntfBySV($sv);
+    &PrintIntfPort("-intf test_if -up"); 
 
-//: &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
+//:End
 
-//=========================================================================================
-//====== test for Perl scrip with hasht ======
-//=========================================================================================
+//============= Sample to Print(show) interface to a file ========
+//:	&ShowIntf("spi");
+
+//============= Sample to Translate(show) IPXACT to JSON file ========
+//:	&TransIPX("simple_spi.xml");
+
+
+//==========================================================
+//// Sample of normal Perl script with hash
+//==========================================================
 //:Begin
   my %test_hash = (
        'sys_ctrl'=> "&",
@@ -378,13 +437,17 @@ always @(*) begin
 end
 
 
+//==========================================================
+//// Sample of Connect with standard AMBA interface
+//==========================================================
 &Instance test_sys_ctrl_apb_regs;
   Connect -final -interface APB3  -up \${1}_suffix ;
 
+//:  &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
 
-//=========================================================================================
-//====== test for perl hash usage ======
-//=========================================================================================
+//==========================================================
+//// Sample of adding interface from Perl Hash Array
+//==========================================================
 //:Begin
   my %APB3 = (
        'pSELx' => "input: 1",
@@ -399,34 +462,15 @@ end
   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
 //:End
 
-
-//=========================================================================================
-//====== test for SV interface ======
-//=========================================================================================
-//:Begin
-  my $sv = "
-  interface test_if(input clk);
-    logic rst_n,
-    wire  [1:0] port_a_0 ;
-    logic [12:0] port_a_1 ;
-    wire port_b_0 ;
-    logic port_b_1 ;
-   endinterface	
-";
-	&AddIntfBySV($sv);
-
-##&ShowIntf("test_if");
-
-    &PrintIntfPort("-intf test_if -up"); 
-
-//:End
-
-//=========================================================================================
-//====== test for flexible variable ======
-//=========================================================================================
-
+//==========================================================
+//// Sample of embeded variable
+//==========================================================
 //: our $reset= " or negedge resetn";
 
+
+//==========================================================
+//// Sample of auto signal declare
+//==========================================================
 assign test_wires = test_input[3:0];
 
 always @(posedge clk ${reset})
@@ -436,10 +480,6 @@ begin
 end
 
 
-
-//=========================================================================================
-//====== test for paramater and define, but it's still simple ======
-//=========================================================================================
 assign plic_int_vld[`INT_NUM_PLIC+15:0] = {pad_plic_int_vld[`INT_NUM_PLIC-1:0],14'b0,l2c_plic_ecc_int_vld,1'b0};
 assign plic_int_cfg[`INT_NUM_PLIC+15:0] = {pad_plic_int_cfg[`INT_NUM_PLIC-1:0],16'b0};
 //assign plic_int_cfg = {pad_plic_int_cfg[`INT_NUM_PLIC-1:0],16'b0};
@@ -459,9 +499,13 @@ assign plic_int_cfg_test_7 = {pad_plic_int_cfg[NUM_TOTAL-1:0],16'b0};
 assign plic_core0_me_int  = plic_hartx_mint_req[0];
 assign plic_core0_se_int  = plic_hartx_sint_req[0];
 
-//=========================================================================================
-//====== test for extend functions, need inhouse developed design template file ======
-//=========================================================================================
+//==========================================================
+//==========================================================
+//==========================================================
+//// Sample of various inhouse design generation & instance
+//==========================================================
+//==========================================================
+//==========================================================
 //: &eFunc::ClkGen("Test_Clk", "./cfg/Clk_Cfg.json");
 
 //: &eFunc::RstGen("Test_Rst", "./cfg/Rst_Cfg.json");
@@ -483,12 +527,30 @@ assign plic_core0_se_int  = plic_hartx_sint_req[0];
 &Instance Test_AFifo;
 
 
-
-//=========================================================================================
-//====== not implemented yet ======
-//=========================================================================================
-////: GenIPX("my_design");
-
-
-
 endmodule // NV_NVDLA_CMAC_CORE_mac
+
+
+//==========================================================
+//==========================================================
+//==========================================================
+//// Sample of exporting interface & port, 
+//// generate module JSON file for integration
+//// NOTE: &GenModJson must be AFTER "endmodule", 
+//// otherwisse cause syntax error, fix later
+//// Othter functions can be anywhere
+//==========================================================
+//==========================================================
+//==========================================================
+//: &ExptIntf("-intf_name test_APB3 -name my_APB3 -upcase -prefix Pre_ -suffix _Suf -master");
+//: &ExptIntf("-intf spi -name my_spi");
+//: &ExptPort("clk", "input", "1");
+//: &ExptPort("reset", "input", "1");
+
+//manual defined name, may not be same as current module, not recommended
+//: &GenModJson("test_design" ); # manual defined name, may not be same as current module, not recommended
+
+//default usage for current Top Module
+//: &GenModJson(); # default usage for current Top Module
+
+//not supported usage 
+//: &GenModIPX("MyCorp"); 
