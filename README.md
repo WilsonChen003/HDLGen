@@ -113,7 +113,27 @@ Function generation
  or just run HDLGen.bin for results
 	         
 
-        
+### Samples
+**AutoDef Sample:**<br>
+![AutoDef_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoDef_Sample.PNG)
+
+**AutoDef Sample:**<br>
+![AutoDef_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoInstSig_Sample.PNG)
+
+**AutoWarning Sample:**<br>
+![AutoWarning_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoWarning_Sample.PNG)
+
+**Verilog Instance Sample:**<br>
+![Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/Instance_Sample.PNG)     
+
+**IPXACT Instance Sample:**<br>
+![IPXACT_Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/IPXACT_Sample.PNG)
+
+**JSON Instance Sample:**<br>
+![JSON_Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/JSON_Sample.PNG)
+
+**Design Template File Sample**
+![Design_Template_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/Design_Template_Sample.PNG)
 
 
 ### ***Why need this tool?***<br>
