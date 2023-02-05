@@ -114,26 +114,31 @@ Function generation
 	         
 
 ### Samples
-**AutoDef Sample:**<br>
-![AutoDef_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoDef_Sample.PNG)
+**AutoDef Sample:**<br>	
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoDef_Sample.PNG" width="500" height="500"/><br/>
+													
 
-**AutoDef Sample:**<br>
-![AutoDef_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoInstSig_Sample.PNG)
+**AutoInstSig Sample:**<br>
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoInstSig_Sample.PNG" width="500" height="500"/><br/>
 
 **AutoWarning Sample:**<br>
-![AutoWarning_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoWarning_Sample.PNG)
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/AutoWarning_Sample.PNG" width="500" height="500"/><br/>
+
 
 **Verilog Instance Sample:**<br>
-![Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/Instance_Sample.PNG)     
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/Instance_Sample.PNG" width="500" height="500"/><br/> 
 
 **IPXACT Instance Sample:**<br>
-![IPXACT_Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/IPXACT_Sample.PNG)
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/IPXACT_Sample.PNG" width="300" height="300"/><br/>
+
 
 **JSON Instance Sample:**<br>
-![JSON_Instance_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/JSON_Sample.PNG)
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/JSON_Sample.PNG" width="400" height="500"/><br/>
 
-**Design Template File Sample**
-![Design_Template_Sample](https://github.com/WilsonChen003/HDLGen/blob/master/doc/Design_Template_Sample.PNG)
+
+**Design Template File Sample:**<br>
+<img src="https://github.com/WilsonChen003/HDLGen/blob/master/doc/Design_Template_Sample.PNG" width="500" height="500"/><br/>
+
 
 
 ### ***Why need this tool?***<br>
