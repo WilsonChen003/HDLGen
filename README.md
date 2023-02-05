@@ -1,4 +1,4 @@
-# HDLGen from Wilson Chen 2022
+# HDLGen from Wilson Chen 2022~2023
 
 ## Overview
   HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
@@ -62,7 +62,7 @@ Function generation
    
 ## Working Flow
    Different level design can use this tool with different functions a/o inputs/outputs, the main working flow is as below<br>
-   ![Image Working Flow](https://github.com/WilsonChen003/HDLGen/blob/master/doc/WorkingFlow.PNG)
+![Working Flow](https://github.com/WilsonChen003/HDLGen/blob/master/doc/WorkingFlow.PNG)
    
 ## Directory Structure   
     ├── HDLGen.bin                # Tool binary for easy adopt
