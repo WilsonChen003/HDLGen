@@ -59,7 +59,11 @@ Function generation
 ## What you cannot do with HDLGen 
    * Detail logic design: you still need to write RTL to implement your ideas 
    * Synthesis or simulation or verification: you need to use other EDA tools to handle
-
+   
+## Working Flow
+   Different level design can use this tool with different functions a/o inputs/outputs, the main working flow is as below<br>
+   ![Image Working Flow](https://github.com/WilsonChen003/HDLGen/blob/master/doc/WorkingFlow.PNG)
+   
 ## Directory Structure   
     ├── HDLGen.bin                # Tool binary for easy adopt
     ├── HDLGen.pl                 # Tool source code
