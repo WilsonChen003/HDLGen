@@ -1,4 +1,6 @@
 
+2023/02/07  V1.11   Wilson Chen   fix Verilog ports parser, support & test more strange style
+                                  fix instance ports printing bugs for specail cases
 
 2023/02/05  V1.10   Wilson Chen   Decide to use JSON file as Hierarchy Integration solution, but NOT IPXACT!
                                   Add TransIPX to translate IPXACT to JSON for easy understanding
