@@ -32,7 +32,6 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
   ,wt_actv_pvld       //|< i
-  //test for Auto Port/Wire/Warnning
   //,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
@@ -200,8 +199,8 @@ end
 // ========================================================================================
 //:Begin
     for my $i (0..63) {
-	my $ii = sprintf("%02d",$i);
-	&Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
+		my $ii = sprintf("%02d",$i);
+	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
           &Connect exp_sft      exp_sft_$ii;
            Connect op_a_dat     wt_actv_data${i};
            Connect op_a_nz      wt_actv_nz${ii};
@@ -266,6 +265,11 @@ EOF
 //:End
 
 
+//==========================================================
+//// Sample for strange port defines
+//==========================================================
+&Instance test_DAC;
+
 ///////////////////////////////////////////////////////////////////////
 //////////////// assemble output from CSA tree level 0 ////////////////
 ///////////////////////////////////////////////////////////////////////
@@ -326,6 +330,9 @@ always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
 end
 
 
+
+
+
 always @(*)
 begin
   MISO_I_IPX = my_msio;
@@ -343,6 +350,14 @@ end
   Connect /(clk.*)/ IPX_\${1};
   Connect /(rst.*)/ IPX_\${1};
 //:End
+
+//============= Sample to Print(show) interface to a file ========
+////:	&ShowIntf("spi");
+
+
+//============= Sample to Translate(show) IPXACT to JSON file ========
+//:	&TransIPX("simple_spi.xml");
+
 
 //==========================================================
 //// Sample for IPXACT instance with multi-paramaters
@@ -385,30 +400,6 @@ end
 //: &AddIntfByIPX("./cfg/simple_spi.xml");
 //: &AddIntfByJson("./cfg/MyIntf.json");
 //: &PrintIntfPort("-intf spi");
-
-//==========================================================
-//// Sample of adding interface by SystemVerilog interface code
-//==========================================================
-//:Begin
-  my $sv = "
-  interface test_if(input clk);
-    logic rst_n,
-    wire  [1:0] port_a_0 ;
-    logic [12:0] port_a_1 ;
-    wire port_b_0 ;
-    logic port_b_1 ;
-   endinterface	
-";
-	&AddIntfBySV($sv);
-    &PrintIntfPort("-intf test_if -up"); 
-
-//:End
-
-//============= Sample to Print(show) interface to a file ========
-//:	&ShowIntf("spi");
-
-//============= Sample to Translate(show) IPXACT to JSON file ========
-//:	&TransIPX("simple_spi.xml");
 
 
 //==========================================================
@@ -467,6 +458,23 @@ end
 //==========================================================
 //: our $reset= " or negedge resetn";
 
+//==========================================================
+//// Sample of adding interface by SystemVerilog interface code
+//==========================================================
+//:Begin
+  my $sv = "
+  interface test_if(input clk);
+    logic rst_n,
+    wire  [1:0] port_a_0 ;
+    logic [12:0] port_a_1 ;
+    wire port_b_0 ;
+    logic port_b_1 ;
+   endinterface	
+";
+	&AddIntfBySV($sv);
+    &PrintIntfPort("-intf test_if -up"); 
+
+//:End
 
 //==========================================================
 //// Sample of auto signal declare
@@ -535,7 +543,7 @@ endmodule // NV_NVDLA_CMAC_CORE_mac
 //==========================================================
 //// Sample of exporting interface & port, 
 //// generate module JSON file for integration
-//// NOTE: &GenModJson must be AFTER "endmodule", 
+//// NOTE: GenModJson must be AFTER "endmodule", 
 //// otherwisse cause syntax error, fix later
 //// Othter functions can be anywhere
 //==========================================================
@@ -547,10 +555,8 @@ endmodule // NV_NVDLA_CMAC_CORE_mac
 //: &ExptPort("reset", "input", "1");
 
 //manual defined name, may not be same as current module, not recommended
-//: &GenModJson("test_design" ); # manual defined name, may not be same as current module, not recommended
+//: &GenModJson("test_design" ); # manual name may not be same as current module, not recommended
 
 //default usage for current Top Module
 //: &GenModJson(); # default usage for current Top Module
 
-//not supported usage 
-//: &GenModIPX("MyCorp"); 

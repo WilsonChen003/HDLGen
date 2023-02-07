@@ -893,21 +893,22 @@ sub ParsePorts {
     my($p_name)="";
     my($p_width)="";
 
-    $p_line =~ s/wire //;
-    $p_line =~ s/reg //;
-    $p_line =~ s/logic //;
-    $p_line =~ s/bit //;
+    $p_line =~ s/\s+wire\s+/ /;
+    $p_line =~ s/\s+reg\s+/ /;
+    $p_line =~ s/\s+logic\s+/ /;
+    $p_line =~ s/\s+bit\s+/ /;
     $p_line =~ s/\s*\/\/.*$//g;
-    $p_line =~ s/(,|;)$//g;
-    $p_line =~ s/^,|;//g;
-    $p_line =~ s/,\s*//g;
+    $p_line =~ s/,\s*$|;\s*$//g;
+    $p_line =~ s/^\s*,|^\s*;//g; 
+    $p_line =~ s/,\s+/,/g; 
+
 
     &HDLGenInfo($SubName," --- port line  is:  $p_line") if ($main::HDLGEN_DEBUG_MODE);
     if ($p_line !~ /\[/) {
-	    $p_line =~ /(input|output|inout)\s+(\w+)/;
+	    $p_line =~ /(input|output|inout)\s+(\S+)/;
         return($2,1,$1);
     } else {
-	    if ($p_line =~ /\[(.*)\]\s+(\w+)/) {
+	    if ($p_line =~ /\[(.*)\]\s+(\S+)/) {
 			return($2,$1);
         } else {
            &HDLGenErr($SubName," port define is wrong:$p_line, $2 $1");

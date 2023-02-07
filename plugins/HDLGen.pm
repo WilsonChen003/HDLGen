@@ -1256,7 +1256,7 @@ sub PrintConnect {
           $conn = $CI->{"input"}->{$port}->{"connect"};
       }
 	  $conn_length = length($conn) if (length($conn) > $conn_length);
-	  push(@clk_rst, $port) if ($port =~ /clk|clock|rst|reset/); 
+	  push(@clk_rst, $port) if ($port =~ /clk|clock|rst|reset/i); 
   }
   foreach my $port (sort(keys %{$CI->{"output"}})) {
 	  $port_length = length($port) if (length($port) > $port_length);
@@ -1297,7 +1297,17 @@ sub PrintConnect {
 	     $AutoInstSigs->{"$conn"}->{"direction"} = "input";
 	  }
   }
-  push @VOUT, "), //|<-i\n";
+
+  my $IP = $CI->{"input"};
+  my $OP = $CI->{"output"};
+  if (@clk_rst) {
+     if (%$IP) {
+        push @VOUT, "), //|<-i\n";
+     } elsif (%$OP) {
+        push @VOUT, "), //|<-i\n";
+     }
+  }
+
   $first_line = 1;
 
   foreach my $port (sort(keys %{$CI->{"input"}})) {
@@ -1389,7 +1399,12 @@ sub PrintConnect {
 
 	  $CurMod_Top->{"connections"}->{"input"}->{"$conn"} = 0;
   }
-  push @VOUT, "), //|<-i\n";
+
+  if (%$IP) {
+	  if (%$OP) {
+          push @VOUT, "), //|<-i\n";
+      }
+  }
   $first_line = 1;
 
   foreach my $port (sort(keys %{$CI->{"output"}})) {
@@ -1479,8 +1494,17 @@ sub PrintConnect {
 	  }
 	  $CurMod_Top->{"connections"}->{"output"}->{"$conn"} = 0;
   }
-  push @VOUT, ")  //|>-o\n";
-  push @VOUT, "   );\n\n";
+
+  if (%$OP) {
+     push @VOUT, ")  //|>-o\n";
+     push @VOUT, "   );\n\n";
+  } elsif (%$IP) {
+     push @VOUT, ")  //|<-i\n";
+     push @VOUT, "   );\n\n";
+  } else {
+     push @VOUT, ")  //|<-i\n";
+     push @VOUT, "   );\n\n";
+ }
 
   if ( $AUTO_INST eq "" ) {
      push @VOUT, "// ---------------------------------------------------------------------------------------\n";

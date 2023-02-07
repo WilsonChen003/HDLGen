@@ -40,7 +40,6 @@ module NV_NVDLA_CMAC_CORE_mac (
   ,wt_actv_nan        //|< i
   ,wt_actv_nz         //|< i
   ,wt_actv_pvld       //|< i
-  //test for Auto Port/Wire/Warnning
   //,wt_sd_exp          //|< i
   ,wt_sd_mask         //|< i
   ,wt_sd_pvld         //|< i
@@ -96,7 +95,7 @@ output          mac_out_pvld;
 //| ============ these definitions may be not perfect or correct   =================
 //| ============ you may need to manually update/correct           =================
 //| ================================================================================
-wire [23:0]       pad_plic_int_cfg      ;
+wire [239:0]      pad_plic_int_cfg      ;
 wire [239:0]      pad_plic_int_vld      ;
 wire              plic_core0_me_int     ;
 wire              plic_core0_se_int     ;
@@ -113,6 +112,7 @@ wire [255:0]      plic_int_cfg_test_6   ;
 wire [207:0]      plic_int_cfg_test_7   ;
 wire [240+15:0]   plic_int_vld          ;
 wire [63:0]       res_tag_b0            ;
+wire [3:0]        test_input            ;
 wire              test_wire0            ;
 wire              test_wire1            ;
 wire              test_wire2            ;
@@ -838,6 +838,19 @@ wire              cfg_is_fp16                  ;
 wire              cfg_reg_en                   ;
 wire              nvdla_core_clk               ;
 wire              nvdla_core_rstn              ;
+// ------ signals of Instance: u_test_DAC ------
+wire              iCLK_18_4                    ;
+wire [FLASH_DATA_WIDTH-1:0] iFLASH_DATA                  ;
+wire              iRST_N                       ;
+wire [SDRAM_DATA_WIDTH-1:0] iSDRAM_DATA                  ;
+wire [SRAM_DATA_WIDTH-1:0] iSRAM_DATA                   ;
+wire [1:0]        iSrc_Select                  ;
+wire              oAUD_BCK                     ;
+wire              oAUD_DATA                    ;
+wire              oAUD_LRCK                    ;
+wire [FLASH_ADDR_WIDTH-1:0] oFLASH_ADDR                  ;
+wire [SDRAM_ADDR_WIDTH:0] oSDRAM_ADDR                  ;
+wire [SRAM_ADDR_WIDTH:0] oSRAM_ADDR                   ;
 // ------ signals of Instance: u_test_sys_ctrl_apb_regs ------
 wire [31:0]       PADDR_SUFFIX                 ;
 wire              PCLK_SUFFIX                  ;
@@ -865,586 +878,599 @@ wire [1:0]        test_reg_test_filed1         ;
 // !!!!!!!!! please carefully check if they're correct or need fix !!!!!!
 // ======================================================================
 // ---------------- instance : my_spi_Param & my_spi ---------------
-//-:   input      [2:0]                adr_i
-//-:  output      [7:0]                dat_o
-//-:  output        [1]           MOSI_O_IPX
-//-:   input        [1]                cyc_i
-//-:  output        [1]                ack_o
-//-:  output        [1]             SS_O_IPX
-//-:  output        [1]            SCK_O_IPX
-//-:   input        [1]           MISO_I_IPX
 //-:  output        [1]               inta_o
+//-:  output        [1]           MOSI_O_IPX
+//-:   input        [1]                 we_i
+//-:   input        [1]           MISO_I_IPX
+//-:   input        [1]                stb_i
+//-:   input        [1]                cyc_i
 //-:   input        [1]            IPX_rst_i
 //-:   input        [1]            IPX_clk_i
+//-:  output        [1]            SCK_O_IPX
+//-:  output        [1]             SS_O_IPX
 //-:   input      [7:0]                dat_i
-//-:   input        [1]                 we_i
-//-:   input        [1]                stb_i
+//-:  output      [7:0]                dat_o
+//-:   input      [2:0]                adr_i
+//-:  output        [1]                ack_o
 // ---------------- instance : u_Test_AFifo ---------------
 //-:   input        [1]               rst_rd
+//-:   input        [1]               rd_clk
 //-:   input        [1]               wr_clk
 //-:   input        [1]               rst_wr
-//-:   input        [1]               rd_clk
 // ---------------- instance : u_Test_SFifo ---------------
 //-:   input        [1]                 rstn
 //-:   input        [1]                 clks
 // ---------------- instance : u_Test_SFifo & u_Test_AFifo ---------------
-//-:  output        [1]                empty
-//-:  output        [1]                 full
-//-:   input [data_width-1:0]               wr_din
-//-:   input        [1]                wr_en
 //-:  output      [1:0]              rd_dout
+//-:   input        [1]                wr_en
+//-:  output        [1]                empty
+//-:   input [data_width-1:0]               wr_din
 //-:   input        [1]                rd_en
+//-:  output        [1]                 full
 // ---------------- instance : u_exp ---------------
 //-:   input    [191:0]            wt_sd_exp
 // ---------------- instance : u_mul_0 ---------------
+//-:   input      [1:0]         dat_actv_nz0
 //-:  output     [31:0]             res_a_00
+//-:   input     [15:0]        wt_actv_data0
+//-:  output     [31:0]             res_b_00
 //-:   input     [15:0]       dat_actv_data0
 //-:   input      [1:0]         wt_actv_nz00
 //-:  output      [7:0]            res_tag_0
-//-:  output     [31:0]             res_b_00
-//-:   input     [15:0]        wt_actv_data0
-//-:   input      [1:0]         dat_actv_nz0
 // ---------------- instance : u_mul_0 & u_mul_1 & u_mul_2 & u_mul_3 & u_mul_4 & u_mul_5 & u_mul_6 & u_mul_7 & u_mul_8 & u_mul_9 & u_mul_10 & u_mul_11 & u_mul_12 & u_mul_13 & u_mul_14 & u_mul_15 & u_mul_16 & u_mul_17 & u_mul_18 & u_mul_19 & u_mul_20 & u_mul_21 & u_mul_22 & u_mul_23 & u_mul_24 & u_mul_25 & u_mul_26 & u_mul_27 & u_mul_28 & u_mul_29 & u_mul_30 & u_mul_31 & u_mul_32 & u_mul_33 & u_mul_34 & u_mul_35 & u_mul_36 & u_mul_37 & u_mul_38 & u_mul_39 & u_mul_40 & u_mul_41 & u_mul_42 & u_mul_43 & u_mul_44 & u_mul_45 & u_mul_46 & u_mul_47 & u_mul_48 & u_mul_49 & u_mul_50 & u_mul_51 & u_mul_52 & u_mul_53 & u_mul_54 & u_mul_55 & u_mul_56 & u_mul_57 & u_mul_58 & u_mul_59 & u_mul_60 & u_mul_61 & u_mul_62 & u_mul_63 ---------------
 //-:   input     [63:0]        dat_actv_pvld
 // ---------------- instance : u_mul_1 ---------------
 //-:  output     [31:0]             res_a_01
+//-:   input      [1:0]         dat_actv_nz1
+//-:   input     [15:0]       dat_actv_data1
+//-:  output      [7:0]            res_tag_1
+//-:   input     [15:0]        wt_actv_data1
 //-:   input      [1:0]         wt_actv_nz01
 //-:  output     [31:0]             res_b_01
-//-:  output      [7:0]            res_tag_1
-//-:   input     [15:0]       dat_actv_data1
-//-:   input      [1:0]         dat_actv_nz1
-//-:   input     [15:0]        wt_actv_data1
 // ---------------- instance : u_mul_10 ---------------
 //-:  output     [31:0]             res_a_10
 //-:   input      [1:0]        dat_actv_nz10
-//-:  output     [31:0]             res_b_10
 //-:  output      [7:0]           res_tag_10
 //-:   input      [1:0]         wt_actv_nz10
-//-:   input     [15:0]       wt_actv_data10
 //-:   input     [15:0]      dat_actv_data10
+//-:   input     [15:0]       wt_actv_data10
+//-:  output     [31:0]             res_b_10
 // ---------------- instance : u_mul_11 ---------------
-//-:   input      [1:0]        dat_actv_nz11
 //-:   input      [1:0]         wt_actv_nz11
-//-:  output     [31:0]             res_b_11
-//-:   input     [15:0]      dat_actv_data11
-//-:  output      [7:0]           res_tag_11
 //-:  output     [31:0]             res_a_11
 //-:   input     [15:0]       wt_actv_data11
+//-:  output      [7:0]           res_tag_11
+//-:   input     [15:0]      dat_actv_data11
+//-:   input      [1:0]        dat_actv_nz11
+//-:  output     [31:0]             res_b_11
 // ---------------- instance : u_mul_12 ---------------
-//-:   input     [15:0]      dat_actv_data12
-//-:  output      [7:0]           res_tag_12
-//-:   input      [1:0]         wt_actv_nz12
-//-:  output     [31:0]             res_a_12
 //-:   input      [1:0]        dat_actv_nz12
-//-:   input     [15:0]       wt_actv_data12
 //-:  output     [31:0]             res_b_12
+//-:  output      [7:0]           res_tag_12
+//-:   input     [15:0]      dat_actv_data12
+//-:  output     [31:0]             res_a_12
+//-:   input     [15:0]       wt_actv_data12
+//-:   input      [1:0]         wt_actv_nz12
 // ---------------- instance : u_mul_13 ---------------
-//-:  output     [31:0]             res_b_13
-//-:   input      [1:0]        dat_actv_nz13
-//-:  output      [7:0]           res_tag_13
-//-:  output     [31:0]             res_a_13
 //-:   input      [1:0]         wt_actv_nz13
+//-:   input      [1:0]        dat_actv_nz13
+//-:  output     [31:0]             res_a_13
 //-:   input     [15:0]      dat_actv_data13
+//-:  output      [7:0]           res_tag_13
 //-:   input     [15:0]       wt_actv_data13
+//-:  output     [31:0]             res_b_13
 // ---------------- instance : u_mul_14 ---------------
-//-:   input     [15:0]      dat_actv_data14
 //-:  output     [31:0]             res_b_14
 //-:   input     [15:0]       wt_actv_data14
+//-:   input      [1:0]        dat_actv_nz14
+//-:  output      [7:0]           res_tag_14
+//-:   input     [15:0]      dat_actv_data14
 //-:   input      [1:0]         wt_actv_nz14
 //-:  output     [31:0]             res_a_14
-//-:  output      [7:0]           res_tag_14
-//-:   input      [1:0]        dat_actv_nz14
 // ---------------- instance : u_mul_15 ---------------
-//-:  output     [31:0]             res_a_15
-//-:  output     [31:0]             res_b_15
-//-:   input      [1:0]         wt_actv_nz15
-//-:   input      [1:0]        dat_actv_nz15
 //-:  output      [7:0]           res_tag_15
-//-:   input     [15:0]       wt_actv_data15
+//-:  output     [31:0]             res_b_15
 //-:   input     [15:0]      dat_actv_data15
+//-:  output     [31:0]             res_a_15
+//-:   input      [1:0]        dat_actv_nz15
+//-:   input     [15:0]       wt_actv_data15
+//-:   input      [1:0]         wt_actv_nz15
 // ---------------- instance : u_mul_16 ---------------
-//-:   input     [15:0]      dat_actv_data16
-//-:   input      [1:0]         wt_actv_nz16
 //-:   input     [15:0]       wt_actv_data16
-//-:  output     [31:0]             res_a_16
 //-:  output      [7:0]           res_tag_16
-//-:   input      [1:0]        dat_actv_nz16
 //-:  output     [31:0]             res_b_16
+//-:   input     [15:0]      dat_actv_data16
+//-:   input      [1:0]        dat_actv_nz16
+//-:   input      [1:0]         wt_actv_nz16
+//-:  output     [31:0]             res_a_16
 // ---------------- instance : u_mul_17 ---------------
+//-:  output     [31:0]             res_a_17
 //-:  output      [7:0]           res_tag_17
 //-:   input      [1:0]         wt_actv_nz17
-//-:   input     [15:0]       wt_actv_data17
-//-:  output     [31:0]             res_a_17
 //-:   input     [15:0]      dat_actv_data17
-//-:  output     [31:0]             res_b_17
 //-:   input      [1:0]        dat_actv_nz17
+//-:  output     [31:0]             res_b_17
+//-:   input     [15:0]       wt_actv_data17
 // ---------------- instance : u_mul_18 ---------------
 //-:   input     [15:0]      dat_actv_data18
-//-:  output      [7:0]           res_tag_18
-//-:  output     [31:0]             res_b_18
-//-:   input      [1:0]         wt_actv_nz18
-//-:   input      [1:0]        dat_actv_nz18
-//-:  output     [31:0]             res_a_18
 //-:   input     [15:0]       wt_actv_data18
+//-:   input      [1:0]         wt_actv_nz18
+//-:  output     [31:0]             res_b_18
+//-:  output     [31:0]             res_a_18
+//-:  output      [7:0]           res_tag_18
+//-:   input      [1:0]        dat_actv_nz18
 // ---------------- instance : u_mul_19 ---------------
-//-:  output     [31:0]             res_b_19
-//-:   input     [15:0]       wt_actv_data19
 //-:   input     [15:0]      dat_actv_data19
 //-:   input      [1:0]         wt_actv_nz19
 //-:  output     [31:0]             res_a_19
+//-:   input     [15:0]       wt_actv_data19
+//-:  output     [31:0]             res_b_19
 //-:  output      [7:0]           res_tag_19
 //-:   input      [1:0]        dat_actv_nz19
 // ---------------- instance : u_mul_2 ---------------
-//-:  output     [31:0]             res_a_02
-//-:  output      [7:0]            res_tag_2
 //-:   input      [1:0]         dat_actv_nz2
-//-:   input     [15:0]       dat_actv_data2
-//-:  output     [31:0]             res_b_02
 //-:   input     [15:0]        wt_actv_data2
+//-:   input     [15:0]       dat_actv_data2
+//-:  output     [31:0]             res_a_02
+//-:  output     [31:0]             res_b_02
 //-:   input      [1:0]         wt_actv_nz02
+//-:  output      [7:0]            res_tag_2
 // ---------------- instance : u_mul_20 ---------------
-//-:  output     [31:0]             res_a_20
 //-:   input      [1:0]         wt_actv_nz20
-//-:   input     [15:0]      dat_actv_data20
 //-:  output     [31:0]             res_b_20
 //-:   input     [15:0]       wt_actv_data20
 //-:   input      [1:0]        dat_actv_nz20
+//-:   input     [15:0]      dat_actv_data20
+//-:  output     [31:0]             res_a_20
 //-:  output      [7:0]           res_tag_20
 // ---------------- instance : u_mul_21 ---------------
-//-:  output     [31:0]             res_a_21
-//-:   input     [15:0]      dat_actv_data21
-//-:  output      [7:0]           res_tag_21
-//-:  output     [31:0]             res_b_21
 //-:   input      [1:0]         wt_actv_nz21
+//-:  output     [31:0]             res_b_21
+//-:  output      [7:0]           res_tag_21
 //-:   input      [1:0]        dat_actv_nz21
 //-:   input     [15:0]       wt_actv_data21
+//-:  output     [31:0]             res_a_21
+//-:   input     [15:0]      dat_actv_data21
 // ---------------- instance : u_mul_22 ---------------
+//-:   input     [15:0]       wt_actv_data22
+//-:   input      [1:0]        dat_actv_nz22
 //-:  output     [31:0]             res_a_22
+//-:  output      [7:0]           res_tag_22
 //-:   input      [1:0]         wt_actv_nz22
 //-:  output     [31:0]             res_b_22
 //-:   input     [15:0]      dat_actv_data22
-//-:  output      [7:0]           res_tag_22
-//-:   input     [15:0]       wt_actv_data22
-//-:   input      [1:0]        dat_actv_nz22
 // ---------------- instance : u_mul_23 ---------------
-//-:   input     [15:0]      dat_actv_data23
-//-:  output      [7:0]           res_tag_23
-//-:   input      [1:0]        dat_actv_nz23
-//-:   input      [1:0]         wt_actv_nz23
-//-:  output     [31:0]             res_a_23
 //-:   input     [15:0]       wt_actv_data23
+//-:   input     [15:0]      dat_actv_data23
 //-:  output     [31:0]             res_b_23
+//-:   input      [1:0]         wt_actv_nz23
+//-:   input      [1:0]        dat_actv_nz23
+//-:  output     [31:0]             res_a_23
+//-:  output      [7:0]           res_tag_23
 // ---------------- instance : u_mul_24 ---------------
-//-:  output      [7:0]           res_tag_24
-//-:  output     [31:0]             res_a_24
-//-:   input      [1:0]         wt_actv_nz24
-//-:  output     [31:0]             res_b_24
-//-:   input      [1:0]        dat_actv_nz24
-//-:   input     [15:0]       wt_actv_data24
 //-:   input     [15:0]      dat_actv_data24
+//-:   input      [1:0]         wt_actv_nz24
+//-:  output      [7:0]           res_tag_24
+//-:  output     [31:0]             res_b_24
+//-:   input     [15:0]       wt_actv_data24
+//-:   input      [1:0]        dat_actv_nz24
+//-:  output     [31:0]             res_a_24
 // ---------------- instance : u_mul_25 ---------------
-//-:   input      [1:0]         wt_actv_nz25
-//-:   input     [15:0]      dat_actv_data25
-//-:  output     [31:0]             res_b_25
-//-:   input     [15:0]       wt_actv_data25
-//-:  output     [31:0]             res_a_25
 //-:  output      [7:0]           res_tag_25
 //-:   input      [1:0]        dat_actv_nz25
+//-:   input      [1:0]         wt_actv_nz25
+//-:  output     [31:0]             res_b_25
+//-:  output     [31:0]             res_a_25
+//-:   input     [15:0]      dat_actv_data25
+//-:   input     [15:0]       wt_actv_data25
 // ---------------- instance : u_mul_26 ---------------
+//-:  output     [31:0]             res_b_26
+//-:   input     [15:0]       wt_actv_data26
 //-:  output      [7:0]           res_tag_26
+//-:   input     [15:0]      dat_actv_data26
 //-:   input      [1:0]        dat_actv_nz26
 //-:   input      [1:0]         wt_actv_nz26
-//-:   input     [15:0]      dat_actv_data26
-//-:   input     [15:0]       wt_actv_data26
 //-:  output     [31:0]             res_a_26
-//-:  output     [31:0]             res_b_26
 // ---------------- instance : u_mul_27 ---------------
-//-:  output     [31:0]             res_b_27
+//-:  output     [31:0]             res_a_27
 //-:   input      [1:0]         wt_actv_nz27
 //-:   input      [1:0]        dat_actv_nz27
 //-:  output      [7:0]           res_tag_27
-//-:   input     [15:0]       wt_actv_data27
-//-:  output     [31:0]             res_a_27
 //-:   input     [15:0]      dat_actv_data27
+//-:   input     [15:0]       wt_actv_data27
+//-:  output     [31:0]             res_b_27
 // ---------------- instance : u_mul_28 ---------------
 //-:   input      [1:0]         wt_actv_nz28
-//-:  output     [31:0]             res_b_28
-//-:   input     [15:0]      dat_actv_data28
 //-:  output     [31:0]             res_a_28
+//-:   input     [15:0]      dat_actv_data28
 //-:  output      [7:0]           res_tag_28
-//-:   input     [15:0]       wt_actv_data28
 //-:   input      [1:0]        dat_actv_nz28
+//-:  output     [31:0]             res_b_28
+//-:   input     [15:0]       wt_actv_data28
 // ---------------- instance : u_mul_29 ---------------
-//-:   input     [15:0]       wt_actv_data29
-//-:  output      [7:0]           res_tag_29
-//-:   input     [15:0]      dat_actv_data29
 //-:   input      [1:0]        dat_actv_nz29
-//-:   input      [1:0]         wt_actv_nz29
 //-:  output     [31:0]             res_a_29
 //-:  output     [31:0]             res_b_29
+//-:   input     [15:0]       wt_actv_data29
+//-:  output      [7:0]           res_tag_29
+//-:   input      [1:0]         wt_actv_nz29
+//-:   input     [15:0]      dat_actv_data29
 // ---------------- instance : u_mul_3 ---------------
-//-:   input      [1:0]         dat_actv_nz3
-//-:   input     [15:0]        wt_actv_data3
-//-:  output      [7:0]            res_tag_3
-//-:   input     [15:0]       dat_actv_data3
 //-:  output     [31:0]             res_a_03
+//-:   input      [1:0]         dat_actv_nz3
+//-:  output      [7:0]            res_tag_3
 //-:  output     [31:0]             res_b_03
 //-:   input      [1:0]         wt_actv_nz03
+//-:   input     [15:0]        wt_actv_data3
+//-:   input     [15:0]       dat_actv_data3
 // ---------------- instance : u_mul_30 ---------------
-//-:  output     [31:0]             res_b_30
 //-:  output      [7:0]           res_tag_30
-//-:   input      [1:0]        dat_actv_nz30
-//-:   input      [1:0]         wt_actv_nz30
-//-:   input     [15:0]      dat_actv_data30
 //-:  output     [31:0]             res_a_30
+//-:   input     [15:0]      dat_actv_data30
 //-:   input     [15:0]       wt_actv_data30
+//-:   input      [1:0]         wt_actv_nz30
+//-:   input      [1:0]        dat_actv_nz30
+//-:  output     [31:0]             res_b_30
 // ---------------- instance : u_mul_31 ---------------
+//-:   input      [1:0]        dat_actv_nz31
+//-:   input     [15:0]       wt_actv_data31
 //-:   input     [15:0]      dat_actv_data31
+//-:  output     [31:0]             res_b_31
 //-:   input      [1:0]         wt_actv_nz31
 //-:  output     [31:0]             res_a_31
-//-:   input      [1:0]        dat_actv_nz31
-//-:  output     [31:0]             res_b_31
-//-:   input     [15:0]       wt_actv_data31
 //-:  output      [7:0]           res_tag_31
 // ---------------- instance : u_mul_32 ---------------
-//-:  output      [7:0]           res_tag_32
-//-:  output     [31:0]             res_b_32
-//-:   input      [1:0]        dat_actv_nz32
 //-:   input      [1:0]         wt_actv_nz32
+//-:   input      [1:0]        dat_actv_nz32
 //-:   input     [15:0]      dat_actv_data32
-//-:   input     [15:0]       wt_actv_data32
 //-:  output     [31:0]             res_a_32
+//-:  output     [31:0]             res_b_32
+//-:   input     [15:0]       wt_actv_data32
+//-:  output      [7:0]           res_tag_32
 // ---------------- instance : u_mul_33 ---------------
-//-:   input      [1:0]         wt_actv_nz33
 //-:  output     [31:0]             res_b_33
 //-:   input      [1:0]        dat_actv_nz33
-//-:  output     [31:0]             res_a_33
-//-:  output      [7:0]           res_tag_33
 //-:   input     [15:0]       wt_actv_data33
 //-:   input     [15:0]      dat_actv_data33
+//-:   input      [1:0]         wt_actv_nz33
+//-:  output      [7:0]           res_tag_33
+//-:  output     [31:0]             res_a_33
 // ---------------- instance : u_mul_34 ---------------
-//-:   input     [15:0]      dat_actv_data34
-//-:  output      [7:0]           res_tag_34
-//-:   input      [1:0]         wt_actv_nz34
 //-:  output     [31:0]             res_b_34
-//-:  output     [31:0]             res_a_34
-//-:   input     [15:0]       wt_actv_data34
 //-:   input      [1:0]        dat_actv_nz34
+//-:   input     [15:0]       wt_actv_data34
+//-:   input     [15:0]      dat_actv_data34
+//-:   input      [1:0]         wt_actv_nz34
+//-:  output      [7:0]           res_tag_34
+//-:  output     [31:0]             res_a_34
 // ---------------- instance : u_mul_35 ---------------
-//-:   input      [1:0]         wt_actv_nz35
 //-:   input     [15:0]      dat_actv_data35
-//-:  output      [7:0]           res_tag_35
-//-:  output     [31:0]             res_a_35
 //-:   input     [15:0]       wt_actv_data35
 //-:   input      [1:0]        dat_actv_nz35
+//-:   input      [1:0]         wt_actv_nz35
 //-:  output     [31:0]             res_b_35
+//-:  output      [7:0]           res_tag_35
+//-:  output     [31:0]             res_a_35
 // ---------------- instance : u_mul_36 ---------------
-//-:   input     [15:0]       wt_actv_data36
-//-:   input      [1:0]         wt_actv_nz36
 //-:   input      [1:0]        dat_actv_nz36
-//-:  output      [7:0]           res_tag_36
-//-:  output     [31:0]             res_a_36
-//-:   input     [15:0]      dat_actv_data36
 //-:  output     [31:0]             res_b_36
+//-:   input      [1:0]         wt_actv_nz36
+//-:  output     [31:0]             res_a_36
+//-:   input     [15:0]       wt_actv_data36
+//-:   input     [15:0]      dat_actv_data36
+//-:  output      [7:0]           res_tag_36
 // ---------------- instance : u_mul_37 ---------------
-//-:   input     [15:0]      dat_actv_data37
-//-:  output      [7:0]           res_tag_37
-//-:   input      [1:0]         wt_actv_nz37
 //-:  output     [31:0]             res_b_37
+//-:   input      [1:0]         wt_actv_nz37
 //-:   input      [1:0]        dat_actv_nz37
-//-:   input     [15:0]       wt_actv_data37
+//-:  output      [7:0]           res_tag_37
 //-:  output     [31:0]             res_a_37
+//-:   input     [15:0]      dat_actv_data37
+//-:   input     [15:0]       wt_actv_data37
 // ---------------- instance : u_mul_38 ---------------
-//-:  output     [31:0]             res_a_38
-//-:   input      [1:0]         wt_actv_nz38
-//-:   input      [1:0]        dat_actv_nz38
-//-:  output      [7:0]           res_tag_38
-//-:   input     [15:0]       wt_actv_data38
 //-:  output     [31:0]             res_b_38
+//-:   input      [1:0]         wt_actv_nz38
+//-:  output      [7:0]           res_tag_38
 //-:   input     [15:0]      dat_actv_data38
+//-:   input     [15:0]       wt_actv_data38
+//-:   input      [1:0]        dat_actv_nz38
+//-:  output     [31:0]             res_a_38
 // ---------------- instance : u_mul_39 ---------------
-//-:  output     [31:0]             res_a_39
-//-:   input     [15:0]       wt_actv_data39
-//-:   input      [1:0]        dat_actv_nz39
-//-:  output      [7:0]           res_tag_39
-//-:   input     [15:0]      dat_actv_data39
 //-:  output     [31:0]             res_b_39
 //-:   input      [1:0]         wt_actv_nz39
+//-:  output      [7:0]           res_tag_39
+//-:   input     [15:0]       wt_actv_data39
+//-:   input     [15:0]      dat_actv_data39
+//-:  output     [31:0]             res_a_39
+//-:   input      [1:0]        dat_actv_nz39
 // ---------------- instance : u_mul_4 ---------------
-//-:   input      [1:0]         wt_actv_nz04
-//-:  output     [31:0]             res_b_04
-//-:  output     [31:0]             res_a_04
+//-:   input     [15:0]        wt_actv_data4
 //-:   input     [15:0]       dat_actv_data4
+//-:  output     [31:0]             res_b_04
+//-:   input      [1:0]         wt_actv_nz04
 //-:  output      [7:0]            res_tag_4
 //-:   input      [1:0]         dat_actv_nz4
-//-:   input     [15:0]        wt_actv_data4
+//-:  output     [31:0]             res_a_04
 // ---------------- instance : u_mul_40 ---------------
-//-:   input      [1:0]        dat_actv_nz40
-//-:   input     [15:0]       wt_actv_data40
-//-:   input      [1:0]         wt_actv_nz40
-//-:  output     [31:0]             res_b_40
-//-:  output      [7:0]           res_tag_40
 //-:  output     [31:0]             res_a_40
+//-:   input      [1:0]        dat_actv_nz40
 //-:   input     [15:0]      dat_actv_data40
+//-:  output      [7:0]           res_tag_40
+//-:  output     [31:0]             res_b_40
+//-:   input      [1:0]         wt_actv_nz40
+//-:   input     [15:0]       wt_actv_data40
 // ---------------- instance : u_mul_41 ---------------
-//-:  output     [31:0]             res_a_41
 //-:   input     [15:0]      dat_actv_data41
 //-:   input      [1:0]         wt_actv_nz41
+//-:   input     [15:0]       wt_actv_data41
 //-:  output     [31:0]             res_b_41
 //-:   input      [1:0]        dat_actv_nz41
-//-:   input     [15:0]       wt_actv_data41
+//-:  output     [31:0]             res_a_41
 //-:  output      [7:0]           res_tag_41
 // ---------------- instance : u_mul_42 ---------------
-//-:   input     [15:0]      dat_actv_data42
-//-:  output     [31:0]             res_a_42
-//-:   input      [1:0]         wt_actv_nz42
-//-:  output     [31:0]             res_b_42
 //-:   input      [1:0]        dat_actv_nz42
-//-:   input     [15:0]       wt_actv_data42
+//-:  output     [31:0]             res_a_42
+//-:   input     [15:0]      dat_actv_data42
 //-:  output      [7:0]           res_tag_42
+//-:  output     [31:0]             res_b_42
+//-:   input     [15:0]       wt_actv_data42
+//-:   input      [1:0]         wt_actv_nz42
 // ---------------- instance : u_mul_43 ---------------
-//-:   input     [15:0]       wt_actv_data43
 //-:  output     [31:0]             res_b_43
+//-:   input      [1:0]        dat_actv_nz43
 //-:   input      [1:0]         wt_actv_nz43
+//-:   input     [15:0]       wt_actv_data43
 //-:  output      [7:0]           res_tag_43
 //-:  output     [31:0]             res_a_43
 //-:   input     [15:0]      dat_actv_data43
-//-:   input      [1:0]        dat_actv_nz43
 // ---------------- instance : u_mul_44 ---------------
-//-:  output     [31:0]             res_b_44
-//-:   input      [1:0]         wt_actv_nz44
-//-:  output     [31:0]             res_a_44
+//-:  output      [7:0]           res_tag_44
 //-:   input      [1:0]        dat_actv_nz44
 //-:   input     [15:0]      dat_actv_data44
-//-:  output      [7:0]           res_tag_44
 //-:   input     [15:0]       wt_actv_data44
+//-:  output     [31:0]             res_b_44
+//-:  output     [31:0]             res_a_44
+//-:   input      [1:0]         wt_actv_nz44
 // ---------------- instance : u_mul_45 ---------------
-//-:  output      [7:0]           res_tag_45
-//-:   input      [1:0]        dat_actv_nz45
 //-:   input      [1:0]         wt_actv_nz45
-//-:  output     [31:0]             res_b_45
+//-:  output      [7:0]           res_tag_45
 //-:   input     [15:0]       wt_actv_data45
+//-:  output     [31:0]             res_b_45
+//-:   input      [1:0]        dat_actv_nz45
 //-:  output     [31:0]             res_a_45
 //-:   input     [15:0]      dat_actv_data45
 // ---------------- instance : u_mul_46 ---------------
-//-:   input      [1:0]        dat_actv_nz46
-//-:   input      [1:0]         wt_actv_nz46
 //-:  output     [31:0]             res_b_46
-//-:   input     [15:0]      dat_actv_data46
 //-:   input     [15:0]       wt_actv_data46
-//-:  output      [7:0]           res_tag_46
+//-:   input      [1:0]         wt_actv_nz46
 //-:  output     [31:0]             res_a_46
+//-:  output      [7:0]           res_tag_46
+//-:   input      [1:0]        dat_actv_nz46
+//-:   input     [15:0]      dat_actv_data46
 // ---------------- instance : u_mul_47 ---------------
-//-:  output     [31:0]             res_a_47
 //-:  output     [31:0]             res_b_47
+//-:   input     [15:0]      dat_actv_data47
+//-:  output     [31:0]             res_a_47
+//-:   input     [15:0]       wt_actv_data47
 //-:   input      [1:0]        dat_actv_nz47
 //-:   input      [1:0]         wt_actv_nz47
-//-:   input     [15:0]       wt_actv_data47
-//-:   input     [15:0]      dat_actv_data47
 //-:  output      [7:0]           res_tag_47
 // ---------------- instance : u_mul_48 ---------------
+//-:   input     [15:0]      dat_actv_data48
+//-:   input      [1:0]        dat_actv_nz48
 //-:  output      [7:0]           res_tag_48
+//-:  output     [31:0]             res_b_48
 //-:  output     [31:0]             res_a_48
 //-:   input     [15:0]       wt_actv_data48
 //-:   input      [1:0]         wt_actv_nz48
-//-:   input     [15:0]      dat_actv_data48
-//-:  output     [31:0]             res_b_48
-//-:   input      [1:0]        dat_actv_nz48
 // ---------------- instance : u_mul_49 ---------------
-//-:   input      [1:0]        dat_actv_nz49
-//-:  output     [31:0]             res_b_49
-//-:  output      [7:0]           res_tag_49
-//-:   input      [1:0]         wt_actv_nz49
 //-:  output     [31:0]             res_a_49
-//-:   input     [15:0]       wt_actv_data49
+//-:  output      [7:0]           res_tag_49
 //-:   input     [15:0]      dat_actv_data49
+//-:   input      [1:0]        dat_actv_nz49
+//-:   input      [1:0]         wt_actv_nz49
+//-:  output     [31:0]             res_b_49
+//-:   input     [15:0]       wt_actv_data49
 // ---------------- instance : u_mul_5 ---------------
-//-:  output      [7:0]            res_tag_5
-//-:   input     [15:0]        wt_actv_data5
 //-:   input      [1:0]         dat_actv_nz5
-//-:  output     [31:0]             res_b_05
-//-:   input     [15:0]       dat_actv_data5
-//-:   input      [1:0]         wt_actv_nz05
 //-:  output     [31:0]             res_a_05
+//-:   input     [15:0]       dat_actv_data5
+//-:   input     [15:0]        wt_actv_data5
+//-:  output      [7:0]            res_tag_5
+//-:  output     [31:0]             res_b_05
+//-:   input      [1:0]         wt_actv_nz05
 // ---------------- instance : u_mul_50 ---------------
-//-:   input      [1:0]         wt_actv_nz50
+//-:   input     [15:0]       wt_actv_data50
 //-:  output      [7:0]           res_tag_50
 //-:   input     [15:0]      dat_actv_data50
-//-:   input      [1:0]        dat_actv_nz50
-//-:  output     [31:0]             res_a_50
 //-:  output     [31:0]             res_b_50
-//-:   input     [15:0]       wt_actv_data50
+//-:  output     [31:0]             res_a_50
+//-:   input      [1:0]         wt_actv_nz50
+//-:   input      [1:0]        dat_actv_nz50
 // ---------------- instance : u_mul_51 ---------------
-//-:   input      [1:0]         wt_actv_nz51
-//-:   input      [1:0]        dat_actv_nz51
-//-:   input     [15:0]      dat_actv_data51
 //-:   input     [15:0]       wt_actv_data51
-//-:  output     [31:0]             res_a_51
+//-:   input      [1:0]         wt_actv_nz51
 //-:  output      [7:0]           res_tag_51
+//-:  output     [31:0]             res_a_51
+//-:   input      [1:0]        dat_actv_nz51
 //-:  output     [31:0]             res_b_51
+//-:   input     [15:0]      dat_actv_data51
 // ---------------- instance : u_mul_52 ---------------
-//-:   input      [1:0]        dat_actv_nz52
-//-:   input     [15:0]       wt_actv_data52
 //-:   input     [15:0]      dat_actv_data52
+//-:   input     [15:0]       wt_actv_data52
 //-:   input      [1:0]         wt_actv_nz52
-//-:  output      [7:0]           res_tag_52
 //-:  output     [31:0]             res_a_52
+//-:   input      [1:0]        dat_actv_nz52
 //-:  output     [31:0]             res_b_52
+//-:  output      [7:0]           res_tag_52
 // ---------------- instance : u_mul_53 ---------------
-//-:  output     [31:0]             res_b_53
 //-:   input     [15:0]       wt_actv_data53
-//-:  output     [31:0]             res_a_53
 //-:   input     [15:0]      dat_actv_data53
 //-:  output      [7:0]           res_tag_53
+//-:  output     [31:0]             res_a_53
 //-:   input      [1:0]         wt_actv_nz53
 //-:   input      [1:0]        dat_actv_nz53
+//-:  output     [31:0]             res_b_53
 // ---------------- instance : u_mul_54 ---------------
-//-:   input      [1:0]         wt_actv_nz54
+//-:  output      [7:0]           res_tag_54
 //-:   input      [1:0]        dat_actv_nz54
+//-:  output     [31:0]             res_a_54
+//-:   input     [15:0]      dat_actv_data54
+//-:   input      [1:0]         wt_actv_nz54
 //-:   input     [15:0]       wt_actv_data54
 //-:  output     [31:0]             res_b_54
-//-:  output      [7:0]           res_tag_54
-//-:   input     [15:0]      dat_actv_data54
-//-:  output     [31:0]             res_a_54
 // ---------------- instance : u_mul_55 ---------------
+//-:   input     [15:0]      dat_actv_data55
+//-:  output     [31:0]             res_b_55
+//-:  output      [7:0]           res_tag_55
+//-:   input      [1:0]         wt_actv_nz55
 //-:   input     [15:0]       wt_actv_data55
 //-:  output     [31:0]             res_a_55
-//-:  output      [7:0]           res_tag_55
-//-:  output     [31:0]             res_b_55
-//-:   input      [1:0]         wt_actv_nz55
 //-:   input      [1:0]        dat_actv_nz55
-//-:   input     [15:0]      dat_actv_data55
 // ---------------- instance : u_mul_56 ---------------
-//-:  output     [31:0]             res_a_56
 //-:   input      [1:0]         wt_actv_nz56
-//-:   input     [15:0]       wt_actv_data56
-//-:  output     [31:0]             res_b_56
-//-:   input     [15:0]      dat_actv_data56
-//-:   input      [1:0]        dat_actv_nz56
 //-:  output      [7:0]           res_tag_56
+//-:   input      [1:0]        dat_actv_nz56
+//-:   input     [15:0]      dat_actv_data56
+//-:  output     [31:0]             res_a_56
+//-:  output     [31:0]             res_b_56
+//-:   input     [15:0]       wt_actv_data56
 // ---------------- instance : u_mul_57 ---------------
-//-:   input     [15:0]       wt_actv_data57
-//-:   input      [1:0]        dat_actv_nz57
 //-:  output     [31:0]             res_b_57
+//-:   input      [1:0]        dat_actv_nz57
+//-:   input     [15:0]       wt_actv_data57
+//-:   input      [1:0]         wt_actv_nz57
+//-:  output      [7:0]           res_tag_57
 //-:  output     [31:0]             res_a_57
 //-:   input     [15:0]      dat_actv_data57
-//-:  output      [7:0]           res_tag_57
-//-:   input      [1:0]         wt_actv_nz57
 // ---------------- instance : u_mul_58 ---------------
-//-:  output     [31:0]             res_a_58
-//-:  output     [31:0]             res_b_58
 //-:  output      [7:0]           res_tag_58
-//-:   input      [1:0]         wt_actv_nz58
-//-:   input     [15:0]      dat_actv_data58
-//-:   input     [15:0]       wt_actv_data58
 //-:   input      [1:0]        dat_actv_nz58
+//-:  output     [31:0]             res_a_58
+//-:   input      [1:0]         wt_actv_nz58
+//-:   input     [15:0]       wt_actv_data58
+//-:   input     [15:0]      dat_actv_data58
+//-:  output     [31:0]             res_b_58
 // ---------------- instance : u_mul_59 ---------------
-//-:   input     [15:0]       wt_actv_data59
-//-:   input      [1:0]         wt_actv_nz59
 //-:  output      [7:0]           res_tag_59
 //-:  output     [31:0]             res_a_59
-//-:   input      [1:0]        dat_actv_nz59
 //-:   input     [15:0]      dat_actv_data59
+//-:   input      [1:0]         wt_actv_nz59
 //-:  output     [31:0]             res_b_59
+//-:   input     [15:0]       wt_actv_data59
+//-:   input      [1:0]        dat_actv_nz59
 // ---------------- instance : u_mul_6 ---------------
+//-:  output     [31:0]             res_b_06
 //-:   input     [15:0]        wt_actv_data6
 //-:   input      [1:0]         wt_actv_nz06
-//-:  output      [7:0]            res_tag_6
 //-:   input     [15:0]       dat_actv_data6
-//-:  output     [31:0]             res_b_06
-//-:   input      [1:0]         dat_actv_nz6
+//-:  output      [7:0]            res_tag_6
 //-:  output     [31:0]             res_a_06
+//-:   input      [1:0]         dat_actv_nz6
 // ---------------- instance : u_mul_60 ---------------
 //-:  output     [31:0]             res_a_60
 //-:   input      [1:0]         wt_actv_nz60
-//-:   input      [1:0]        dat_actv_nz60
 //-:   input     [15:0]       wt_actv_data60
-//-:  output     [31:0]             res_b_60
-//-:   input     [15:0]      dat_actv_data60
 //-:  output      [7:0]           res_tag_60
+//-:   input     [15:0]      dat_actv_data60
+//-:  output     [31:0]             res_b_60
+//-:   input      [1:0]        dat_actv_nz60
 // ---------------- instance : u_mul_61 ---------------
-//-:   input      [1:0]         wt_actv_nz61
-//-:  output     [31:0]             res_a_61
-//-:   input     [15:0]      dat_actv_data61
 //-:   input      [1:0]        dat_actv_nz61
-//-:  output     [31:0]             res_b_61
-//-:  output      [7:0]           res_tag_61
 //-:   input     [15:0]       wt_actv_data61
+//-:  output     [31:0]             res_b_61
+//-:   input     [15:0]      dat_actv_data61
+//-:  output     [31:0]             res_a_61
+//-:  output      [7:0]           res_tag_61
+//-:   input      [1:0]         wt_actv_nz61
 // ---------------- instance : u_mul_62 ---------------
 //-:   input      [1:0]        dat_actv_nz62
 //-:   input      [1:0]         wt_actv_nz62
+//-:  output     [31:0]             res_a_62
+//-:   input     [15:0]      dat_actv_data62
+//-:   input     [15:0]       wt_actv_data62
 //-:  output     [31:0]             res_b_62
 //-:  output      [7:0]           res_tag_62
-//-:   input     [15:0]       wt_actv_data62
-//-:   input     [15:0]      dat_actv_data62
-//-:  output     [31:0]             res_a_62
 // ---------------- instance : u_mul_63 ---------------
+//-:   input     [15:0]       wt_actv_data63
+//-:   input      [1:0]         wt_actv_nz63
+//-:   input     [15:0]      dat_actv_data63
 //-:  output      [7:0]           res_tag_63
 //-:  output     [31:0]             res_a_63
-//-:   input      [1:0]         wt_actv_nz63
 //-:  output     [31:0]             res_b_63
 //-:   input      [1:0]        dat_actv_nz63
-//-:   input     [15:0]      dat_actv_data63
-//-:   input     [15:0]       wt_actv_data63
 // ---------------- instance : u_mul_7 ---------------
-//-:  output     [31:0]             res_a_07
-//-:   input      [1:0]         dat_actv_nz7
-//-:  output     [31:0]             res_b_07
-//-:  output      [7:0]            res_tag_7
-//-:   input     [15:0]       dat_actv_data7
 //-:   input      [1:0]         wt_actv_nz07
 //-:   input     [15:0]        wt_actv_data7
+//-:  output     [31:0]             res_a_07
+//-:  output      [7:0]            res_tag_7
+//-:  output     [31:0]             res_b_07
+//-:   input      [1:0]         dat_actv_nz7
+//-:   input     [15:0]       dat_actv_data7
 // ---------------- instance : u_mul_8 ---------------
+//-:  output      [7:0]            res_tag_8
 //-:   input      [1:0]         wt_actv_nz08
 //-:  output     [31:0]             res_a_08
-//-:  output     [31:0]             res_b_08
-//-:   input     [15:0]        wt_actv_data8
-//-:   input     [15:0]       dat_actv_data8
-//-:  output      [7:0]            res_tag_8
 //-:   input      [1:0]         dat_actv_nz8
+//-:  output     [31:0]             res_b_08
+//-:   input     [15:0]       dat_actv_data8
+//-:   input     [15:0]        wt_actv_data8
 // ---------------- instance : u_mul_9 ---------------
-//-:  output     [31:0]             res_a_09
 //-:   input     [15:0]        wt_actv_data9
-//-:   input      [1:0]         wt_actv_nz09
-//-:  output     [31:0]             res_b_09
-//-:  output      [7:0]            res_tag_9
+//-:  output     [31:0]             res_a_09
 //-:   input      [1:0]         dat_actv_nz9
 //-:   input     [15:0]       dat_actv_data9
+//-:   input      [1:0]         wt_actv_nz09
+//-:  output      [7:0]            res_tag_9
+//-:  output     [31:0]             res_b_09
 // ---------------- instance : u_my_test_design ---------------
-//-:   input        [1]        PRE_PSELX_SUF
-//-:  output      [0:0]            My_miso_i
-//-:   input     [31:0]        PRE_PADDR_SUF
-//-:   input       [ 1]             My_reset
-//-:   input       [ 1]               My_clk
-//-:  output        [1]       PRE_PREADY_SUF
-//-:   input        [1]       PRE_PENABL_SUF
-//-:   input      [0:0]              My_ss_o
-//-:   input      [0:0]             My_sck_o
-//-:   input        [1]      PRE_PSLVERR_SUF
-//-:   input     [31:0]         PRE_PDAT_SUF
-//-:   input     [31:0]       PRE_PRDATA_SUF
 //-:   input      [0:0]            My_mosi_o
+//-:   input        [1]       PRE_PENABL_SUF
+//-:   input     [31:0]       PRE_PRDATA_SUF
+//-:   input     [31:0]        PRE_PADDR_SUF
+//-:   input      [0:0]              My_ss_o
+//-:   input     [31:0]         PRE_PDAT_SUF
+//-:  output      [0:0]            My_miso_i
+//-:   input        [1]        PRE_PSELX_SUF
+//-:   input       [ 1]               My_clk
+//-:   input        [1]      PRE_PSLVERR_SUF
+//-:   input      [0:0]             My_sck_o
+//-:  output        [1]       PRE_PREADY_SUF
+//-:   input       [ 1]             My_reset
 // ---------------- instance : u_nan ---------------
-//-:  output        [1]         out_nan_pvld
 //-:  output     [10:0]          out_nan_mts
+//-:  output        [1]         out_nan_pvld
+// ---------------- instance : u_test_DAC ---------------
+//-:  output [SRAM_ADDR_WIDTH:0]           oSRAM_ADDR
+//-:  output [SDRAM_ADDR_WIDTH:0]          oSDRAM_ADDR
+//-:  output        [1]            oAUD_LRCK
+//-:  output [FLASH_ADDR_WIDTH-1:0]          oFLASH_ADDR
+//-:   input [SRAM_DATA_WIDTH-1:0]           iSRAM_DATA
+//-:   input [SDRAM_DATA_WIDTH-1:0]          iSDRAM_DATA
+//-:  output        [1]            oAUD_DATA
+//-:   input [FLASH_DATA_WIDTH-1:0]          iFLASH_DATA
+//-:   input        [1]            iCLK_18_4
+//-:  output        [1]             oAUD_BCK
+//-:   input      [1:0]          iSrc_Select
+//-:   input        [1]               iRST_N
 // ---------------- instance : u_test_sys_ctrl_apb_regs ---------------
-//-:  output      [1:0] test_reg_test_filed1
+//-:   input        [1]          PSEL_SUFFIX
+//-:   input        [1]       PENABLE_SUFFIX
 //-:   input        [1]        PWRITE_SUFFIX
 //-:  output      [6:0] sys_ctrl0_mem_repair_done
-//-:  output        [1]        PREADY_SUFFIX
-//-:  output        [1]       PSLVERR_SUFFIX
 //-:  output      [0:0] sys_ctrl0_pdc_use_arm_ctrl
-//-:   input        [1]       PRESETN_SUFFIX
-//-:  output      [4:0] sys_ctrl0_smmu_mmusid
-//-:  output     [31:0]        PRDATA_SUFFIX
+//-:  output        [1]        PREADY_SUFFIX
 //-:  output      [0:0] sys_ctrl0_mem_repair_en
-//-:   input     [31:0]         PADDR_SUFFIX
+//-:  output      [1:0] test_reg_test_filed1
+//-:  output      [4:0] sys_ctrl0_smmu_mmusid
 //-:   input        [1]          PCLK_SUFFIX
-//-:  output      [2:0] sys_ctrl0_l2c_strip_mode
-//-:   input        [1]       PENABLE_SUFFIX
-//-:   input        [1]          PSEL_SUFFIX
-//-:  output      [3:0] test_reg_test_field0
 //-:   input     [31:0]        PWDATA_SUFFIX
+//-:  output      [2:0] sys_ctrl0_l2c_strip_mode
+//-:  output      [3:0] test_reg_test_field0
+//-:   input     [31:0]         PADDR_SUFFIX
+//-:   input        [1]       PRESETN_SUFFIX
+//-:  output     [31:0]        PRDATA_SUFFIX
+//-:  output        [1]       PSLVERR_SUFFIX
 // ======================================================================
 // ==================== End of Unconnected Ports ========================
 // ======================================================================
@@ -1876,8 +1902,8 @@ end
 // ========================================================================================
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //|     for my $i (0..63) {
-//| 	my $ii = sprintf("%02d",$i);
-//| 	&Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
+//| 		my $ii = sprintf("%02d",$i);
+//| 	    &Instance NV_NVDLA_CMAC_CORE_MAC_mul u_mul_$i;
 //|           &Connect exp_sft      exp_sft_$ii;
 //|            Connect op_a_dat     wt_actv_data${i};
 //|            Connect op_a_nz      wt_actv_nz${ii};
@@ -3226,6 +3252,28 @@ DW02_tree #(8, 36) u_tree_l0n00 (
 
 
 
+//==========================================================
+//// Sample for strange port defines
+//==========================================================
+//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
+//| &Instance test_DAC;
+test_DAC  u_test_DAC (
+    .iCLK_18_4   (iCLK_18_4         ), //|<-i
+    .iRST_N      (iRST_N            ), //|<-i
+    .iFLASH_DATA (iFLASH_DATA[FLASH_DATA_WIDTH-1:0]), //|<-i
+    .iSDRAM_DATA (iSDRAM_DATA[SDRAM_DATA_WIDTH-1:0]), //|<-i
+    .iSRAM_DATA  (iSRAM_DATA[SRAM_DATA_WIDTH-1:0]), //|<-i
+    .iSrc_Select (iSrc_Select[1:0]  ), //|<-i
+    .oAUD_BCK    (oAUD_BCK          ), //|>-o
+    .oAUD_DATA   (oAUD_DATA         ), //|>-o
+    .oAUD_LRCK   (oAUD_LRCK         ), //|>-o
+    .oFLASH_ADDR (oFLASH_ADDR[FLASH_ADDR_WIDTH-1:0]), //|>-o
+    .oSDRAM_ADDR (oSDRAM_ADDR[SDRAM_ADDR_WIDTH:0]), //|>-o
+    .oSRAM_ADDR  (oSRAM_ADDR[SRAM_ADDR_WIDTH:0])  //|>-o
+   );
+
+//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
+
 ///////////////////////////////////////////////////////////////////////
 //////////////// assemble output from CSA tree level 0 ////////////////
 ///////////////////////////////////////////////////////////////////////
@@ -3286,6 +3334,9 @@ always @(posedge nvdla_core_clk or negedge nvdla_core_rstn) begin
 end
 
 
+
+
+
 always @(*)
 begin
   MISO_I_IPX = my_msio;
@@ -3325,6 +3376,17 @@ simple_spi
    );
 
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
+
+
+//============= Sample to Print(show) interface to a file ========
+////:	&ShowIntf("spi");
+
+
+//============= Sample to Translate(show) IPXACT to JSON file ========
+//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
+//| &TransIPX("simple_spi.xml");
+//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
+
 
 
 //==========================================================
@@ -3410,46 +3472,10 @@ end
 //| &AddIntfByIPX("./cfg/simple_spi.xml");
 //|  &AddIntfByJson("./cfg/MyIntf.json");
 //|  &PrintIntfPort("-intf spi");
-output                    ss_o            ;
+output                    sck_o           ;
 input                     miso_i          ;
 output                    mosi_o          ;
-output                    sck_o           ;
-//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
-
-
-//==========================================================
-//// Sample of adding interface by SystemVerilog interface code
-//==========================================================
-//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//|   my $sv = "
-//|   interface test_if(input clk);
-//|     logic rst_n,
-//|     wire  [1:0] port_a_0 ;
-//|     logic [12:0] port_a_1 ;
-//|     wire port_b_0 ;
-//|     logic port_b_1 ;
-//|    endinterface	
-//| ";
-//| 	&AddIntfBySV($sv);
-//|     &PrintIntfPort("-intf test_if -up"); 
-//| 
-logic                     PORT_B_1        ;
-logic    [12:0]           PORT_A_1        ;
-wire     [1:0]            PORT_A_0        ;
-logic                     RST_N           ;
-wire                      PORT_B_0        ;
-//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
-
-
-//============= Sample to Print(show) interface to a file ========
-//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| &ShowIntf("spi");
-//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
-
-
-//============= Sample to Translate(show) IPXACT to JSON file ========
-//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| &TransIPX("simple_spi.xml");
+output                    ss_o            ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3515,16 +3541,16 @@ test_sys_ctrl_apb_regs  u_test_sys_ctrl_apb_regs (
 
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
 //| &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
-reg      [17:0]           TEST_PADDR      ;
-reg      [31:0]           TEST_PRDATA     ;
-reg                       TEST_PSLVERR    ;
-reg                       TEST_PCLK       ;
-reg                       TEST_PWRITE     ;
-reg                       TEST_PENABLE    ;
-reg                       TEST_PSEL       ;
-reg                       TEST_PRESETN    ;
-reg                       TEST_PREADY     ;
 reg      [31:0]           TEST_PWDATA     ;
+reg                       TEST_PSLVERR    ;
+reg                       TEST_PWRITE     ;
+reg      [17:0]           TEST_PADDR      ;
+reg                       TEST_PCLK       ;
+reg      [31:0]           TEST_PRDATA     ;
+reg                       TEST_PREADY     ;
+reg                       TEST_PRESETN    ;
+reg                       TEST_PSEL       ;
+reg                       TEST_PENABLE    ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3543,13 +3569,13 @@ reg      [31:0]           TEST_PWDATA     ;
 //|   );
 //|   &AddIntfByHash(\%APB3,"test_APB3");
 //|   &PrintIntfPort("-intf test_APB3 -awd 12 -d 32 -pre my_ -port -end ;");
+input                     my_pENABL       ;
 output                    my_pSLVERR      ;
+output                    my_pREADY       ;
 output   [31:0]           my_pRDATA       ;
 input                     my_pSELx        ;
 input    [11:0]           my_pADDR        ;
-input                     my_pENABL       ;
 input    [31:0]           my_pDAT         ;
-output                    my_pREADY       ;
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3560,6 +3586,29 @@ output                    my_pREADY       ;
 //| our $reset= " or negedge resetn";
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
+
+//==========================================================
+//// Sample of adding interface by SystemVerilog interface code
+//==========================================================
+//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
+//|   my $sv = "
+//|   interface test_if(input clk);
+//|     logic rst_n,
+//|     wire  [1:0] port_a_0 ;
+//|     logic [12:0] port_a_1 ;
+//|     wire port_b_0 ;
+//|     logic port_b_1 ;
+//|    endinterface	
+//| ";
+//| 	&AddIntfBySV($sv);
+//|     &PrintIntfPort("-intf test_if -up"); 
+//| 
+wire     [1:0]            PORT_A_0        ;
+logic    [12:0]           PORT_A_1        ;
+logic                     RST_N           ;
+logic                     PORT_B_1        ;
+wire                      PORT_B_0        ;
+//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
 //==========================================================
@@ -3681,7 +3730,7 @@ endmodule // NV_NVDLA_CMAC_CORE_mac
 //==========================================================
 //// Sample of exporting interface & port, 
 //// generate module JSON file for integration
-//// NOTE: &GenModJson must be AFTER "endmodule", 
+//// NOTE: GenModJson must be AFTER "endmodule", 
 //// otherwisse cause syntax error, fix later
 //// Othter functions can be anywhere
 //==========================================================
@@ -3697,7 +3746,7 @@ endmodule // NV_NVDLA_CMAC_CORE_mac
 
 //manual defined name, may not be same as current module, not recommended
 //| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| &GenModJson("test_design" ); # manual defined name, may not be same as current module, not recommended
+//| &GenModJson("test_design" ); # manual name may not be same as current module, not recommended
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
 
@@ -3706,9 +3755,4 @@ endmodule // NV_NVDLA_CMAC_CORE_mac
 //| &GenModJson(); # default usage for current Top Module
 //| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
-
-//not supported usage 
-//| --- ePerl generated code Begin (DO NOT EDIT BELOW!) ---
-//| &GenModIPX("MyCorp"); 
-//| --- ePerl generated code End (DO NOT EDIT ABOVE!) ---
 
