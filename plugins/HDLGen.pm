@@ -1324,11 +1324,11 @@ sub PrintConnect {
 
 	  if ($width ne "1") {
 		  if ($width =~ /:/) {
-	          $conn_pt .= "[${width}]" if ($conn !~ /:/);
+	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
 	      } else {
 			  $width--;
 			  $width= "${width}:0";
-	          $conn_pt .= "[${width}]" if ($conn !~ /:/);
+	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
 		  }
       }
 
@@ -1345,6 +1345,7 @@ sub PrintConnect {
 	  } else {
 		 my $c_msb =0;
 	 	 my $c_lsb =0;
+		 next if ($conn =~ /'/); 
 		 if ($conn =~ /\[(.*)\]/) {
             $wire_bits = $1;
 		    $conn =~ s/\[.*\]//;
@@ -1420,11 +1421,11 @@ sub PrintConnect {
 
 	  if ($width ne "1") {
 		  if ($width =~ /:/) {
-	          $conn .= "[${width}]" if ($conn !~ /:/);
+	          $conn .= "[${width}]" if ($conn !~ /:|'/);
 	      } else {
 			  $width--;
 			  $width= "${width}:0";
-	          $conn .= "[${width}]" if ($conn !~ /:/);
+	          $conn .= "[${width}]" if ($conn !~ /:|'/);
 		  }
       }
 
@@ -1441,6 +1442,7 @@ sub PrintConnect {
 	  } else {
 		 my $c_msb =0;
 	 	 my $c_lsb =0;
+		 next if ($conn =~ /'/); 
 		 if ($conn =~ /\[(.*)\]/) {
             $wire_bits = $1;
 		    $conn =~ s/\[.*\]//;

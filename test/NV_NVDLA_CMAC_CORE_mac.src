@@ -269,6 +269,8 @@ EOF
 //// Sample for strange port defines
 //==========================================================
 &Instance test_DAC;
+  &Connect iSrc_Select  2'b00;
+  &Connect oFLASH_ADDR  'h0;
 
 ///////////////////////////////////////////////////////////////////////
 //////////////// assemble output from CSA tree level 0 ////////////////
