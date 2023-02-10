@@ -1,10 +1,11 @@
 # HDLGen from Wilson Chen 2022~2023
 
 ## Overview
-  HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
-  It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.  
-  This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
-  HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
+  &emsp;&emsp;HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
+  &emsp;&emsp;It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.   &emsp;&emsp;This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
+  &emsp;&emsp;HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
+  &emsp;&emsp;This tool can achieve all functions of EMACS veirlog-mode，while support more as emdedded regular-express, IPXACT/XML,Interface,JSON,Hash，and the working mode is very similiar or even idential to HDL design, but not DSL or HLS. 
+  &emsp;&emsp;From function or working mode, this tool is much more efficient than commercial integration tools, with zero learning curve. 
 
 ## License 
                          Copyright 2022~2023 Wilson Chen                                                     
@@ -21,7 +22,11 @@
 ****************************************************************************************
 ***any feedback, suggestion, requirement, solution, contribution, is always welcome***
 ****************************************************************************************
-   
+ 
+## Working Flow
+   Different level design can use this tool with different functions a/o inputs/outputs, the main working flow is as below<br>
+![Working Flow](https://github.com/WilsonChen003/HDLGen/blob/master/doc/WorkingFlow.PNG)
+
 ## What you can do with HDLGen 
 RTL stitch
    * Instance module from RTL or IPXACT or JSON file as what Verilog does
@@ -29,7 +34,7 @@ RTL stitch
    * Automatically generate instance's wires definitions
    * Automatically generate reg or wire definictions(not perfect but really helpful) 
    * Warning out any Instance signals which has no connection
-   * Use embedded native Perl or Python to generate(print) whatever code you want
+   * Use embedded native Perl or Python to generate(print) whatever code you want (replace structure/for/generate)
 
 Interface manipulate
    * Add interface from IPXACT, JSON, RTL, SV code, or hash array
@@ -38,18 +43,19 @@ Interface manipulate
    * Print or show interface signals for design or debug
 
 IPXACT manipulate
-   * Read in IPXACT and add all interfaces
+   * Read in IPXACT or JSON and import all interfaces & ports
    * Show all interfaces defined in IPXACT ( for debug )
    * Translate IPXACT into JSON file ( for debug & integration)
    * Export Interface to JSON with name changing
    * Export port or remove port to/from JSON file
+   * Generator module JSON with name,interface,port for up-level integration
    * Export interface to IPXACT by name ( **abolished** )
    * Export port to IPXACT by name ( **abolished** )
    * Export standard IPXACT for current top module ( **abolished** )
  
 Function generation
    * Use embedded functions to generate differnt module or loigc you want
-     * Clk, Reset, Fuse, Pmu, Fifo, Async-interface, Memories etc ( flow done, can custom design )
+     * Clk, Reset, Fuse, Pmu, Fifo, Async-interface, Memories etc ( flow done, can custom design by anyone)
    * Extend your own module/logic by standard config ( in development )
 	 * config can be in Verilog, JSON, YAML, EXCEL etc.
 	 * then generate these logic with parameters by just a simple function call
@@ -60,9 +66,7 @@ Function generation
    * Detail logic design: you still need to write RTL to implement your ideas 
    * Synthesis or simulation or verification: you need to use other EDA tools to handle
    
-## Working Flow
-   Different level design can use this tool with different functions a/o inputs/outputs, the main working flow is as below<br>
-![Working Flow](https://github.com/WilsonChen003/HDLGen/blob/master/doc/WorkingFlow.PNG)
+
    
 ## Directory Structure   
     ├── HDLGen.bin                # Tool binary for easy adopt
@@ -142,14 +146,21 @@ Function generation
 
 
 ### ***Why need this tool?***<br>
-  For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we're not writing code, we're indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.<br>
-   So we learned and tried different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they're DSL, they're not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
-   Is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
-   Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
-   The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as "HDLGen".
-   The way you're going to work is writing Verilog or VHDL code, the tool helps you on most boring tasks: signal define for wire a/o reg, instance modules by connections with auto wire signals defined and easy name change, connect signals with regular expression, instance JSON and IPXACT xml file as simple as HDL code natively. If any task/logic/design which is not friendly written in HDL, then you can use high level script language like Perl or Python for any code or task you want, wherever and whenever in the HDL source file, as long as you know Perl or Python script, or even shell script.<br>
-   This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. <br>
-   If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
+   &emsp;&emsp;For any ASIC or SOC engineer with over 10 years experience, we may hate Verilog sometime, as Verilog HDL's syntax is TOO simple or TOO basic, it's Register Transfer Level description, we're not writing code, we're indeed designing circuit, it's very cool, but sometime we will be bored, especially when instancing module, do wire connections.<br>
+   &emsp;&emsp;We're very excited when seeing System Verilog for design, because some new syntax like structure,for,generator can impove coding efficiency dramatically,but unfortuantely these syntax will really cause pain when debugging, because ability of EDA tools. Evenmore, some time engineer may need to manually change code to workaround EDA tool on RTL or netlist, this really cause risk to projects.<br>
+   &emsp;&emsp; Then, in order to reduce manual work and improve efficiency, we'll try to use script to generate bulk of structural code, or for module/chip integration, the script we tried includes Perl,Python,Shell, or Vim/Emacs language. But, these ways often need manual run a/o copy in flow, it will cause big risk if any version is not aligned or any manual step is missed.
+   &emsp;&emsp;So we will try new different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they're DSL, they're not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
+   &emsp;&emsp;We'll ask: is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
+   &emsp;&emsp;Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
+   &emsp;&emsp;The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as "HDLGen".
+   &emsp;&emsp;The way you're going to work is writing Verilog or VHDL code, the tool helps you on most boring tasks: signal define for wire a/o reg, instance modules by connections with auto wire signals defined and easy name change, connect signals with regular expression, instance JSON and IPXACT xml file as simple as HDL code natively. If any task/logic/design which is not friendly written in HDL, then you can use high level script language like Perl or Python for any code or task you want, wherever and whenever in the HDL source file, as long as you know Perl or Python script, or even shell script.<br>
+   &emsp;&emsp;This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. <br>
+   &emsp;&emsp;If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
+
+
+__*** The most intuitive and effective design is "what you see is what you coding" ***__<br>
+__*** In most cases, Verilog is the most secure design ***__<br>
+__*** At the system level, the use of parameters requires extreme caution ***__<br>
 
 
 __*** DSL is really cool ***__<br>
