@@ -2,11 +2,12 @@
 
 ## Overview
   &emsp;&emsp;HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. <br>
-  &emsp;&emsp;It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.<br>   
-  &emsp;&emsp;This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.<br>  
+  &emsp;&emsp;It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.<br>
+  &emsp;&emsp;This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.<br>
   &emsp;&emsp;HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).<br>
-  &emsp;&emsp;This tool can achieve all functions of EMACS veirlog-mode，while support more as emdedded regular-express, IPXACT/XML,Interface,JSON,Hash，and the working mode is very similiar or even idential to HDL design, but not DSL or HLS. <br>
-  &emsp;&emsp;From function or working mode, this tool is much more efficient than commercial integration tools, with zero learning curve. <br>
+  &emsp;&emsp;This tool can achieve all functions of EMACS veirlog-mode，while support more as emdedded regular-express, IPXACT/XML,Interface,JSON,Hash，and the working mode is very similiar or even idential to HDL design, but not DSL or HLS. <br> 
+  
+  &emsp;&emsp;**From function or working mode, this tool is much more efficient than commercial integration tools, with zero learning curve.** <br>
 
 ## License 
                          Copyright 2022~2023 Wilson Chen                                                     
@@ -153,7 +154,7 @@ Function generation
    &emsp;&emsp;So we will try new different ways, we may study and learn Chisel, SpinalHDL, MyHDL PyHDL, or PyGear recently. But, when we learned, tried, finally we gave up, because they're DSL, they're not HDL! DSL is totally new language, DSL is more like a high level software language, we have to write code in a new style, no Verilog or HDL at all.<br>
    &emsp;&emsp;We'll ask: is it safe for a project to abandon Verilog HDL? Is it safe for an experienced engineer to abandon previous skills and design logic with non-HDL code? Is it easy or friendly to learn a new language? Is that language widely used or accepted and will evolve in long term? Is there any different way to help us?<br>
    &emsp;&emsp;Yes, we have a different way! And it is easy to use, smoothly to move, seamlessly to adopt.<br>
-   &emsp;&emsp;The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as "HDLGen".
+   &emsp;&emsp;The tool is going to support you keep writing HDL while give the ability to improve your efficiency, and with ZERO learning curve, is here, named as "HDLGen".<br>
    &emsp;&emsp;The way you're going to work is writing Verilog or VHDL code, the tool helps you on most boring tasks: signal define for wire a/o reg, instance modules by connections with auto wire signals defined and easy name change, connect signals with regular expression, instance JSON and IPXACT xml file as simple as HDL code natively. If any task/logic/design which is not friendly written in HDL, then you can use high level script language like Perl or Python for any code or task you want, wherever and whenever in the HDL source file, as long as you know Perl or Python script, or even shell script.<br>
    &emsp;&emsp;This tool supports standard AMBA bus interfaces natively. This tool also support you to manually define an interface, through SystemVerilog, Verilog, IPXACT or XML, JSON, or Hash array. <br>
    &emsp;&emsp;If there is any inhouse developed or accumulated design which is common for your designs, you can put as a template in this tool, then instance with any parameters you want by just as simple as one function call in HDL. <br>
