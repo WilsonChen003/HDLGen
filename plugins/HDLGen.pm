@@ -829,10 +829,16 @@ sub ParseInstVlg{
     
     my $module_end   = "0";
     my $module_start = "0";
+	my $df_num = 0;
     while(<VLG_IN>) {
         chomp($_);
 		if ( ($_ =~ /^\s*\/\//) or !($_ =~ /\S/) ) {
             next ;
+		}
+		if ( $_ =~ /\s*`define/) {
+           $CurMod_Top->{"inst"}->{"$mod_inst"}->{"define"}->{"$df_num"}="$_";
+		   $df_num++;
+		   next;
 		}
 	    if ( $_ =~ /module \s*${mod_name}/) {
 	       $module_start = "1";
@@ -1204,6 +1210,20 @@ sub ConnectDone {
 
 }
 #============================================================================================================#
+
+
+#============================================================================================================#
+#============================================================================================================#
+sub PrintDefine {
+	my $cur_inst = shift;
+
+    if (exists($CurMod_Top->{"inst"}->{"$cur_inst"}->{"define"})) {
+        my $df_hash = $CurMod_Top->{"inst"}->{"$cur_inst"}->{"define"};
+        foreach my $define (%$df_hash) {
+      	  print "$df_hash->{$define}\n";
+        }
+    }
+}
 
 #============================================================================================================#
 #------ Real Print Connections ------#
@@ -1685,6 +1705,12 @@ sub ParseAutoWidth {
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
 		open(V_SRC,">.temp.v");
+		select(V_SRC);
+	    
+		my($C)=$CurMod_Top->{"inst"};
+        foreach my $inst (%$C) {
+			&PrintDefine($inst);
+		}
 	    foreach my $line (@VOUT) {
 			print V_SRC "$line";
 		}
@@ -1942,8 +1968,8 @@ sub PrintAutoWarning {
 	    print "// ==================== End of Unconnected Ports ========================\n";
 	    print "// ======================================================================\n\n";
         $vout_autoinst_warning = 1;
-	    print STDOUT BOLD RED " !!! Be carefully: some Instance's port has NO source or sink !!!\n";
-	    print STDOUT BOLD RED " !!!       Please search & check \"Warninng\" in output RTL     !!!\n";
+	    print STDOUT BOLD RED "\n !!! Be carefully: some Instance's port has NO source or sink !!!\n";
+	    print STDOUT BOLD RED " !!!       Please search & check \"Warninng\" in output RTL     !!!\n\n";
 	}
 }
 
@@ -1965,6 +1991,10 @@ sub PrintVOUT {
 
 	select(V_OUT);
 	&PrintRTLHdr() ;
+	my($C)=$CurMod_Top->{"inst"};
+    foreach my $inst (%$C) {
+		&PrintDefine($inst);
+	}
 	foreach my $line (@VOUT) {
 		if ($vout_autowirereg eq "1" ) {
 			if ($line eq  "//|: &AutoDef;\n") {
