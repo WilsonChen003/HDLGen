@@ -1,11 +1,12 @@
 # HDLGen from Wilson Chen 2022~2023
 
 ## Overview
-  &emsp;&emsp;HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. 
-  &emsp;&emsp;It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.   &emsp;&emsp;This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.  
-  &emsp;&emsp;HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).
-  &emsp;&emsp;This tool can achieve all functions of EMACS veirlog-mode，while support more as emdedded regular-express, IPXACT/XML,Interface,JSON,Hash，and the working mode is very similiar or even idential to HDL design, but not DSL or HLS. 
-  &emsp;&emsp;From function or working mode, this tool is much more efficient than commercial integration tools, with zero learning curve. 
+  &emsp;&emsp;HDLGen is a tool for HDL(mainly for Verilog) generation, it enables embedded Perl or Python scripts in Verilog source code,  and support Perl style variable anyway, to generate desired HDL in an easy and efficient way. <br>
+  &emsp;&emsp;It supports all syntax and data structure of Perl or Python, and has a few predefined functions for signal define, module instance, port connection etc.<br>   
+  &emsp;&emsp;This tool also supports extended API functions in Perl style, for any function or module that you want or have from previous knowledge or project.<br>  
+  &emsp;&emsp;HDL and script mixed design file can be any name, while final generated RTL file will be Verilog only( as .v).<br>
+  &emsp;&emsp;This tool can achieve all functions of EMACS veirlog-mode，while support more as emdedded regular-express, IPXACT/XML,Interface,JSON,Hash，and the working mode is very similiar or even idential to HDL design, but not DSL or HLS. <br>
+  &emsp;&emsp;From function or working mode, this tool is much more efficient than commercial integration tools, with zero learning curve. <br>
 
 ## License 
                          Copyright 2022~2023 Wilson Chen                                                     
