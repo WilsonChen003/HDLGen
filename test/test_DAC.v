@@ -13,6 +13,8 @@ SRAM_DATA
 ,iRST_N	
 );				
 
+`define         TEST_BIT                3
+
 parameter	REF_CLK			=	18562000;	//	18.432	MHz
 parameter	SAMPLE_RATE		=	48000;		//	48		KHz
 parameter	DATA_WIDTH		=	16;			//	16		Bits
@@ -45,7 +47,7 @@ input	logic	[SDRAM_DATA_WIDTH-1:0]	iSDRAM_DATA;
 output	wire [SRAM_ADDR_WIDTH:0]		oSRAM_ADDR;
 input	[SRAM_DATA_WIDTH-1:0]	iSRAM_DATA;	
 //	Audio Side
-output			oAUD_DATA;
+output	[`TEST_BIT:0]		oAUD_DATA;
 output			oAUD_LRCK;
 output  reg			oAUD_BCK;
 //	Control Signals

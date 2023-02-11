@@ -87,7 +87,7 @@ sub Version {
 	print BOLD BLUE <<EOF;
 
          *********************************************
-         ****** Current HDLGen Version is V1.12 ******
+         ****** Current HDLGen Version is V1.13 ******
          *********************************************
 EOF
 
