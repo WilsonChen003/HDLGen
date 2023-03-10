@@ -64,8 +64,6 @@ our $AutoWires = ();
 our $AutoRegs  = ();
 our $AutoWarnings = ();
 our $AutoInstSigs =();
-our $vout_autoportlist = 0;
-our $vout_autoportdecl = 0;
 our $vout_autowirereg  = 0;
 our $vout_autoinstwire = 0;
 our $vout_autoinst_warning = 0;
@@ -82,6 +80,7 @@ my($epython_f)   = "";
 my($PerlBegin)   = 0;
 my($PythonBegin) = 0;
 
+my($InstIfdef) = "";
 #============================================================================================================#
 #============================================================================================================#
 #============================================================================================================#
@@ -152,6 +151,8 @@ sub Initial {
 
     @SRC_PATH= ("./"); 
 	$Expt_Intf = ();
+
+    $InstIfdef = "";  
 
 }
 
@@ -628,6 +629,10 @@ sub InstanceParser {
   my $exa_line ="";
 
   my $inst_arg = "";
+
+  $InstIfdef = "";  ### clear per instance var
+
+  my $inst_arg = "";
   if ( $eline =~ /^\s*&?Instance \s*(.*)\s*;/ ) {
 	  $inst_arg = $1;
       push @eperl_array, "$eline";  
@@ -659,6 +664,16 @@ sub InstanceParser {
 		  $C_done = 1;
 		  $PerlBegin = 0;
 	      last;
+	  ### Handle ifdef on port		  
+      } elsif ($_ =~ /^\s*\`ifdef/) {
+          $InstIfdef .= "$_";
+          while (<V_IN>) {
+              $InstIfdef .= "$_";
+	          if ( $_ =~ /^\s*\`endif/ ) { ### parameter done
+				  last;
+			  }
+
+	      }
       } elsif ($_ =~ /^\s*&?Connect \s*(.*)\s*;/) {
 		 my $call_arg = $1; 
          $eline = "&Connect(\"$call_arg\");\n";
@@ -1289,6 +1304,43 @@ sub PrintConnect {
   $port_length +=1;
   $conn_length +=8;
 
+   ### handle ifdef first since all port may need it
+  if ($InstIfdef ne "") {
+      push @VOUT,"$InstIfdef";
+      my @ifdef_array = split("\n",$InstIfdef);
+	  my $ifdef = $ifdef_array[0];
+      foreach $if_port (@ifdef_array) {
+		  if ($if_port =~ /ifdef \s*(\w*)/) {
+			  $ifdef = $1; 
+		  } elsif ($if_port =~ /endif/) {
+			  next;
+		  } else {
+	          if ( $AUTO_INST ne "" ) { ### auto signal
+			     $if_port =~ /.(\w*)\s*\(\s*(\w*)\s*\)/;
+			     my $port = $1;
+			     my $conn = $2;
+	             my $width= 0;
+				 if (exists($CI->{"input"}->{"$port"})) {
+	                $width= $CI->{"input"}->{"$port"}->{"width"};
+	                $AutoInstSigs->{"$conn"}->{"direction"} = "input";
+			     } else {
+	                $width= $CI->{"output"}->{"$port"}->{"width"};
+	                $AutoInstSigs->{"$conn"}->{"direction"} = "output";
+				 }
+		         ### use wire name to remove duplication
+		         if (exists($AutoInstSigs->{"$conn"})) {
+	                $AutoInstSigs->{"$conn"}->{"inst"} .= " & $CurInst";
+		         } else {
+	                $AutoInstSigs->{"$conn"}->{"inst"} = "$CurInst";
+		         }
+	             $AutoInstSigs->{"$conn"}->{"width"} = "$width";
+	             $AutoInstSigs->{"$conn"}->{"ifdef"} = "$ifdef";
+			 }
+		  }
+	  }
+  }
+
+
   foreach my $cr (sort(@clk_rst)) {
 	  my $port = $cr;
 	  my $conn = $CI->{"input"}->{"$cr"}->{"connect"};
@@ -1704,7 +1756,9 @@ sub ParseAutoWidth {
 #============================================================================================================#
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
-		open(V_SRC,">.temp.v");
+		my $mod_name = $CurMod_Top->{"module"};
+        $temp_v = ".$mod_name".".vpp";
+		open(V_SRC,">$temp_v");
 		select(V_SRC);
 	    
 		my($C)=$CurMod_Top->{"inst"};
@@ -1717,7 +1771,7 @@ sub UpdateAutos {
 		close(V_SRC);
 		my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
         $nl->read_libraries();
-        $nl->read_file (filename=>"./.temp.v");
+        $nl->read_file (filename=>"./$temp_v");
         $nl->link();
 		system("rm ./.temp.v");
         foreach my $mod ($nl->top_modules_sorted) {
@@ -1932,7 +1986,13 @@ sub  PrintAutoInstSigs {
 			   $line_pt = "wire "."$line_pt";
 		   }
 
-           print "$line_pt;\n";
+		   if (exists($AutoInstSigs->{"$sig_name"}->{"ifdef"})) {
+              print "`ifdef $AutoInstSigs->{$sig_name}->{\"ifdef\"}\n";
+              print "$line_pt;\n";
+              print "`endif\n";
+		  } else {
+              print "$line_pt;\n";
+		  }
         }
      }
    }
