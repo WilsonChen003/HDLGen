@@ -267,10 +267,15 @@ EOF
 
 //==========================================================
 //// Sample for strange port defines
+///  Sample for empty port connection
 //==========================================================
 &Instance test_DAC;
-  &Connect iSrc_Select  2'b00;
-  &Connect oFLASH_ADDR  'h0;
+  `ifdef FPGA
+    .iSrc_Select ( src_selct_FPGA),
+    .iCLK_18_4   ( clk_FPGA),
+  `endif
+  &Connect iSrc_Select  null;
+  &Connect oFLASH_ADDR  '';
 
 ///////////////////////////////////////////////////////////////////////
 //////////////// assemble output from CSA tree level 0 ////////////////
@@ -354,7 +359,7 @@ end
 //:End
 
 //============= Sample to Print(show) interface to a file ========
-////:	&ShowIntf("spi");
+//:	&ShowIntf("spi");
 
 
 //============= Sample to Translate(show) IPXACT to JSON file ========

@@ -64,8 +64,6 @@ our $AutoWires = ();
 our $AutoRegs  = ();
 our $AutoWarnings = ();
 our $AutoInstSigs =();
-our $vout_autoportlist = 0;
-our $vout_autoportdecl = 0;
 our $vout_autowirereg  = 0;
 our $vout_autoinstwire = 0;
 our $vout_autoinst_warning = 0;
@@ -82,6 +80,7 @@ my($epython_f)   = "";
 my($PerlBegin)   = 0;
 my($PythonBegin) = 0;
 
+my($InstIfdef) = "";
 #============================================================================================================#
 #============================================================================================================#
 #============================================================================================================#
@@ -152,6 +151,8 @@ sub Initial {
 
     @SRC_PATH= ("./"); 
 	$Expt_Intf = ();
+
+    $InstIfdef = "";  
 
 }
 
@@ -628,6 +629,10 @@ sub InstanceParser {
   my $exa_line ="";
 
   my $inst_arg = "";
+
+  $InstIfdef = "";  ### clear per instance var
+
+  my $inst_arg = "";
   if ( $eline =~ /^\s*&?Instance \s*(.*)\s*;/ ) {
 	  $inst_arg = $1;
       push @eperl_array, "$eline";  
@@ -659,6 +664,16 @@ sub InstanceParser {
 		  $C_done = 1;
 		  $PerlBegin = 0;
 	      last;
+	  ### Handle ifdef on port		  
+      } elsif ($_ =~ /^\s*\`ifdef/) {
+          $InstIfdef .= "$_";
+          while (<V_IN>) {
+              $InstIfdef .= "$_";
+	          if ( $_ =~ /^\s*\`endif/ ) { ### parameter done
+				  last;
+			  }
+
+	      }
       } elsif ($_ =~ /^\s*&?Connect \s*(.*)\s*;/) {
 		 my $call_arg = $1; 
          $eline = "&Connect(\"$call_arg\");\n";
@@ -1076,11 +1091,22 @@ sub Connect {
 
   if ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) {
     $rule = "mapping";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+		$rplc = "";
+	}
   } elsif ($srch =~ /^\//) {
-    $rule = "s".$srch.$rplc."/";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+		$rule = "s".$srch."//";
+	} else {
+        $rule = "s".$srch.$rplc."/";
+	}
   } else {
     my $conn_new = '^'.$srch.'$' unless ($srch =~ s/^\/(.*?)\/$/$1/);
-    $rule = "s/${conn_new}/${rplc}/";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+       $rule = "s/${conn_new}//";
+    }else {
+       $rule = "s/${conn_new}/${rplc}/";
+    }
   }
 
   my $conn_item = $CurMod_Top->{"inst"}->{"$CurInst"}->{"connect_list"} + 1;
@@ -1289,6 +1315,43 @@ sub PrintConnect {
   $port_length +=1;
   $conn_length +=8;
 
+   ### handle ifdef first since all port may need it
+  if ($InstIfdef ne "") {
+      push @VOUT,"$InstIfdef";
+      my @ifdef_array = split("\n",$InstIfdef);
+	  my $ifdef = $ifdef_array[0];
+      foreach $if_port (@ifdef_array) {
+		  if ($if_port =~ /ifdef \s*(\w*)/) {
+			  $ifdef = $1; 
+		  } elsif ($if_port =~ /endif/) {
+			  next;
+		  } else {
+	          if ( $AUTO_INST ne "" ) { ### auto signal
+			     $if_port =~ /.(\w*)\s*\(\s*(\w*)\s*\)/;
+			     my $port = $1;
+			     my $conn = $2;
+	             my $width= 0;
+				 if (exists($CI->{"input"}->{"$port"})) {
+	                $width= $CI->{"input"}->{"$port"}->{"width"};
+	                $AutoInstSigs->{"$conn"}->{"direction"} = "input";
+			     } else {
+	                $width= $CI->{"output"}->{"$port"}->{"width"};
+	                $AutoInstSigs->{"$conn"}->{"direction"} = "output";
+				 }
+		         ### use wire name to remove duplication
+		         if (exists($AutoInstSigs->{"$conn"})) {
+	                $AutoInstSigs->{"$conn"}->{"inst"} .= " & $CurInst";
+		         } else {
+	                $AutoInstSigs->{"$conn"}->{"inst"} = "$CurInst";
+		         }
+	             $AutoInstSigs->{"$conn"}->{"width"} = "$width";
+	             $AutoInstSigs->{"$conn"}->{"ifdef"} = "$ifdef";
+			 }
+		  }
+	  }
+  }
+
+
   foreach my $cr (sort(@clk_rst)) {
 	  my $port = $cr;
 	  my $conn = $CI->{"input"}->{"$cr"}->{"connect"};
@@ -1329,7 +1392,7 @@ sub PrintConnect {
   }
 
   $first_line = 1;
-
+  my $empty_warn = 0;
   foreach my $port (sort(keys %{$CI->{"input"}})) {
 	  $port_length = length($port) if (length($port) > $port_length);
       my $conn    = $port;
@@ -1342,22 +1405,29 @@ sub PrintConnect {
 	  }
       $conn_pt = $conn;
 
-	  if ($width ne "1") {
-		  if ($width =~ /:/) {
-	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
-	      } else {
-			  $width--;
-			  $width= "${width}:0";
-	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
-		  }
-      }
+	  if ($conn ne "") {
+	     if ($width ne "1") {
+	         if ($width =~ /:/) {
+	             $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
+	         } else {
+	       	  $width--;
+	       	  $width= "${width}:0";
+	             $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
+	         }
+         }
+	 }
 
 	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn_pt");  
       if ($first_line) {
 		  push @VOUT,"    .$line_pt";
           $first_line = 0;
       } else {
-		  push @VOUT,"), //|<-i\n    .$line_pt";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|<-i  !!!Warining: this is floating port!!!\n    .$line_pt";
+			 $empty_warn = 0;
+		  } else {
+		     push @VOUT,"), //|<-i\n    .$line_pt";
+		  }
       }
       
 	  if ( $AUTO_INST eq "" ) {
@@ -1417,16 +1487,27 @@ sub PrintConnect {
 			} 
 		 } 
 	  }
+	  if ($conn eq "") {
+	     $empty_warn = 1;
+      } else {
+	     $empty_warn = 0;
+	  }
+
 
 	  $CurMod_Top->{"connections"}->{"input"}->{"$conn"} = 0;
   }
 
   if (%$IP) {
 	  if (%$OP) {
-          push @VOUT, "), //|<-i\n";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|<-i  !!!Warining: this is floating port!!!\n";
+		  } else {
+             push @VOUT, "), //|<-i\n";
+		  }
       }
   }
   $first_line = 1;
+  $empty_warn = 0;
 
   foreach my $port (sort(keys %{$CI->{"output"}})) {
       my $conn = $port;
@@ -1439,22 +1520,29 @@ sub PrintConnect {
       my $width = $CI->{"output"}->{$port}->{"width"};
       my $wire_bits  = "";
 
-	  if ($width ne "1") {
-		  if ($width =~ /:/) {
-	          $conn .= "[${width}]" if ($conn !~ /:|'/);
-	      } else {
-			  $width--;
-			  $width= "${width}:0";
-	          $conn .= "[${width}]" if ($conn !~ /:|'/);
-		  }
-      }
+	  if ($conn ne "") {
+	     if ($width ne "1") {
+	         if ($width =~ /:/) {
+	             $conn .= "[${width}]" if ($conn !~ /:|'/);
+	         } else {
+	       	  $width--;
+	       	  $width= "${width}:0";
+	             $conn .= "[${width}]" if ($conn !~ /:|'/);
+	         }
+         }
+	 }
 
 	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn");  
 	  if ($first_line eq "1") {
          push @VOUT, "    .$line_pt";
 		 $first_line = 0 ;
 	  } else {
-         push @VOUT, "), //|>-o\n    .$line_pt";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|>-o  !!!Warining: this is floating port!!!\n    .$line_pt";
+			 $empty_warn = 0;
+		  } else {
+             push @VOUT, "), //|>-o\n    .$line_pt";
+		  }
 	  }
 
 	  if ( $AUTO_INST eq "" ) {
@@ -1513,6 +1601,11 @@ sub PrintConnect {
 				}
 			} 
 		 } 
+	  }
+	  if ($conn eq "") {
+	     $empty_warn = 1;
+      } else {
+	     $empty_warn = 0;
 	  }
 	  $CurMod_Top->{"connections"}->{"output"}->{"$conn"} = 0;
   }
@@ -1704,22 +1797,23 @@ sub ParseAutoWidth {
 #============================================================================================================#
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
-		open(V_SRC,">.temp.v");
-		select(V_SRC);
+	my $mod_name = $CurMod_Top->{"module"};
+        $temp_v = ".$mod_name".".vpp";
+	open(V_SRC,">$temp_v");
+	select(V_SRC);
 	    
-		my($C)=$CurMod_Top->{"inst"};
+	my($C)=$CurMod_Top->{"inst"};
         foreach my $inst (%$C) {
-			&PrintDefine($inst);
-		}
-	    foreach my $line (@VOUT) {
-			print V_SRC "$line";
-		}
-		close(V_SRC);
-		my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
+	   &PrintDefine($inst);
+	}
+        foreach my $line (@VOUT) {
+       	   print V_SRC "$line";
+	}
+	close(V_SRC);
+	my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
         $nl->read_libraries();
-        $nl->read_file (filename=>"./.temp.v");
+        $nl->read_file (filename=>"./$temp_v");
         $nl->link();
-		system("rm ./.temp.v");
         foreach my $mod ($nl->top_modules_sorted) {
 			my ($name, $type, $width) = ("","","");
 	        foreach my $net ($mod->nets_sorted) {
@@ -1932,7 +2026,13 @@ sub  PrintAutoInstSigs {
 			   $line_pt = "wire "."$line_pt";
 		   }
 
-           print "$line_pt;\n";
+		   if (exists($AutoInstSigs->{"$sig_name"}->{"ifdef"})) {
+              print "`ifdef $AutoInstSigs->{$sig_name}->{\"ifdef\"}\n";
+              print "$line_pt;\n";
+              print "`endif\n";
+		  } else {
+              print "$line_pt;\n";
+		  }
         }
      }
    }
