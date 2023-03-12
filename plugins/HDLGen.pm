@@ -1091,11 +1091,22 @@ sub Connect {
 
   if ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) {
     $rule = "mapping";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+		$rplc = "";
+	}
   } elsif ($srch =~ /^\//) {
-    $rule = "s".$srch.$rplc."/";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+		$rule = "s".$srch."//";
+	} else {
+        $rule = "s".$srch.$rplc."/";
+	}
   } else {
     my $conn_new = '^'.$srch.'$' unless ($srch =~ s/^\/(.*?)\/$/$1/);
-    $rule = "s/${conn_new}/${rplc}/";
+	if ( ($rplc eq "''") or ($rplc eq "null") ) {
+       $rule = "s/${conn_new}//";
+    }else {
+       $rule = "s/${conn_new}/${rplc}/";
+    }
   }
 
   my $conn_item = $CurMod_Top->{"inst"}->{"$CurInst"}->{"connect_list"} + 1;
@@ -1381,7 +1392,7 @@ sub PrintConnect {
   }
 
   $first_line = 1;
-
+  my $empty_warn = 0;
   foreach my $port (sort(keys %{$CI->{"input"}})) {
 	  $port_length = length($port) if (length($port) > $port_length);
       my $conn    = $port;
@@ -1394,22 +1405,29 @@ sub PrintConnect {
 	  }
       $conn_pt = $conn;
 
-	  if ($width ne "1") {
-		  if ($width =~ /:/) {
-	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
-	      } else {
-			  $width--;
-			  $width= "${width}:0";
-	          $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
-		  }
-      }
+	  if ($conn ne "") {
+	     if ($width ne "1") {
+	         if ($width =~ /:/) {
+	             $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
+	         } else {
+	       	  $width--;
+	       	  $width= "${width}:0";
+	             $conn_pt .= "[${width}]" if ($conn !~ /:|'/);
+	         }
+         }
+	 }
 
 	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn_pt");  
       if ($first_line) {
 		  push @VOUT,"    .$line_pt";
           $first_line = 0;
       } else {
-		  push @VOUT,"), //|<-i\n    .$line_pt";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|<-i  !!!Warining: this is floating port!!!\n    .$line_pt";
+			 $empty_warn = 0;
+		  } else {
+		     push @VOUT,"), //|<-i\n    .$line_pt";
+		  }
       }
       
 	  if ( $AUTO_INST eq "" ) {
@@ -1469,16 +1487,27 @@ sub PrintConnect {
 			} 
 		 } 
 	  }
+	  if ($conn eq "") {
+	     $empty_warn = 1;
+      } else {
+	     $empty_warn = 0;
+	  }
+
 
 	  $CurMod_Top->{"connections"}->{"input"}->{"$conn"} = 0;
   }
 
   if (%$IP) {
 	  if (%$OP) {
-          push @VOUT, "), //|<-i\n";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|<-i  !!!Warining: this is floating port!!!\n";
+		  } else {
+             push @VOUT, "), //|<-i\n";
+		  }
       }
   }
   $first_line = 1;
+  $empty_warn = 0;
 
   foreach my $port (sort(keys %{$CI->{"output"}})) {
       my $conn = $port;
@@ -1491,22 +1520,29 @@ sub PrintConnect {
       my $width = $CI->{"output"}->{$port}->{"width"};
       my $wire_bits  = "";
 
-	  if ($width ne "1") {
-		  if ($width =~ /:/) {
-	          $conn .= "[${width}]" if ($conn !~ /:|'/);
-	      } else {
-			  $width--;
-			  $width= "${width}:0";
-	          $conn .= "[${width}]" if ($conn !~ /:|'/);
-		  }
-      }
+	  if ($conn ne "") {
+	     if ($width ne "1") {
+	         if ($width =~ /:/) {
+	             $conn .= "[${width}]" if ($conn !~ /:|'/);
+	         } else {
+	       	  $width--;
+	       	  $width= "${width}:0";
+	             $conn .= "[${width}]" if ($conn !~ /:|'/);
+	         }
+         }
+	 }
 
 	  $line_pt =	sprintf("%-${port_length}s%-${conn_length}s", $port, "($conn");  
 	  if ($first_line eq "1") {
          push @VOUT, "    .$line_pt";
 		 $first_line = 0 ;
 	  } else {
-         push @VOUT, "), //|>-o\n    .$line_pt";
+		  if ($empty_warn eq "1") {
+		     push @VOUT,"), //|>-o  !!!Warining: this is floating port!!!\n    .$line_pt";
+			 $empty_warn = 0;
+		  } else {
+             push @VOUT, "), //|>-o\n    .$line_pt";
+		  }
 	  }
 
 	  if ( $AUTO_INST eq "" ) {
@@ -1565,6 +1601,11 @@ sub PrintConnect {
 				}
 			} 
 		 } 
+	  }
+	  if ($conn eq "") {
+	     $empty_warn = 1;
+      } else {
+	     $empty_warn = 0;
 	  }
 	  $CurMod_Top->{"connections"}->{"output"}->{"$conn"} = 0;
   }
@@ -1756,24 +1797,23 @@ sub ParseAutoWidth {
 #============================================================================================================#
 sub UpdateAutos {
     if ( ($AUTO_DEF eq "AutoDef") or ($AUTO_INST eq "AutoInstSig") ) {
-		my $mod_name = $CurMod_Top->{"module"};
+	my $mod_name = $CurMod_Top->{"module"};
         $temp_v = ".$mod_name".".vpp";
-		open(V_SRC,">$temp_v");
-		select(V_SRC);
+	open(V_SRC,">$temp_v");
+	select(V_SRC);
 	    
-		my($C)=$CurMod_Top->{"inst"};
+	my($C)=$CurMod_Top->{"inst"};
         foreach my $inst (%$C) {
-			&PrintDefine($inst);
-		}
-	    foreach my $line (@VOUT) {
-			print V_SRC "$line";
-		}
-		close(V_SRC);
-		my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
+	   &PrintDefine($inst);
+	}
+        foreach my $line (@VOUT) {
+       	   print V_SRC "$line";
+	}
+	close(V_SRC);
+	my $nl = new Verilog::Netlist (link_read=>0, link_read_nonfatal=>1);
         $nl->read_libraries();
         $nl->read_file (filename=>"./$temp_v");
         $nl->link();
-		system("rm ./.temp.v");
         foreach my $mod ($nl->top_modules_sorted) {
 			my ($name, $type, $width) = ("","","");
 	        foreach my $net ($mod->nets_sorted) {
