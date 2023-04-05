@@ -82,6 +82,7 @@ output          mac_out_pvld;
 //:AutoInstSig;
 // ========================================================================================
 
+wire    [63:0] test_PRE_PDAT_SUF;
 reg     [65:0] dbg_sign;
 reg      [3:0] exp_max;
 reg            exp_pvld;
@@ -384,6 +385,7 @@ end
 //// Sample for JSON instance 
 //==========================================================
    &Instance my_test_design.JSON;
+     Connect -final /(PRE_PDAT_SUF)/  {test_\${1}[63:34],2'b00};
      Connect -final -interface my_spi  My_\${1} ;
      Connect /(clk.*)/ My_\${1};
      Connect /(reset.*)/ My_\${1};
