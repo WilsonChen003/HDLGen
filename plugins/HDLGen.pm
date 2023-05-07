@@ -795,7 +795,7 @@ sub FindVlg {
     if ($return_file ne "") {
         return($return_file);
     } else {
-       &HDLGenErr("FindVlg"," --- can NOT find src file of ($VlgName) in all src paths!\n");
+       &HDLGenErr("FindVlg"," --- can NOT find src file of ($VlgName) in all src paths of: @SRC_PATH !\n");
 	   exit(1);
     }
 }
@@ -1074,7 +1074,15 @@ sub Connect {
   if ($call =~ s/-low//) {
      $up = 1;
   }
-  if ($call =~ /-interface \s*(\w+) \s*(.*)\s*$/) {
+  if ($call =~ /-interface \s*(\w+) -key \s*(\S+) \s*(\S+)\s*$/) {
+      $type = "interface";
+      $intf = $1;
+	  $srch = $2;
+      $rplc = $3;
+	  if ($srch =~ /\*/) {
+          $srch =~ s/\*/(.*)/; 
+	  }
+  } elsif ($call =~ /-interface \s*(\w+) \s*(\S+)\s*$/) {
       $type = "interface";
       $intf = $1;
       $rplc = $2;
@@ -1089,7 +1097,9 @@ sub Connect {
       &HDLGenErr($SubName," --- syntax is wrong @: &Connect $call\n");
   }
 
-  if ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) {
+  if ( ($type eq "interface") and ($srch ne "/(.*)/") ) {
+     $rule = "s/(.*)/${rplc}/";
+  } elsif ($srch =~ /^\w+$/ && $rplc =~ /^\w+$/) {
     $rule = "mapping";
 	if ( ($rplc eq "''") or ($rplc eq "null") ) {
 		$rplc = "";
@@ -1187,17 +1197,29 @@ sub ConnectDone {
                       $used = 1;
                     }
                   } else {
-		            if ($IC->{type} eq "interface") {
-                    my $intf_name = $IC->{intf};
-		            my $intf_h = &GetIntf($intf_name); 
-				    my $port_UC = uc($port);
-			        if ( !(exists $intf_h->{$port}) and (!(exists $intf_h->{$port_UC})) ) {
-					  next;
-				  }
-		      } 
-            	      my $eval = "\$used = \$conn_new =~ $IC->{rule}";
-            	      eval ($eval);
-            	      &HDLGenErr($SubName,"connection eval ($eval) failure: $@") if ($@);
+		             if ($IC->{type} eq "interface") {
+                        my $intf_name = $IC->{intf};
+		                my $intf_h = &GetIntf($intf_name); 
+					    last if (!(%$intf_h));
+
+				        my $port_UC = uc($port);
+						if ($IC->{srch} ne "/(.*)/") { ### has key word, need to search
+					    	my $srch = $IC->{srch};
+					        my $port_rplc = $port;
+							$port_rplc =~ s/$srch/$1/g;
+							$port_UC = uc($port_rplc);
+					        if ( !(exists $intf_h->{$port_rplc}) and (!(exists $intf_h->{$port_UC})) ) {
+					           next;
+				            }
+					    } else {
+					        if ( !(exists $intf_h->{$port}) and (!(exists $intf_h->{$port_UC})) ) {
+					           next;
+				            }
+					    }
+		             } 
+            	     my $eval = "\$used = \$conn_new =~ $IC->{rule}";
+            	     eval ($eval);
+            	     &HDLGenErr($SubName,"connection eval ($eval) failure: $@") if ($@);
                   }
                 }
                 &HDLGenInfo($SubName, " --- cur_port:$port, replaced by $conn_new\n") if ($main::HDLGEN_DEBUG_MODE);

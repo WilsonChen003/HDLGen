@@ -445,6 +445,13 @@ end
 
 //:  &PrintAmbaBus("-type APB3 -awd 18 -d 32 -pre Test_ -u ");
 
+
+//==========================================================
+//// Sample of interface keyword
+//==========================================================
+&Instance apb_test;
+  Connect  -interface APB3 -key sys_ctrl_*_test  KEY_\$1;
+
 //==========================================================
 //// Sample of adding interface from Perl Hash Array
 //==========================================================
