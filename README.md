@@ -179,7 +179,7 @@ __*** And Fexibility is really helpful ***__<br>
 ### ***Note:***
 This tool was developed from scratch during the special spring time in Shanghai in 2022<br>
 The things related to NVIDIA are:<br>
-  * several functions' name are identical;<br>
+  * 2 functions' name（Instance,Connect) are identical;<br>
   * several HDL files of open sourced NVDLA are used to be test source<br>
 	
  ***************************************************************
