@@ -551,6 +551,9 @@ assign plic_core0_se_int  = plic_hartx_sint_req[0];
 &Instance Test_AFifo;
 
 
+////&Instance CORTEXM7INTEGRATIONCS_1.xml u_xml;
+////  &Connect -interface Authentication_slave \${1}_Slave;
+
 endmodule // NV_NVDLA_CMAC_CORE_mac
 
 
